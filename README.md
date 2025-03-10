@@ -12,7 +12,7 @@ Une application mobile pour explorer et partager des lieux insolites en ville.
 
 1. **Cloner le repo :**
 ```bash
-   git clone https://github.com/TON-USER/TON-REPO.git
+   git clone https://github.com/lise-dev/LOG450-UrbanExplorer.git
    cd LOG450-UrbanExplorer/UrbanExplorer
 ```
 
