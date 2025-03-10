@@ -1,0 +1,21 @@
+# Node modules
+node_modules/
+ 
+# Expo-specific
+.expo/
+.expo-shared/
+
+# Build folders
+.android/
+.ios/
+
+# Logs & Cache
+npm-debug.log*
+yarn-debug.log*
+metro-bundler-cache/
+react-native-packager-cache/
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.iml
