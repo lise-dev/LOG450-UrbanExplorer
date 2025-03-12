@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Text, View, ActivityIndicator, StyleSheet } from "react-native";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "./firebaseConfig";
+import { Text, View, ActivityIndicator, StyleSheet, Button } from "react-native";
+import FirestoreRepository from "./src/repositories/FirestoreRepository";
 
 export default function App() {
   const [users, setUsers] = useState([]);
@@ -9,19 +8,28 @@ export default function App() {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "utilisateurs"));
-        const usersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setUsers(usersList);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des utilisateurs :", error);
-      } finally {
-        setLoading(false);
-      }
+      const usersList = await FirestoreRepository.getUsers();
+      setUsers(usersList);
+      setLoading(false);
     };
 
     fetchUsers();
   }, []);
+
+  const addUser = async () => {
+    const newUser = {
+      nom: "bernard",
+      prenom: "sophie",
+      pseudo: "sophie_explo",
+      email: "sophie.bernard@example.com",
+      dateinscription: new Date(),
+      role: "explorateur",
+      photoprofil: "sophieBernard.png"
+    };
+
+    const userId = await FirestoreRepository.addUser(newUser);
+    setUsers(prevUsers => [...prevUsers, { idutilisateur: userId, ...newUser }]); // Met à jour l'affichage
+  };
 
   if (loading) {
     return (
@@ -33,6 +41,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <Button title="Ajouter un utilisateur" onPress={addUser} />
       {users.length > 0 ? (
         users.map(user => (
           <Text key={user.id} style={styles.text}>
