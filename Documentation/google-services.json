@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "932567680672",
+    "project_id": "urbanexplorer-bb1f9",
+    "storage_bucket": "urbanexplorer-bb1f9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:932567680672:android:c8bae1b297b2a31ed2ebc5",
+        "android_client_info": {
+          "package_name": "UrbanExplorer.Expo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGS5TrS9JTdByClaDb7TG_aTs5TPP_EYk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
