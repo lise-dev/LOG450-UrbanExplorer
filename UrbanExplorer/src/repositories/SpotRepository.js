@@ -50,11 +50,23 @@ const isValidText = (text) => {
 
 // Forcer les entrées en minuscules et valider les champs
 const formatSpotData = (spotData) => {
+  if (!spotData.nom || !isValidText(spotData.nom)) {
+    return { error: "Le champ 'nom' est obligatoire et doit contenir uniquement des lettres et chiffres." };
+  }
+
+  if (!spotData.coordonnees || !isValidCoordinates(spotData.coordonnees)) {
+    return { error: "Les coordonnées GPS sont obligatoires et doivent être valides." };
+  }
+
+  if (!spotData.type || !isValidText(spotData.type)) {
+    return { error: "Le champ 'type' est obligatoire et doit contenir uniquement des lettres et chiffres." };
+  }
+
   return {
-    nom: spotData.nom && isValidText(spotData.nom) ? spotData.nom.toLowerCase() : null,
+    nom: spotData.nom.toLowerCase(),
     coordonnees: spotData.coordonnees,
-    type: spotData.type && isValidText(spotData.type) ? spotData.type.toLowerCase() : null,
-    description: spotData.description ? spotData.description.toLowerCase() : null,
+    type: spotData.type.toLowerCase(),
+    description: spotData.description ? spotData.description.toLowerCase() : null, 
   };
 };
 
