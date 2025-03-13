@@ -1,3 +1,8 @@
+/*
+* Crée le 12 mars 2025
+* Gestion des utilisateurs Firebase UrbanExplorer
+*/
+
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
 
