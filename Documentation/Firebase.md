@@ -68,4 +68,22 @@ Gère l'ajout, la modification et la suppression des spots.
 - **Les noms et types sont forcés en minuscule et ne contiennent que des lettres/chiffres.**
 
 
+## `AvisRepository.js` - Gestion des Avis
 
+Gère l'ajout, la modification et la suppression des avis.
+
+### Fonctions disponibles
+
+| Fonction | Description |
+|----------|------------|
+| `getAvis()` | Récupère tous les avis enregistrés. |
+| `addAvis(newAvis, userId)` | Ajoute un avis (uniquement contributeur). |
+| `editAvis(avisId, userId, updatedData)` | Modifie un avis (seulement le créateur ou un modérateur). |
+| `deleteAvis(avisId, userId)` | Supprime un avis (seulement le créateur ou un modérateur). |
+
+### Règles métier
+- **Seul un `contributeur` ou un `moderateur` peut ajouter un avis.**
+- **Seul le propriétaire ou un `moderateur` peut modifier/supprimer un avis.**
+- **Les avis sont enregistrés en minuscule.**
+- **Le champ `texte` est obligatoire.**
+- **La `note` doit être comprise entre 1 et 5.**
