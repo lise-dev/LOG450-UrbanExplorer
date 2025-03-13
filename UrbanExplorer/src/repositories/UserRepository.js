@@ -1,7 +1,7 @@
-import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
 
-// Générer un ID utilisateur formaté automatiquement (user_001, user_002...)
+// Générer un ID utilisateur formaté automatiquement
 const generateUserId = async () => {
   const querySnapshot = await getDocs(collection(db, "utilisateurs"));
   const userCount = querySnapshot.size + 1;
@@ -27,7 +27,7 @@ const isValidEmail = (email) => {
 
 // Repository pour les utilisateurs
 const UserRepository = {
-  // 🔍 Récupérer tous les utilisateurs
+  // Récupérer tous les utilisateurs
   getUsers: async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "utilisateurs"));
@@ -38,21 +38,18 @@ const UserRepository = {
     }
   },
 
-  // ➕ Ajouter un utilisateur
+  // Ajouter un utilisateur
   addUser: async (newUser) => {
     try {
-      // Vérifier si l'email est valide
       if (!isValidEmail(newUser.email)) {
         return { error: "L'adresse email est invalide. Veuillez entrer un email valide." };
       }
 
-      // Vérifier si le pseudo est déjà utilisé
       const pseudoExists = await checkPseudoExists(newUser.pseudo);
       if (pseudoExists) {
         return { error: "Ce pseudo est déjà utilisé. Veuillez en choisir un autre." };
       }
 
-      // Générer un ID unique et ajouter l'utilisateur
       const userId = await generateUserId();
       const userRef = doc(db, "utilisateurs", userId);
       await setDoc(userRef, { idutilisateur: userId, ...newUser });
@@ -62,6 +59,46 @@ const UserRepository = {
     } catch (error) {
       console.error("Erreur lors de l'ajout de l'utilisateur :", error);
       return { error: "Une erreur est survenue lors de l'ajout." };
+    }
+  },
+
+  // Modifier un utilisateur existant
+  editUser: async (userId, updatedData) => {
+    try {
+      const userRef = doc(db, "utilisateurs", userId);
+
+      // Vérifier si l'email est valide si on le met à jour
+      if (updatedData.email && !isValidEmail(updatedData.email)) {
+        return { error: "L'adresse email est invalide." };
+      }
+
+      // Vérifier si le pseudo est unique
+      if (updatedData.pseudo) {
+        const pseudoExists = await checkPseudoExists(updatedData.pseudo);
+        if (pseudoExists) {
+          return { error: "Ce pseudo est déjà utilisé. Veuillez en choisir un autre." };
+        }
+      }
+
+      await updateDoc(userRef, updatedData);
+      console.log(`Utilisateur ${userId} mis à jour avec succès.`);
+      return { success: true };
+    } catch (error) {
+      console.error("Erreur lors de la modification de l'utilisateur :", error);
+      return { error: "Une erreur est survenue lors de la modification." };
+    }
+  },
+
+  // Supprimer un utilisateur
+  deleteUser: async (userId) => {
+    try {
+      const userRef = doc(db, "utilisateurs", userId);
+      await deleteDoc(userRef);
+      console.log(`Utilisateur ${userId} supprimé.`);
+      return { success: true };
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'utilisateur :", error);
+      return { error: "Impossible de supprimer cet utilisateur." };
     }
   }
 };
