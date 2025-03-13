@@ -1,3 +1,8 @@
+/*
+* Crée le 12 mars 2025
+* Gestion des authentifications utilisateurs Firebase UrbanExplorer
+*/
+
 import { auth, db } from "../../firebaseConfig";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
