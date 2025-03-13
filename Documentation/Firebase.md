@@ -2,7 +2,6 @@
 
 ## `AuthRepository.js` - Gestion de l'authentification Firebase
 
-### Description
 Gère l'inscription, la connexion, la déconnexion et la récupération des profils utilisateurs.
 
 ### Fonctions disponibles
@@ -20,4 +19,24 @@ Gère l'inscription, la connexion, la déconnexion et la récupération des prof
 - **`pseudo` et `email` doivent être uniques.**
 - **Le `role` doit être `contributeur`, `explorateur` ou `moderateur`.**
 - **`photoProfil` est stockée sous `picture/userprofile/PPpseudo.png`.**
+
+## `UserRepository.js` - Gestion des utilisateurs
+
+Gère les interactions avec la collection `utilisateurs` dans Firestore.
+
+### Fonctions disponibles
+
+| Fonction | Description |
+|----------|------------|
+| `getUsers()` | Récupère tous les utilisateurs de la base. |
+| `editUser(userId, requesterId, updatedData)` | Modifie un utilisateur (seulement lui-même). |
+| `deleteUser(userId, requesterId)` | Supprime un utilisateur (lui-même ou un modérateur). |
+
+### Règles métier
+- **Un utilisateur ne peut modifier que son propre compte.**
+- **Un utilisateur ne peut se supprimer que lui-même, sauf si le modérateur supprime un compte.**
+- **Les champs sont forcés en minuscule (`email`, `pseudo`, `role`).**
+- **Le `pseudo` doit être unique.**
+- **Le `role` est limité à `contributeur`, `explorateur`, `moderateur`.**
+
 
