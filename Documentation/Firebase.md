@@ -1,5 +1,12 @@
 # Repositories - Urban Explorer
 
+
+1. [AuthRepository.js - Gestion de l'authentification](#authrepositoryjs---gestion-de-lauthentification)
+2. [UserRepository.js - Gestion des utilisateurs](#userrepositoryjs---gestion-des-utilisateurs)
+3. [SpotRepository.js - Gestion des Spots](#spotrepositoryjs---gestion-des-spots)
+
+---
+
 ## `AuthRepository.js` - Gestion de l'authentification Firebase
 
 Gère l'inscription, la connexion, la déconnexion et la récupération des profils utilisateurs.
@@ -20,6 +27,8 @@ Gère l'inscription, la connexion, la déconnexion et la récupération des prof
 - **Le `role` doit être `contributeur`, `explorateur` ou `moderateur`.**
 - **`photoProfil` est stockée sous `picture/userprofile/PPpseudo.png`.**
 
+---
+
 ## `UserRepository.js` - Gestion des utilisateurs
 
 Gère les interactions avec la collection `utilisateurs` dans Firestore.
@@ -38,5 +47,25 @@ Gère les interactions avec la collection `utilisateurs` dans Firestore.
 - **Les champs sont forcés en minuscule (`email`, `pseudo`, `role`).**
 - **Le `pseudo` doit être unique.**
 - **Le `role` est limité à `contributeur`, `explorateur`, `moderateur`.**
+
+---
+
+## `SpotRepository.js` - Gestion des Spots
+
+Gère l'ajout, la modification et la suppression des spots.
+
+| Fonction | Description |
+|----------|------------|
+| `getSpots()` | Récupère tous les spots enregistrés. |
+| `addSpot(newSpot, userId)` | Ajoute un spot (uniquement contributeur ou modérateur). |
+| `editSpot(spotId, userId, updatedData)` | Modifie un spot (seulement le créateur ou un modérateur). |
+| `deleteSpot(spotId, userId)` | Supprime un spot (seulement le créateur ou un modérateur). |
+
+### Règles métier
+- **Seul un `contributeur` ou `moderateur` peut ajouter un spot.**
+- **Seul le créateur du spot ou un `moderateur` peut le modifier ou le supprimer.**
+- **Les champs `nom`, `coordonnees`, `type` sont obligatoires (`description` peut être `null`).**
+- **Les noms et types sont forcés en minuscule et ne contiennent que des lettres/chiffres.**
+
 
 
