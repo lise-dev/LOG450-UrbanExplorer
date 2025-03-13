@@ -1,17 +1,10 @@
 /*
-* Crée le 12 mars 2025
-* Gestion des utilisateurs Firebase UrbanExplorer
-*/
+ * Crée le 12 mars 2025
+ * Gestion des utilisateurs Firebase UrbanExplorer
+ */
 
-import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
-
-// Générer un ID utilisateur formaté automatiquement
-const generateUserId = async () => {
-  const querySnapshot = await getDocs(collection(db, "utilisateurs"));
-  const userCount = querySnapshot.size + 1;
-  return `user_${String(userCount).padStart(3, "0")}`;
-};
 
 // Vérifier si un pseudo existe déjà en base
 const checkPseudoExists = async (pseudo) => {
@@ -30,6 +23,21 @@ const isValidEmail = (email) => {
   return emailRegex.test(email);
 };
 
+// Récupérer le rôle d'un utilisateur
+const getUserRole = async (userId) => {
+  try {
+    const userRef = doc(db, "utilisateurs", userId);
+    const userDoc = await getDoc(userRef);
+    if (userDoc.exists()) {
+      return userDoc.data().role; // Retourne le rôle
+    }
+    return null;
+  } catch (error) {
+    console.error("Erreur lors de la récupération du rôle utilisateur :", error);
+    return null;
+  }
+};
+
 // Repository pour les utilisateurs
 const UserRepository = {
   // Récupérer tous les utilisateurs
@@ -43,8 +51,8 @@ const UserRepository = {
     }
   },
 
-  // Ajouter un utilisateur
-  addUser: async (newUser) => {
+  // Ajouter un utilisateur en utilisant `uid` de Firebase Auth
+  addUser: async (userId, newUser) => {
     try {
       if (!isValidEmail(newUser.email)) {
         return { error: "L'adresse email est invalide. Veuillez entrer un email valide." };
@@ -55,9 +63,8 @@ const UserRepository = {
         return { error: "Ce pseudo est déjà utilisé. Veuillez en choisir un autre." };
       }
 
-      const userId = await generateUserId();
       const userRef = doc(db, "utilisateurs", userId);
-      await setDoc(userRef, { idutilisateur: userId, ...newUser });
+      await setDoc(userRef, { idUtilisateur: userId, ...newUser });
 
       console.log(`Utilisateur ajouté avec l'ID : ${userId}`);
       return { success: true, userId };
@@ -67,12 +74,16 @@ const UserRepository = {
     }
   },
 
-  // Modifier un utilisateur existant
-  editUser: async (userId, updatedData) => {
+  // Modifier son propre compte
+  editUser: async (userId, requesterId, updatedData) => {
     try {
+      if (userId !== requesterId) {
+        return { error: "Vous n'avez pas la permission de modifier ce compte." };
+      }
+
       const userRef = doc(db, "utilisateurs", userId);
 
-      // Vérifier si l'email est valide si on le met à jour
+      // Vérifier si l'email est valide si mis à jour
       if (updatedData.email && !isValidEmail(updatedData.email)) {
         return { error: "L'adresse email est invalide." };
       }
@@ -85,6 +96,9 @@ const UserRepository = {
         }
       }
 
+      // Empêcher la modification de l'ID utilisateur
+      delete updatedData.idUtilisateur;
+
       await updateDoc(userRef, updatedData);
       console.log(`Utilisateur ${userId} mis à jour avec succès.`);
       return { success: true };
@@ -94,9 +108,17 @@ const UserRepository = {
     }
   },
 
-  // Supprimer un utilisateur
-  deleteUser: async (userId) => {
+  // Supprimer un utilisateur (seulement si c'est lui-même ou un modérateur)
+  deleteUser: async (userId, requesterId) => {
     try {
+      if (userId !== requesterId) {
+        // Vérifier si le demandeur est un modérateur
+        const requesterRole = await getUserRole(requesterId);
+        if (requesterRole !== "moderateur") {
+          return { error: "Vous n'avez pas la permission de supprimer ce compte." };
+        }
+      }
+
       const userRef = doc(db, "utilisateurs", userId);
       await deleteDoc(userRef);
       console.log(`Utilisateur ${userId} supprimé.`);
