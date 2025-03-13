@@ -1,6 +1,6 @@
 /*
  * Crée le 12 mars 2025
- * Gestion des utilisateurs Firebase UrbanExplorer
+ * Gestion des spots Firebase UrbanExplorer
  */
 
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc } from "firebase/firestore";
