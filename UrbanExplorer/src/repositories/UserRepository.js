@@ -1,20 +1,16 @@
 /*
  * Crée le 12 mars 2025
- * Gestion des utilisateurs Firebase UrbanExplorer
+ * Gestion des UTILISATEURS Firebase UrbanExplorer
  */
 
-import { collection, getDocs, doc, updateDoc, deleteDoc, getDoc } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
 
 // Vérifier si un pseudo existe déjà en base
 const checkPseudoExists = async (pseudo) => {
-  try {
-    const querySnapshot = await getDocs(collection(db, "utilisateurs"));
-    return querySnapshot.docs.some(doc => doc.data().pseudo === pseudo.toLowerCase());
-  } catch (error) {
-    console.error("Erreur lors de la vérification du pseudo :", error);
-    return false;
-  }
+  const pseudoQuery = query(collection(db, "utilisateurs"), where("pseudo", "==", pseudo.toLowerCase()));
+  const querySnapshot = await getDocs(pseudoQuery);
+  return !querySnapshot.empty;
 };
 
 // Vérifier si un email est valide
@@ -23,7 +19,12 @@ const isValidEmail = (email) => {
   return emailRegex.test(email);
 };
 
-// Vérifier si un texte ne contient que des lettres et chiffres
+// Vérifier si un rôle est valide
+const isValidRole = (role) => {
+  return ["contributeur", "explorateur", "moderateur"].includes(role.toLowerCase());
+};
+
+// Vérifier si un champ ne contient que des lettres et chiffres
 const isValidText = (text) => {
   const regex = /^[a-zA-Z0-9\s]+$/; 
   return text && regex.test(text);
@@ -32,17 +33,29 @@ const isValidText = (text) => {
 // Récupérer le rôle d'un utilisateur
 const getUserRole = async (userId) => {
   if (!userId) return null;
-  try {
-    const userRef = doc(db, "utilisateurs", userId);
-    const userDoc = await getDoc(userRef);
-    if (userDoc.exists()) {
-      return userDoc.data().role;
-    }
-    return null;
-  } catch (error) {
-    console.error("Erreur lors de la récupération du rôle utilisateur :", error);
-    return null;
+  const userRef = doc(db, "utilisateurs", userId);
+  const userDoc = await getDoc(userRef);
+  return userDoc.exists() ? userDoc.data().role : null;
+};
+
+// Mettre à jour les références `idUtilisateur` dans les autres collections
+const updateUserReferences = async (userId) => {
+  const collectionsToUpdate = ["avis", "signalements", "notifications", "favoris", "photos", "recompenses", "sanctions"];
+  for (const collectionName of collectionsToUpdate) {
+    const querySnap = await getDocs(query(collection(db, collectionName), where("idUtilisateur", "==", userId)));
+    querySnap.forEach(async (docSnapshot) => {
+      await updateDoc(doc(db, collectionName, docSnapshot.id), { idUtilisateur: "Utilisateur supprimé" });
+    });
   }
+};
+
+// Mettre à jour les références dans les spots créés par l'utilisateur
+const updateSpotsReferences = async (userId) => {
+  const spotsQuery = query(collection(db, "spots"), where("ajoutePar", "==", userId));
+  const spotsSnapshot = await getDocs(spotsQuery);
+  spotsSnapshot.forEach(async (spot) => {
+    await updateDoc(doc(db, "spots", spot.id), { ajoutePar: "Utilisateur supprimé" });
+  });
 };
 
 // Forcer les entrées en minuscule, valider les champs et empêcher `null`
@@ -55,8 +68,20 @@ const formatUserData = async (userData) => {
     return { error: "Le pseudo est invalide ou manquant. Il doit contenir uniquement des lettres et chiffres." };
   }
 
-  if (!userData.role || !isValidText(userData.role)) {
-    return { error: "Le rôle est invalide ou manquant." };
+  if (!userData.role || !isValidRole(userData.role)) {
+    return { error: "Le rôle est invalide. Il doit être 'contributeur', 'explorateur' ou 'moderateur'." };
+  }
+
+  if (!userData.nom || !isValidText(userData.nom)) {
+    return { error: "Le nom est invalide ou manquant." };
+  }
+
+  if (!userData.prenom || !isValidText(userData.prenom)) {
+    return { error: "Le prénom est invalide ou manquant." };
+  }
+
+  if (!userData.photoProfil) {
+    return { error: "La photo de profil est obligatoire." };
   }
 
   // Vérifier si le pseudo est unique avant insertion/modification
@@ -66,10 +91,14 @@ const formatUserData = async (userData) => {
   }
 
   return {
+    idUtilisateur: userData.idUtilisateur || `user_${Date.now()}`,
+    nom: userData.nom.toLowerCase(),
+    prenom: userData.prenom.toLowerCase(),
     email: userData.email.toLowerCase(),
     pseudo: userData.pseudo.toLowerCase(),
     role: userData.role.toLowerCase(),
     dateInscription: userData.dateInscription || new Date(),
+    photoProfil: userData.photoProfil,
   };
 };
 
@@ -83,6 +112,67 @@ const UserRepository = {
     } catch (error) {
       console.error("Erreur lors de la récupération des utilisateurs :", error);
       return [];
+    }
+  },
+
+  // Ajouter un utilisateur pour les tests
+  addUser: async (userData) => {
+    try {
+      // Vérification des champs obligatoires
+      if (!userData.nom || !isValidText(userData.nom)) {
+        return { error: "Le champ 'nom' est obligatoire et doit contenir uniquement des lettres et chiffres." };
+      }
+
+      if (!userData.prenom || !isValidText(userData.prenom)) {
+        return { error: "Le champ 'prenom' est obligatoire et doit contenir uniquement des lettres et chiffres." };
+      }
+
+      if (!userData.email || !isValidEmail(userData.email)) {
+        return { error: "L'adresse email est invalide ou manquante." };
+      }
+
+      if (!userData.pseudo || !isValidText(userData.pseudo)) {
+        return { error: "Le pseudo est invalide ou manquant. Il doit contenir uniquement des lettres et chiffres." };
+      }
+
+      if (!userData.role || !isValidRole(userData.role)) {
+        return { error: "Le rôle est invalide. Il doit être 'contributeur', 'explorateur' ou 'moderateur'." };
+      }
+
+      if (!userData.photoProfil) {
+        return { error: "La photo de profil est obligatoire." };
+      }
+
+      // Vérifier si le pseudo est unique avant l'ajout
+      const pseudoExists = await checkPseudoExists(userData.pseudo);
+      if (pseudoExists) {
+        return { error: "Ce pseudo est déjà utilisé. Veuillez en choisir un autre." };
+      }
+
+      // Générer un ID utilisateur unique si absent
+      const userId = userData.idUtilisateur || `user_${Date.now()}`;
+
+      // Création de l'objet utilisateur avec formatage
+      const formattedUser = {
+        idUtilisateur: userId,
+        nom: userData.nom.toLowerCase(),
+        prenom: userData.prenom.toLowerCase(),
+        email: userData.email.toLowerCase(),
+        pseudo: userData.pseudo.toLowerCase(),
+        role: userData.role.toLowerCase(),
+        dateInscription: userData.dateInscription || new Date(),
+        photoProfil: userData.photoProfil,
+      };
+
+      // Ajout dans Firestore
+      const userRef = doc(db, "utilisateurs", userId);
+      await setDoc(userRef, formattedUser);
+
+      console.log(`Utilisateur ajouté avec l'ID : ${userId}`);
+      return { success: true, userId };
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de l'utilisateur :", error);
+      return { error: "Une erreur est survenue lors de l'ajout." };
     }
   },
 
@@ -105,7 +195,7 @@ const UserRepository = {
     }
   },
 
-  // Supprimer un utilisateur (seulement si c'est lui-même ou un modérateur)
+  // Supprimer un utilisateur (seulement lui-même ou un modérateur)
   deleteUser: async (userId, requesterId) => {
     if (!userId || !requesterId) return { error: "Vous devez être connecté pour supprimer un compte." };
 
@@ -117,9 +207,12 @@ const UserRepository = {
         }
       }
 
+      await updateUserReferences(userId); 
+      await updateSpotsReferences(userId);
+
       const userRef = doc(db, "utilisateurs", userId);
       await deleteDoc(userRef);
-      console.log(`Utilisateur ${userId} supprimé.`);
+      console.log(`Utilisateur ${userId} supprimé avec mise à jour des références.`);
       return { success: true };
     } catch (error) {
       console.error("Erreur lors de la suppression de l'utilisateur :", error);
@@ -129,3 +222,4 @@ const UserRepository = {
 };
 
 export default UserRepository;
+

@@ -1,9 +1,9 @@
 /*
 * Crée le 12 mars 2025
-* Gestion des Avis Firebase UrbanExplorer
+* Gestion des AVIS utilisateurs Firebase UrbanExplorer
 */
 
-import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc } from "firebase/firestore";
+import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
 
 // Vérifier si un utilisateur existe
@@ -16,6 +16,13 @@ const checkUserExists = async (userId) => {
     console.error("Erreur lors de la vérification de l'utilisateur :", error);
     return false;
   }
+};
+
+// Vérifier si un avis existe
+const checkAvisExists = async (avisId) => {
+  const avisRef = doc(db, "avis", avisId);
+  const avisDoc = await getDoc(avisRef);
+  return avisDoc.exists();
 };
 
 // Vérifier si un spot existe
@@ -63,34 +70,13 @@ const generateAvisId = async () => {
   return `avis_${String(avisCount).padStart(3, "0")}`;
 };
 
-// Forcer les entrées en minuscule et valider les champs
-const formatAvisData = async (avisData) => {
-  if (!avisData.texte || !isValidText(avisData.texte)) {
-    return { error: "Le champ 'texte' est obligatoire et doit être valide." };
-  }
-
-  if (!avisData.note || !isValidNote(avisData.note)) {
-    return { error: "La note est obligatoire et doit être comprise entre 1 et 5." };
-  }
-
-  // Vérification des clés étrangères
-  const userExists = await checkUserExists(avisData.idUtilisateur);
-  if (!userExists) {
-    return { error: "L'utilisateur spécifié n'existe pas." };
-  }
-
-  const spotExists = await checkSpotExists(avisData.idSpot);
-  if (!spotExists) {
-    return { error: "Le spot spécifié n'existe pas." };
-  }
-
-  return {
-    idUtilisateur: avisData.idUtilisateur,
-    idSpot: avisData.idSpot,
-    texte: avisData.texte.toLowerCase(),
-    note: avisData.note,
-    timestamp: avisData.timestamp || new Date(),
-  };
+// Supprimer les signalements liés à un avis
+const deleteSignalementsByAvis = async (avisId) => {
+  const signalementsQuery = query(collection(db, "signalements"), where("idContenu", "==", avisId));
+  const signalementsSnapshot = await getDocs(signalementsQuery);
+  signalementsSnapshot.forEach(async (signalement) => {
+    await deleteDoc(doc(db, "signalements", signalement.id));
+  });
 };
 
 // Repository pour les avis
@@ -116,8 +102,13 @@ const AvisRepository = {
         return { error: "Vous n'avez pas la permission d'ajouter un avis." };
       }
 
-      const formattedAvis = await formatAvisData({ ...newAvis, idUtilisateur: userId });
-      if (formattedAvis.error) return formattedAvis;
+      const formattedAvis = {
+        idUtilisateur: userId,
+        idSpot: newAvis.idSpot,
+        texte: newAvis.texte.toLowerCase(),
+        note: newAvis.note,
+        timestamp: new Date(),
+      };
 
       const avisId = await generateAvisId();
       const avisRef = doc(db, "avis", avisId);
@@ -130,6 +121,71 @@ const AvisRepository = {
       return { error: "Une erreur est survenue lors de l'ajout." };
     }
   },
+
+  // Modifier un avis (seulement si je suis le propriétaire ou un modérateur)
+  editAvis: async (avisId, userId, updatedData) => {
+    try {
+      const avisRef = doc(db, "avis", avisId);
+      const avisSnapshot = await getDoc(avisRef);
+
+      if (!avisSnapshot.exists()) {
+        return { error: "Avis non trouvé." };
+      }
+
+      const avisData = avisSnapshot.data();
+      const userRole = await getUserRole(userId);
+
+      if (avisData.idUtilisateur !== userId && userRole !== "moderateur") {
+        return { error: "Vous n'avez pas la permission de modifier cet avis." };
+      }
+
+      // Vérifications
+      if (updatedData.texte && !isValidText(updatedData.texte)) {
+        return { error: "Le texte de l'avis doit être valide." };
+      }
+      if (updatedData.note && !isValidNote(updatedData.note)) {
+        return { error: "La note doit être entre 1 et 5." };
+      }
+
+      // Mise à jour
+      await updateDoc(avisRef, {
+        ...updatedData,
+        texte: updatedData.texte ? updatedData.texte.toLowerCase() : avisData.texte,
+        timestamp: new Date(),
+      });
+
+      console.log(`Avis ${avisId} mis à jour avec succès.`);
+      return { success: true };
+    } catch (error) {
+      console.error("Erreur lors de la modification de l'avis :", error);
+      return { error: "Une erreur est survenue lors de la modification." };
+    }
+  },
+
+  // Supprimer un avis et les signalements associés
+  deleteAvis: async (avisId, userId) => {
+    try {
+      const avisRef = doc(db, "avis", avisId);
+      const avisSnapshot = await getDoc(avisRef);
+      
+      if (!avisSnapshot.exists()) {
+        return { error: "Avis non trouvé." };
+      }
+
+      const avisData = avisSnapshot.data();
+      if (avisData.idUtilisateur !== userId) {
+        return { error: "Vous n'avez pas la permission de supprimer cet avis." };
+      }
+
+      await deleteSignalementsByAvis(avisId);
+      await deleteDoc(avisRef);
+      console.log(`Avis ${avisId} supprimé.`);
+      return { success: true };
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'avis :", error);
+      return { error: "Impossible de supprimer cet avis." };
+    }
+  }
 };
 
 export default AvisRepository;
