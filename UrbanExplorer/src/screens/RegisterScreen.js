@@ -5,6 +5,7 @@
 
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { Picker } from "@react-native-picker/picker"; 
 import * as ImagePicker from "expo-image-picker";
 import { auth, db } from "../../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -36,30 +37,30 @@ const RegisterScreen = ({ navigation }) => {
   // Inscription utilisateur
   const handleRegister = async () => {
     setErrorMessage(null);
-
+  
     if (!email || !password || !pseudo || !role) {
-      setErrorMessage("Tous les champs sont obligatoires sauf la photo de profil !");
+      setErrorMessage("Tous les champs sont obligatoires !");
       return;
     }
-
+  
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const userId = userCredential.user.uid;
-
+  
       await setDoc(doc(db, "utilisateurs", userId), {
         idUtilisateur: userId,
         email,
         pseudo,
-        role,
+        role, // Enregistrement du rôle sélectionné
         photoProfil: photoProfil || null,
         dateInscription: new Date(),
       });
-
+  
       navigation.replace("HomeScreen");
     } catch (error) {
       setErrorMessage("Erreur lors de l'inscription. Réessayez.");
     }
-  };
+  };  
 
   const handleGoogleLogin = async () => {
     const response = await AuthRepository.signInWithGoogle();
@@ -76,6 +77,8 @@ const RegisterScreen = ({ navigation }) => {
       <View style={styles.topSection}>
         <Text style={styles.title}>Créer un compte</Text>
         <View style={styles.inputContainer}>
+
+          {/* email */}
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -84,6 +87,8 @@ const RegisterScreen = ({ navigation }) => {
             keyboardType="email-address"
             autoCapitalize="none"
           />
+
+          {/* mot de passe */}
           <TextInput
             style={styles.input}
             placeholder="Mot de passe"
@@ -91,6 +96,8 @@ const RegisterScreen = ({ navigation }) => {
             onChangeText={setPassword}
             secureTextEntry
           />
+
+          {/* pseudo */}
           <TextInput
             style={styles.input}
             placeholder="Pseudo"
@@ -98,7 +105,20 @@ const RegisterScreen = ({ navigation }) => {
             onChangeText={setPseudo}
           />
 
-          {/* Choisir une photo de profil avec le même design que les inputs */}
+          {/* role */}
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={role}
+              onValueChange={(itemValue) => setRole(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Explorateur" value="explorateur" />
+              <Picker.Item label="Contributeur" value="contributeur" />
+              <Picker.Item label="Modérateur" value="moderateur" />
+            </Picker>
+          </View>
+
+          {/* photo de profil */}
           <TouchableOpacity onPress={pickImage} style={styles.photoInput}>
             <Text style={styles.photoInputText}>
               {photoProfil ? "Modifier la photo" : "Choisir une photo"}
@@ -108,7 +128,6 @@ const RegisterScreen = ({ navigation }) => {
         </View>
       </View>
 
-      {/* Partie basse avec fond blanc */}
       <View style={styles.bottomSection}>
         {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
 
@@ -232,7 +251,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    elevation: 3, // Pour Android
+    elevation: 3, 
   },
   googleButtonText: {
     color: "#757575",
@@ -243,6 +262,21 @@ const styles = StyleSheet.create({
   googleIcon: {
     width: 24,
     height: 24,
+  },
+  pickerContainer: {
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#A5D6A7",
+    borderRadius: 25,
+    backgroundColor: "#F5F5F5",
+    marginBottom: 10,
+    justifyContent: "center",
+  },
+  
+  picker: {
+    height: 50,
+    width: "100%",
+    color: "#757575",
   },
 });
 
