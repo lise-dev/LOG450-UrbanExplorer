@@ -5,44 +5,7 @@
 
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
-
-// Vérifier si un utilisateur existe
-const checkUserExists = async (userId) => {
-  try {
-    const userRef = doc(db, "utilisateurs", userId);
-    const userDoc = await getDoc(userRef);
-    return userDoc.exists() ? userDoc.data().role : null;
-  } catch (error) {
-    console.error("Erreur lors de la vérification de l'utilisateur :", error);
-    return null;
-  }
-};
-
-// Vérifier le rôle d'un utilisateur
-const getUserRole = async (userId) => {
-  if (!userId) return null;
-  try {
-    const userRef = doc(db, "utilisateurs", userId);
-    const userDoc = await getDoc(userRef);
-    if (userDoc.exists()) {
-      return userDoc.data().role;
-    }
-    return null;
-  } catch (error) {
-    console.error("Erreur lors de la récupération du rôle utilisateur :", error);
-    return null;
-  }
-};
-
-// Vérifier si un type de récompense est valide
-const isValidRewardType = (type) => {
-  return type === "badge" || type === "points";
-};
-
-// Vérifier si les points sont valides
-const isValidPoints = (points) => {
-  return typeof points === "number" && points >= 0;
-};
+import { checkUserExists, isValidRewardType, isValidPoints, getUserRole}  from "../utils/validators"; 
 
 // Générer un ID récompense formaté automatiquement (reward_001, reward_002...)
 const generateRewardId = async () => {

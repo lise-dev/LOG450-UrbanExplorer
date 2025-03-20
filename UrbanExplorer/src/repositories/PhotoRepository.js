@@ -5,27 +5,7 @@
 
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
-
-// Vérifier si un contenu (spot ou avis) existe
-const checkContentExists = async (typeContenu, idContenu) => {
-  const collectionName = typeContenu === "avis" ? "avis" : "spot"; 
-  const contentRef = doc(db, collectionName, idContenu);
-  const contentDoc = await getDoc(contentRef);
-  return contentDoc.exists();
-};
-
-// Vérifier si une URL d'image est valide
-const isValidImageUrl = (url) => {
-  return typeof url === "string" && /\.(jpg|jpeg|png)$/i.test(url);
-};
-
-// Vérifier le rôle d'un utilisateur
-const getUserRole = async (userId) => {
-  if (!userId) return null;
-  const userRef = doc(db, "utilisateurs", userId);
-  const userDoc = await getDoc(userRef);
-  return userDoc.exists() ? userDoc.data().role : null;
-};
+import { checkContentExists, isValidImageUrl, getUserRole}  from "../utils/validators"; 
 
 // Supprimer les photos liées à un spot supprimé
 const deletePhotosBySpot = async (spotId) => {

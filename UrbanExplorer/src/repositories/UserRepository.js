@@ -5,30 +5,7 @@
 
 import { collection, getDocs, doc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
-
-// Vérifier si un pseudo existe déjà en base
-const checkPseudoExists = async (pseudo) => {
-  const pseudoQuery = query(collection(db, "utilisateurs"), where("pseudo", "==", pseudo.toLowerCase()));
-  const querySnapshot = await getDocs(pseudoQuery);
-  return !querySnapshot.empty;
-};
-
-// Vérifier si un email est valide
-const isValidEmail = (email) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-
-// Vérifier si un rôle est valide
-const isValidRole = (role) => {
-  return ["contributeur", "explorateur", "moderateur"].includes(role.toLowerCase());
-};
-
-// Vérifier si un champ ne contient que des lettres et chiffres
-const isValidText = (text) => {
-  const regex = /^[a-zA-Z0-9\s]+$/; 
-  return text && regex.test(text);
-};
+import { checkPseudoExists, isValidEmail, isValidRole, isValidText}  from "../utils/validators"; 
 
 // Récupérer le rôle d'un utilisateur
 const getUserRole = async (userId) => {

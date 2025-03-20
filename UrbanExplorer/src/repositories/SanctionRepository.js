@@ -5,31 +5,7 @@
 
 import { collection, getDocs, doc, setDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
-
-// Vérifier si un utilisateur existe
-const checkUserExists = async (userId) => {
-  const userRef = doc(db, "utilisateurs", userId);
-  const userDoc = await getDoc(userRef);
-  return userDoc.exists();
-};
-
-// Vérifier le rôle d'un utilisateur
-const getUserRole = async (userId) => {
-  if (!userId) return null;
-  const userRef = doc(db, "utilisateurs", userId);
-  const userDoc = await getDoc(userRef);
-  return userDoc.exists() ? userDoc.data().role : null;
-};
-
-// Vérifier si un niveau de sanction est valide
-const isValidSanctionLevel = (level) => {
-  return ["avertissement", "suspension temporaire", "bannissement"].includes(level.toLowerCase());
-};
-
-// Vérifier si une date d'expiration est valide (sauf pour bannissement)
-const isValidDate = (date, niveau) => {
-  return (niveau === "bannissement" && date === null) || (typeof date === "string" && !isNaN(Date.parse(date)));
-};
+import { checkUserExists, isValidSanctionLevel, isValidDate, getUserRole}  from "../utils/validators"; 
 
 // Générer un ID sanction formaté automatiquement (sanction_001, sanction_002...)
 const generateSanctionId = async () => {

@@ -5,44 +5,7 @@
 
 import { collection, getDocs, doc, setDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
-
-// Vérifier si un utilisateur existe
-const checkUserExists = async (userId) => {
-  const userRef = doc(db, "utilisateurs", userId);
-  const userDoc = await getDoc(userRef);
-  return userDoc.exists();
-};
-
-// Vérifier si un spot existe
-const checkSpotExists = async (spotId) => {
-  const spotRef = doc(db, "spots", spotId);
-  const spotDoc = await getDoc(spotRef);
-  return spotDoc.exists();
-};
-
-// Vérifier si un favori existe déjà pour cet utilisateur et ce spot
-const checkFavoriExists = async (userId, spotId) => {
-  const favorisQuery = query(collection(db, "favoris"), where("idUtilisateur", "==", userId), where("idSpot", "==", spotId));
-  const favorisSnapshot = await getDocs(favorisQuery);
-  return !favorisSnapshot.empty;
-};
-
-// Vérifier le rôle d'un utilisateur
-const getUserRole = async (userId) => {
-  if (!userId) return null;
-  const userRef = doc(db, "utilisateurs", userId);
-  const userDoc = await getDoc(userRef);
-  return userDoc.exists() ? userDoc.data().role : null;
-};
-
-// Supprimer les favoris liés à un utilisateur supprimé
-const deleteFavorisByUser = async (userId) => {
-  const favorisQuery = query(collection(db, "favoris"), where("idUtilisateur", "==", userId));
-  const favorisSnapshot = await getDocs(favorisQuery);
-  favorisSnapshot.forEach(async (favori) => {
-    await deleteDoc(doc(db, "favoris", favori.id));
-  });
-};
+import { getUserRole, checkUserExists, checkFavoriExists, checkSpotExists }  from "../utils/validators"; 
 
 // Générer un ID favori formaté automatiquement 
 const generateFavoriId = async () => {

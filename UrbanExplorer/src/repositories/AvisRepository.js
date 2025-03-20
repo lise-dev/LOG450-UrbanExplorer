@@ -5,63 +5,7 @@
 
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
-
-// Vérifier si un utilisateur existe
-const checkUserExists = async (userId) => {
-  try {
-    const userRef = doc(db, "utilisateurs", userId);
-    const userDoc = await getDoc(userRef);
-    return userDoc.exists();
-  } catch (error) {
-    console.error("Erreur lors de la vérification de l'utilisateur :", error);
-    return false;
-  }
-};
-
-// Vérifier si un avis existe
-const checkAvisExists = async (avisId) => {
-  const avisRef = doc(db, "avis", avisId);
-  const avisDoc = await getDoc(avisRef);
-  return avisDoc.exists();
-};
-
-// Vérifier si un spot existe
-const checkSpotExists = async (spotId) => {
-  try {
-    const spotRef = doc(db, "spots", spotId);
-    const spotDoc = await getDoc(spotRef);
-    return spotDoc.exists();
-  } catch (error) {
-    console.error("Erreur lors de la vérification du spot :", error);
-    return false;
-  }
-};
-
-// Vérifier le rôle d'un utilisateur
-const getUserRole = async (userId) => {
-  if (!userId) return null;
-  try {
-    const userRef = doc(db, "utilisateurs", userId);
-    const userDoc = await getDoc(userRef);
-    if (userDoc.exists()) {
-      return userDoc.data().role;
-    }
-    return null;
-  } catch (error) {
-    console.error("Erreur lors de la récupération du rôle utilisateur :", error);
-    return null;
-  }
-};
-
-// Vérifier si la note est valide (entre 1 et 5)
-const isValidNote = (note) => {
-  return typeof note === "number" && note >= 1 && note <= 5;
-};
-
-// Vérifier si un texte est valide
-const isValidText = (text) => {
-  return typeof text === "string" && text.trim().length > 0;
-};
+import { getUserRole, isValidNote, isValidText, getUserRole }  from "../utils/validators"; 
 
 // Générer un ID avis formaté automatiquement 
 const generateAvisId = async () => {

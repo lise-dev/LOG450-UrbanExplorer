@@ -5,22 +5,7 @@
 
 import { collection, getDocs, doc, setDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
-
-// Vérifier si un utilisateur existe
-const checkUserExists = async (userId) => {
-  const userRef = doc(db, "utilisateurs", userId);
-  const userDoc = await getDoc(userRef);
-  return userDoc.exists();
-};
-
-// Supprimer toutes les notifications liées à un utilisateur supprimé
-const deleteNotificationsByUser = async (userId) => {
-  const notificationsQuery = query(collection(db, "notifications"), where("idUtilisateur", "==", userId));
-  const notificationsSnapshot = await getDocs(notificationsQuery);
-  notificationsSnapshot.forEach(async (notif) => {
-    await deleteDoc(doc(db, "notifications", notif.id));
-  });
-};
+import { checkUserExists }  from "../utils/validators"; 
 
 // Générer un ID notification formaté automatiquement (notif_001, notif_002...)
 const generateNotificationId = async () => {

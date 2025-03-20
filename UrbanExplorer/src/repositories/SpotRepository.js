@@ -5,39 +5,13 @@
 
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
+import { isValidCoordinates, isValidText, getUserRole}  from "../utils/validators"; 
 
 // Générer un ID spot formaté automatiquement (spot_001, spot_002)
 const generateSpotId = async () => {
   const querySnapshot = await getDocs(collection(db, "spots"));
   const spotCount = querySnapshot.size + 1;
   return `spot_${String(spotCount).padStart(3, "0")}`;
-};
-
-// Vérifier le rôle d'un utilisateur
-const getUserRole = async (userId) => {
-  if (!userId) return null; 
-  const userRef = doc(db, "utilisateurs", userId);
-  const userDoc = await getDoc(userRef);
-  return userDoc.exists() ? userDoc.data().role : null;
-};
-
-// Vérifier si les coordonnées sont valides
-const isValidCoordinates = (coords) => {
-  return (
-    coords &&
-    typeof coords.latitude === "number" &&
-    typeof coords.longitude === "number" &&
-    coords.latitude >= -90 &&
-    coords.latitude <= 90 &&
-    coords.longitude >= -180 &&
-    coords.longitude <= 180
-  );
-};
-
-// Vérifier si un champ ne contient que des lettres et des chiffres
-const isValidText = (text) => {
-  const regex = /^[a-zA-Z0-9\s]+$/; 
-  return text && regex.test(text);
 };
 
 // Supprimer les avis, signalements, favoris et photos liés à un spot supprimé

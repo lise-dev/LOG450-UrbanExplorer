@@ -5,39 +5,7 @@
 
 import { collection, getDocs, doc, setDoc, updateDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
-
-// Vérifier si un utilisateur existe
-const checkUserExists = async (userId) => {
-  const userRef = doc(db, "utilisateurs", userId);
-  const userDoc = await getDoc(userRef);
-  return userDoc.exists();
-};
-
-// Vérifier si un contenu signalé existe (avis ou spot)
-const checkContentExists = async (categorieContenu, idContenu) => {
-  const collectionName = categorieContenu === "avis" ? "avis" : "spots";
-  const contentRef = doc(db, collectionName, idContenu);
-  const contentDoc = await getDoc(contentRef);
-  return contentDoc.exists();
-};
-
-// Vérifier le rôle d'un utilisateur
-const getUserRole = async (userId) => {
-  if (!userId) return null;
-  const userRef = doc(db, "utilisateurs", userId);
-  const userDoc = await getDoc(userRef);
-  return userDoc.exists() ? userDoc.data().role : null;
-};
-
-// Vérifier si un texte est valide
-const isValidText = (text) => {
-  return typeof text === "string" && text.trim().length > 0;
-};
-
-// Vérifier si la catégorie de contenu est valide
-const isValidCategory = (category) => {
-  return category === "avis" || category === "spot";
-};
+import { checkUserExists, checkContentExistsAvisSpots, isValidText, isValidCategory,getUserRole}  from "../utils/validators"; 
 
 // Générer un ID signalement formaté automatiquement (signalement_001, signalement_002...)
 const generateSignalementId = async () => {
@@ -76,7 +44,7 @@ const SignalementRepository = {
         return { error: "Vous n'avez pas la permission de signaler un contenu." };
       }
 
-      if (!isValidCategory(newSignalement.categorieContenu) || !(await checkContentExists(newSignalement.categorieContenu, newSignalement.idContenu))) {
+      if (!isValidCategory(newSignalement.categorieContenu) || !(await checkContentExistsAvisSpots(newSignalement.categorieContenu, newSignalement.idContenu))) {
         return { error: "Le contenu signalé n'existe pas ou la catégorie est invalide." };
       }
 

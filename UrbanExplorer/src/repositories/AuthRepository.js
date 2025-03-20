@@ -6,26 +6,7 @@
 import { auth, db, googleProvider } from "../../firebaseConfig";
 import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, getDoc, getDocs, collection, query, where } from "firebase/firestore";
-
-// Vérifier si un pseudo existe déjà
-const checkPseudoExists = async (pseudo) => {
-  const pseudoQuery = query(collection(db, "utilisateurs"), where("pseudo", "==", pseudo.toLowerCase()));
-  const querySnapshot = await getDocs(pseudoQuery);
-  return !querySnapshot.empty;
-};
-
-// Vérifier si un email existe déjà
-const checkEmailExists = async (email) => {
-  const emailQuery = query(collection(db, "utilisateurs"), where("email", "==", email.toLowerCase()));
-  const querySnapshot = await getDocs(emailQuery);
-  return !querySnapshot.empty;
-};
-
-// Vérifier si le rôle est valide
-const isValidRole = (role) => {
-  return ["contributeur", "explorateur", "moderateur"].includes(role.toLowerCase());
-};
-
+import { checkPseudoExists, checkEmailExists, isValidRole } from "../utils/validators"; 
 
 const saveUserToFirestore = async (user, role) => {
   try {
