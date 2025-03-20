@@ -26,18 +26,21 @@ const isValidRole = (role) => {
   return ["contributeur", "explorateur", "moderateur"].includes(role.toLowerCase());
 };
 
-// Fonction pour enregistrer un utilisateur dans Firestore après une connexion externe
-const saveUserToFirestore = async (user) => {
+
+const saveUserToFirestore = async (user, role) => {
   try {
     const userRef = doc(db, "utilisateurs", user.uid);
     const userDoc = await getDoc(userRef);
 
     if (!userDoc.exists()) {
+      // Vérifier si le rôle fourni est valide, sinon mettre "explorateur" par défaut
+      const assignedRole = isValidRole(role) ? role.toLowerCase() : "explorateur";
+
       await setDoc(userRef, {
         idUtilisateur: user.uid,
         email: user.email.toLowerCase(),
         pseudo: user.displayName ? user.displayName.toLowerCase() : `user_${user.uid.substring(0, 5)}`,
-        role: "contributeur",
+        role: assignedRole,
         dateInscription: new Date(),
         photoProfil: user.photoURL ? `picture/userprofile/PP${user.displayName.toLowerCase()}.png` : null
       });
