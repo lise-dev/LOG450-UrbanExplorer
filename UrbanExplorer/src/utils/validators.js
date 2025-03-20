@@ -102,11 +102,3 @@ const isValidCoordinates = (coords) => {
     coords.longitude <= 180
   );
 };
-
-// Récupérer le rôle d'un utilisateur
-const getUserRole = async (userId) => {
-  if (!userId) return null;
-  const userRef = doc(db, "utilisateurs", userId);
-  const userDoc = await getDoc(userRef);
-  return userDoc.exists() ? userDoc.data().role : null;
-};s
