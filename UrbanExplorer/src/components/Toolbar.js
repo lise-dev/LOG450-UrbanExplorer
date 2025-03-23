@@ -4,8 +4,7 @@ import {toolbarStyle} from "../styles/GlobalStyle";
 
 const Toolbar = ({ title, onBack, actions = [] }) => (
     <Appbar.Header style={toolbarStyle.toolbar}>
-        {onBack && <Appbar.BackAction  style={toolbarStyle.back} onPress={onBack} />}
-
+        {onBack && <Appbar.BackAction icon="magnify"  style={toolbarStyle.back} onPress={onBack} />}
         <View style={{ flex: 1 }}>
             <Text style={toolbarStyle.title}>{title}</Text>
         </View>

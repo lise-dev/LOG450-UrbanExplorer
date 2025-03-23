@@ -164,4 +164,71 @@ const toolbarStyle = StyleSheet.create({
     },
 });
 
-export { styles, toolbarStyle };
+const typography = StyleSheet.create({
+    // Titre
+    titleLarge: {
+        fontSize: 26,
+        fontWeight: 'bold',
+        lineHeight: 32,
+        color: '#1c1c1e',
+    },
+    titleMedium: {
+        fontSize: 22,
+        fontWeight: '600',
+        lineHeight: 28,
+        color: '#1c1c1e',
+    },
+    titleSmall: {
+        fontSize: 18,
+        fontWeight: '600',
+        lineHeight: 24,
+        color: '#1c1c1e',
+    },
+
+    // Texte principal
+    bodyLarge: {
+        fontSize: 17,
+        lineHeight: 24,
+        fontFamily: 'Roboto sans-serif',
+        color: '#3c3c43',
+    },
+    bodyMedium: {
+        fontSize: 15,
+        lineHeight: 20,
+        color: '#3c3c43',
+    },
+    bodySmall: {
+        fontSize: 13,
+        lineHeight: 16,
+        color: '#3c3c43',
+    },
+
+    // les étiquettes
+    labelLarge: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#6e6e73',
+        letterSpacing: 0.5,
+    },
+    labelMedium: {
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#6e6e73',
+        letterSpacing: 0.5,
+    },
+    labelSmall: {
+        fontSize: 12,
+        fontWeight: '500',
+        color: '#6e6e73',
+        letterSpacing: 0.25,
+    },
+
+    buttonText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#ffffff',
+    },
+});
+
+
+export { styles, toolbarStyle, typography };
