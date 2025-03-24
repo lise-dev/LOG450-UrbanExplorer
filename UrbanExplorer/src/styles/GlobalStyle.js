@@ -126,6 +126,13 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         justifyContent: "center",
     },
+    button: {
+        backgroundColor: "#2E7D32",
+        padding: 12,
+        borderRadius: 25,
+        marginTop: 0,
+        width: "90%",
+    },
 
     picker: {
         height: 50,
@@ -187,10 +194,11 @@ const typography = StyleSheet.create({
 
     // Texte principal
     bodyLarge: {
-        fontSize: 17,
+        fontSize: 16,
         lineHeight: 24,
         fontFamily: 'Roboto sans-serif',
-        color: '#3c3c43',
+        // color: '#3c3c43',
+        color: '#1c1c1e',
     },
     bodyMedium: {
         fontSize: 15,
@@ -223,11 +231,13 @@ const typography = StyleSheet.create({
         letterSpacing: 0.25,
     },
 
+
     buttonText: {
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 'bold',
-        color: '#ffffff',
-    },
+        color: 'white',
+        textAlign: "center",
+    }
 });
 
 
