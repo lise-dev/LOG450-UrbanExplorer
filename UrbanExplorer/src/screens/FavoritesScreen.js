@@ -10,7 +10,7 @@ import SpotRepository from "../repositories/SpotRepository";
 import {SearchBar} from "react-native-screens";
 const FavoritesScreen = ({navigation}) => {
     // const {userId} = useAuth();
-    const userId = '1';
+    const userId = 'user_001';
     const [favorites, setFavorites] = useState([]);
     const [loading, setLoading] = useState(true);
     const [spots, setSpots] = useState([]);
@@ -42,7 +42,7 @@ const FavoritesScreen = ({navigation}) => {
         </View>);
     }
     const data = favorites.map((fav) => {
-        const spot = spots.find((s) => s.id === fav.idSpot);
+        const spot = spots.find((s) => s.idSpot === fav.idSpot);
         return {
             id: fav.idFavori,
             title: spot?.nom || 'Inconnu',
@@ -61,19 +61,18 @@ const FavoritesScreen = ({navigation}) => {
             original: item,
         };
     }).filter(f => f.title.toLowerCase().includes(query.toLowerCase()))
+
     const renderItem = ({item}) => (
         <FavoritesItem
             title={item.title}
             type={item.type}
             description={item.description}
-            onPress={() => console.log('Voir détail', item)}
+            onPress={() => navigation.navigate('DetailScreen')}
             onViewMap={() => console.log('Voir carte', item)}
             onDelete={() => console.log('Supprimer le favori', item)}
         />
     );
 
-    const handleFavorites = () =>
-        <FlatList data={data2} keyExtractor={(item) => item.id.toString()} renderItem={renderItem}/>
     const handleNotConnected = () => {
         return (
             <View style={localStyles.container}>
@@ -109,7 +108,7 @@ const FavoritesScreen = ({navigation}) => {
         {userId ? (
             data2.length > 0 ? (
                 <FlatList
-                    data={data2}
+                    data={data}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderItem}
                 />

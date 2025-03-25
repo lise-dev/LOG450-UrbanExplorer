@@ -32,25 +32,25 @@ const FavoriRepository = {
 
   // Ajouter un favori (seulement si le spot et l'utilisateur existent)
   addFavori: async (userId, spotId) => {
-    if (!userId) return { error: "Vous devez être connecté pour ajouter un favori." };
+    if (!userId) return {success:false, message: "Vous devez être connecté pour ajouter un favori." };
 
     try {
       const userRole = await getUserRole(userId);
       if (userRole !== "contributeur" && userRole !== "moderateur") {
-        return { error: "Seuls les contributeurs et modérateurs peuvent ajouter un favori." };
+        return {success:false, message: "Seuls les contributeurs et modérateurs peuvent ajouter un favori." };
       }
 
       // Vérification des clés étrangères
       if (!(await checkUserExists(userId))) {
-        return { error: "L'utilisateur spécifié n'existe pas." };
+        return {success:false, message: "L'utilisateur spécifié n'existe pas." };
       }
       if (!(await checkSpotExists(spotId))) {
-        return { error: "Le spot spécifié n'existe pas." };
+        return {success:false,  message: "Le spot spécifié n'existe pas." };
       }
 
       // Vérification si le favori existe déjà
       if (await checkFavoriExists(userId, spotId)) {
-        return { error: "Ce spot est déjà enregistré dans vos favoris." };
+        return {success:false, message: "Ce spot est déjà enregistré dans vos favoris." };
       }
 
       const favoriId = await generateFavoriId();
@@ -58,38 +58,74 @@ const FavoriRepository = {
       await setDoc(favoriRef, { idFavori: favoriId, idUtilisateur: userId, idSpot: spotId, timestamp: new Date() });
 
       console.log(`Favori ajouté avec l'ID : ${favoriId}`);
-      return { success: true, favoriId };
+      return { success: true, message:'Contenu ajouté à votre liste de favoris', favoriId };
     } catch (error) {
       console.error("Erreur lors de l'ajout du favori :", error);
-      return { error: "Une erreur est survenue lors de l'ajout." };
+      return {success: false, message: "Une erreur est survenue lors de l'ajout." };
     }
   },
 
   // Supprimer un favori (seulement si je suis le propriétaire)
   deleteFavori: async (favoriId, userId) => {
-    if (!userId) return { error: "Vous devez être connecté pour supprimer un favori." };
+    if (!userId) return {success: false, message: "Vous devez être connecté pour supprimer un favori." };
 
     try {
       const favoriRef = doc(db, "favoris", favoriId);
       const favoriSnapshot = await getDoc(favoriRef);
 
       if (!favoriSnapshot.exists()) {
-        return { error: "Favori non trouvé." };
+        return {success: false, message: "Favori non trouvé." };
       }
 
       const favoriData = favoriSnapshot.data();
       if (favoriData.idUtilisateur !== userId) {
-        return { error: "Vous ne pouvez supprimer que vos propres favoris." };
+        return {success: false, message: "Vous ne pouvez supprimer que vos propres favoris." };
       }
-
       await deleteDoc(favoriRef);
       console.log(`Favori ${favoriId} supprimé.`);
-      return { success: true };
+      return { success: true, message:'Contenu supprimé de votre liste de favoris.' };
     } catch (error) {
       console.error("Erreur lors de la suppression du favori :", error);
-      return { error: "Impossible de supprimer ce favori." };
+      return {success: false,  message: "Impossible de supprimer ce favori." };
     }
+  },
+
+  deleteFavoriteOfSpot: async (userId, spotId) => {
+  if (!userId || !spotId) {
+    return {
+      success: false,
+      message: "Utilisateur ou spot non valide."
+    };
   }
+
+  try {
+    const favorisQuery = query(
+        collection(db, "favoris"),
+        where("idUtilisateur", "==", userId),
+        where("idSpot", "==", spotId)
+    );
+    const favorisSnapshot = await getDocs(favorisQuery);
+
+    if (favorisSnapshot.empty) {
+      return {
+        success: false,
+        message: "Aucun favori trouvé pour ce spot."
+      };
+    }
+
+    const favoriId = favorisSnapshot.docs[0].id;
+    await deleteDoc(doc(db, "favoris", favoriId));
+
+    return { success: true, message:'Contenu supprimé de votre liste de favoris.' };
+
+  } catch (error) {
+    console.error("Erreur suppression favori :", error);
+    return {
+      success: false,
+      message: "Erreur lors de la suppression du favori."
+    };
+  }
+}
 };
 
 export default FavoriRepository;

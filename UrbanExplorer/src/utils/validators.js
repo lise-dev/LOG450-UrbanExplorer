@@ -56,7 +56,7 @@ export const getUserRole = async (userId) => {
 };
 
 // Vérifier si un favori existe déjà pour cet utilisateur et ce spot
-const checkFavoriExists = async (userId, spotId) => {
+export const checkFavoriExists = async (userId, spotId) => {
   const favorisQuery = query(collection(db, "favoris"), where("idUtilisateur", "==", userId), where("idSpot", "==", spotId));
   const favorisSnapshot = await getDocs(favorisQuery);
   return !favorisSnapshot.empty;
