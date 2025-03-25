@@ -1,20 +1,20 @@
 import Toolbar from "../components/Toolbar";
-import {useAuth} from "../utils/AuthContext";
 import FavoritesItem from "../components/FavoritesItem";
-import {Image, SafeAreaView, ScrollView, Text, View, StyleSheet, ActivityIndicator} from "react-native";
+import {Image, SafeAreaView, ScrollView, Text, View, StyleSheet, ActivityIndicator, FlatList} from "react-native";
 import {styles, typography} from '../styles/GlobalStyle';
 import Button from "../components/Button";
-import {Icon} from "react-native-paper";
+import {Icon, IconButton, Searchbar} from "react-native-paper";
 import {useEffect, useState} from "react";
 import FavoriRepository from "../repositories/FavoriRepository";
 import SpotRepository from "../repositories/SpotRepository";
-
+import {SearchBar} from "react-native-screens";
 const FavoritesScreen = ({navigation}) => {
     // const {userId} = useAuth();
     const userId = '1';
     const [favorites, setFavorites] = useState([]);
     const [loading, setLoading] = useState(true);
     const [spots, setSpots] = useState([]);
+    const [query, setQuery] = useState("");
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -24,6 +24,7 @@ const FavoritesScreen = ({navigation}) => {
 
                 // Fetch Spots
                 const spots = await SpotRepository.getSpots();
+                console.log(favorisQuery);
                 setSpots(spots);
 
             } catch (error) {
@@ -36,40 +37,43 @@ const FavoritesScreen = ({navigation}) => {
     }, [userId]);
 
     if (loading) {
-        return (<View style={{flex: 1,justifyContent: "center", alignItems: "center"}}>
-            <ActivityIndicator  size="large" />
+        return (<View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+            <ActivityIndicator size="large"/>
         </View>);
     }
-    const handleFavorites = () =>
-        <ScrollView>
-          {/*  {favorites.map((fav) => {
-                    const spot = spots.find((s) => s.id === fav.idSpot)
-                    return (
-                        (
-                            <FavoritesItem
-                                key={fav.idFavori}
-                                title={spot.nom}
-                                type={spot.type}
-                                description={spot.description}
-                                onPress={() => console.log('Voir détail')}
-                                onViewMap={() => console.log('Voir carte')}
-                                onDelete={() => console.log('Supprimer le favori')}
-                            />
-                        ))
-                }*/}
+    const data = favorites.map((fav) => {
+        const spot = spots.find((s) => s.id === fav.idSpot);
+        return {
+            id: fav.idFavori,
+            title: spot?.nom || 'Inconnu',
+            type: spot?.type || '-',
+            description: spot?.description || '',
+            original: fav,
+        };
+    }).filter(f => f.title.toLowerCase().includes(query.toLowerCase()))
 
-            {[1,2,3,4,5,6,7,8,9,10].map((item, index) => (
-                <FavoritesItem
-                    key={index}
-                    title={`Tour Eiffel ${index + 1}`}
-                    type={`Monument ${index + 1}`}
-                    description="Symbole emblématique de Paris. Symbole emblématique de Paris. Symbole emblématique de Paris. Symbole emblématique de Paris. Symbole emblématique de Paris. Symbole emblématique de Paris. "
-                    onPress={() => console.log('Voir détail')}
-                    onViewMap={() => console.log('Voir carte')}
-                    onDelete={() => console.log('Supprimer le favori')}
-                />
-            ))}
-        </ScrollView>
+    const data2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => {
+        return {
+            id: item,
+            title: `La tour EiffelTour ${item + 1}`,
+            type: `Monument emblematique ${item}`,
+            description: item % 2 === 0 ? "Symbole emblématique de Paris. Symbole emblématique de Paris. Symbole emblématique de Paris. Symbole emblématique de Paris. Symbole emblématique de Paris. Symbole emblématique de Paris." : 'coucou',
+            original: item,
+        };
+    }).filter(f => f.title.toLowerCase().includes(query.toLowerCase()))
+    const renderItem = ({item}) => (
+        <FavoritesItem
+            title={item.title}
+            type={item.type}
+            description={item.description}
+            onPress={() => console.log('Voir détail', item)}
+            onViewMap={() => console.log('Voir carte', item)}
+            onDelete={() => console.log('Supprimer le favori', item)}
+        />
+    );
+
+    const handleFavorites = () =>
+        <FlatList data={data2} keyExtractor={(item) => item.id.toString()} renderItem={renderItem}/>
     const handleNotConnected = () => {
         return (
             <View style={localStyles.container}>
@@ -80,7 +84,7 @@ const FavoritesScreen = ({navigation}) => {
             </View>)
     }
 
-    const handleNotFavorites = () => {
+    const handleNoFavorites = () => {
         return (
             <View style={localStyles.container}>
                 <Text style={{...typography.titleLarge, marginBottom: 10}}>Aucun favoris </Text>
@@ -92,11 +96,25 @@ const FavoritesScreen = ({navigation}) => {
     return (<SafeAreaView style={[styles.container]}>
         <Toolbar title={'Mes favoris'} actions={[
             {
-                icon: 'magnify', onPress: () => {
+                icon: 'arrow-up-down', onPress: () => {
                 }
             },
         ]}/>
-        {userId ? handleFavorites() : handleNotConnected()}
+        <Searchbar
+            placeholder="Rechercher un favori"
+            value={query}
+            onChangeText={setQuery}
+            style={{ margin: 10 }}
+        />
+        {userId ? (
+            data2.length > 0 ? (
+                <FlatList
+                    data={data2}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderItem}
+                />
+            ) : handleNoFavorites()
+        ) : handleNotConnected()}
         {/*{handleFavorites()}*/}
 
     </SafeAreaView>)

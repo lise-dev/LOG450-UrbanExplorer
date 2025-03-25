@@ -1,16 +1,13 @@
 import { Appbar } from 'react-native-paper';
-import { Text, View } from 'react-native';
+import {StatusBar, Text, View} from 'react-native';
 import {toolbarStyle} from "../styles/GlobalStyle";
 
 const Toolbar = ({ title, onBack, actions = [] }) => (
-    <Appbar.Header style={toolbarStyle.toolbar}>
-        {onBack && <Appbar.BackAction icon="magnify"  style={toolbarStyle.back} onPress={onBack} />}
-        <View style={{ flex: 1 }}>
-            <Text style={toolbarStyle.title}>{title}</Text>
-        </View>
-
+    <Appbar.Header style={toolbarStyle.toolbar} >
+        <Appbar.BackAction icon="arrow-left"  style={toolbarStyle.back} onPress={onBack}  color={'#2E7D32'}/>
+        <Appbar.Content title={title} titleStyle={toolbarStyle.title}/>
         {actions.map((action, index) => (
-            <Appbar.Action key={index} icon={action.icon} onPress={action.onPress} />
+            <Appbar.Action color={'#2E7D32'} key={index} icon={action.icon} onPress={action.onPress} />
         ))}
     </Appbar.Header>
 );

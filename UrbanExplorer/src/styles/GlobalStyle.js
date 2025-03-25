@@ -147,25 +147,25 @@ const toolbarStyle = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: 16,
-        backgroundColor: '#388E3C',
+        backgroundColor: 'transparent',
     },
     back: {
-        color: '#fff',
+        // color: '#fff',
         fontSize: 20,
         marginRight: 8,
         fontWeight: 'bold',
     },
     title: {
-        color: '#fff',
+        color: '#2E7D32',
         fontSize: 22,
         fontWeight: 'bold',
-        textAlign: 'left',
+        textAlign: 'center',
     },
     actionsContainer: {
         flexDirection: 'row',
     },
     actionIcon: {
-        color: '#fff',
+        // color: '#fff',
         fontSize: 20,
         marginLeft: 12,
     },
@@ -174,20 +174,20 @@ const toolbarStyle = StyleSheet.create({
 const typography = StyleSheet.create({
     // Titre
     titleLarge: {
-        fontSize: 26,
+        fontSize: 20,
         fontWeight: 'bold',
         lineHeight: 32,
         color: '#1c1c1e',
     },
     titleMedium: {
-        fontSize: 22,
-        fontWeight: '600',
+        fontSize: 18,
+        fontWeight: 'bold',
         lineHeight: 28,
         color: '#1c1c1e',
     },
     titleSmall: {
-        fontSize: 18,
-        fontWeight: '600',
+        fontSize: 16,
+        fontWeight: 'bold',
         lineHeight: 24,
         color: '#1c1c1e',
     },
