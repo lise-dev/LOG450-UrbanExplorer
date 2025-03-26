@@ -13,8 +13,9 @@ const DetailScreen = ({navigation}) => {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const route = useRoute();
 
-    const { spotId } = route.params;
+
     const userId = 'user_003'; // const { userId } = useAuth();
+    const spotId = 'spot_009'; //  const { spotId } = route.params;
 
     useFocusEffect(
         useCallback(() => {

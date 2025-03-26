@@ -147,7 +147,7 @@ const toolbarStyle = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: 16,
-        backgroundColor: 'transparent',
+        // backgroundColor: 'transparent',
     },
     back: {
         // color: '#fff',

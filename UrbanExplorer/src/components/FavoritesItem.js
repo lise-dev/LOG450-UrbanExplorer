@@ -20,24 +20,50 @@ const FavoritesItem = ({favorite, onPress, onViewMap, onDelete}) => {
                         paddingTop: 3,
                     }}
                 >
-                    <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', overflow: 'hidden'}}>
+                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', overflow: 'hidden' }}>
+                        {/* Nom */}
                         <Text
                             numberOfLines={1}
                             ellipsizeMode="tail"
-                            style={[typography.titleSmall, {flex: 1}]}
+                            style={[
+                                typography.titleSmall,
+                                {
+                                    flexShrink: 1,
+                                    minWidth: Math.max(45,favorite.nom.length),
+                                    maxWidth: 500,
+                                    marginRight: 5,
+                                },
+                            ]}
                         >
                             {favorite.nom}
                         </Text>
 
-                        <Text style={[typography.labelMedium, {marginHorizontal: 4}]}>|</Text>
-                        <Text
-                            numberOfLines={1}
-                            ellipsizeMode="tail"
-                            style={[typography.labelMedium, {maxWidth: 80, flexShrink: 1}]}
+                        {/* Type + barre */}
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                flexShrink: 1,
+                                minWidth:100 ,
+                            }}
                         >
-                            {favorite.type}
-                        </Text>
+                            <Text style={[typography.labelMedium, { marginRight: 4 }]}>|</Text>
+                            <Text
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
+                                style={[
+                                    typography.labelMedium,
+                                    {
+                                        flexShrink: 1,
+                                        flexGrow: 1,
+                                    },
+                                ]}
+                            >
+                                {favorite.type}
+                            </Text>
+                        </View>
                     </View>
+
                     <View style={{flexDirection: 'row'}}>
                         <IconButton icon="map-marker" containerColor="#e8f5e9" style={styles.icons}
                                     onPress={onViewMap}/>
