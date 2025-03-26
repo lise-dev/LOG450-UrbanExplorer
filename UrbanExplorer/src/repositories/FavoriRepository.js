@@ -5,7 +5,7 @@
 
 import { collection, getDocs, doc, setDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
-import { getUserRole, checkUserExists, checkFavoriExists, checkSpotExists }  from "../utils/validators"; 
+import {getUserRole, checkPseudoExists, checkFavoriExists, checkSpotExists, checkUserExists} from "../utils/validators";
 
 // Générer un ID favori formaté automatiquement 
 const generateFavoriId = async () => {

@@ -1,71 +1,80 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Card, Text, IconButton} from 'react-native-paper';
 import {typography} from "../styles/GlobalStyle";
-import {View, Alert, StyleSheet} from "react-native";
+import {View, StyleSheet} from "react-native";
+import ConfirmDialog from "./ConfirmDialog";
+import FavoriRepository from "../repositories/FavoriRepository";
 
-const FavoritesItem = ({title, type, description, onPress, onViewMap, onDelete}) => {
-    const confirmDelete = () => {
-        Alert.alert(
-            'Supprimer ce favori ?',
-            'Voulez-vous vraiment supprimer ce favori ?',
-            [
-                {text: 'Annuler', style: 'cancel'},
-                {text: 'Supprimer', style: 'destructive', onPress: onDelete},
-            ]
-        );
-    };
+const FavoritesItem = ({favorite, onPress, onViewMap, onDelete}) => {
+    const [dialogVisible, setDialogVisible] = useState(false);
 
     return (
-        <Card elevation={1} onPress={onPress} style={styles.card}>
-            <View
-                style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    paddingHorizontal: 12,
-                    paddingTop: 3,
+        <>
+            <Card elevation={1} onPress={onPress} style={styles.card}>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        paddingHorizontal: 12,
+                        paddingTop: 3,
+                    }}
+                >
+                    <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', overflow: 'hidden'}}>
+                        <Text
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            style={[typography.titleSmall, {flex: 1}]}
+                        >
+                            {favorite.nom}
+                        </Text>
+
+                        <Text style={[typography.labelMedium, {marginHorizontal: 4}]}>|</Text>
+                        <Text
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            style={[typography.labelMedium, {maxWidth: 80, flexShrink: 1}]}
+                        >
+                            {favorite.type}
+                        </Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                        <IconButton icon="map-marker" containerColor="#e8f5e9" style={styles.icons}
+                                    onPress={onViewMap}/>
+                        <IconButton icon="delete-outline" iconColor="#d32f2f" containerColor="#fdecea"
+                                    style={styles.icons} onPress={() => setDialogVisible(true)}/>
+                    </View>
+                </View>
+                <Card.Content style={{paddingTop: 0}}>
+                    <Text numberOfLines={2} ellipsizeMode="tail" style={typography.bodyMedium}>
+                        {favorite.description}
+                    </Text>
+                </Card.Content>
+            </Card>
+            <ConfirmDialog
+                visible={dialogVisible}
+                title="Supprimer ce favori ?"
+                confirmLabel="Supprimer"
+                cancelLabel="Annuler"
+                confirmColor="red"
+                onCancel={() => setDialogVisible(false)}
+                onConfirm={() => {
+                    onDelete();
+                    setDialogVisible(false);
                 }}
             >
-                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', overflow: 'hidden' }}>
-                    <Text
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                        style={[typography.titleSmall, { flex: 1 }]}
-                    >
-                        {title}
-                    </Text>
-
-                    <Text style={[typography.labelMedium, { marginHorizontal: 4 }]}>|</Text>
-
-                    <Text
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                        style={[typography.labelMedium, { maxWidth: 80, flexShrink: 1 }]}
-                    >
-                        {type}
-                    </Text>
-                </View>
-                <View style={{ flexDirection: 'row' }}>
-                    <IconButton icon="map-marker" containerColor="#e8f5e9" style={styles.icons} onPress={onViewMap} />
-                    <IconButton icon="delete-outline" iconColor="#d32f2f" containerColor="#fdecea" style={styles.icons} onPress={confirmDelete} />
-                </View>
-            </View>
-            <Card.Content style={{ paddingTop: 0 }}>
-                <Text numberOfLines={3} ellipsizeMode="tail" style={typography.bodyMedium}>
-                    {description}
-                </Text>
-            </Card.Content>
-        </Card>
+                <Text>Voulez-vous vraiment supprimer ce favori ?</Text>
+            </ConfirmDialog>
+        </>
     );
-};
-
+}
 const styles = StyleSheet.create({
     card: {
         marginHorizontal: 12,
         marginVertical: 5,
         paddingVertical: 3,
         borderRadius: 12,
-        height: 150,
+        height: 120,
     },
     header: {
         flexDirection: 'row',

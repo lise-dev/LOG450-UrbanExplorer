@@ -1,77 +1,100 @@
 import Toolbar from "../components/Toolbar";
 import FavoritesItem from "../components/FavoritesItem";
-import {Image, SafeAreaView, ScrollView, Text, View, StyleSheet, ActivityIndicator, FlatList} from "react-native";
+import {ActivityIndicator, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {styles, typography} from '../styles/GlobalStyle';
 import Button from "../components/Button";
-import {Icon, IconButton, Searchbar} from "react-native-paper";
-import {useEffect, useState} from "react";
+import {Icon, Searchbar, Snackbar, RadioButton} from "react-native-paper";
+import React, {useCallback, useRef, useState} from "react";
 import FavoriRepository from "../repositories/FavoriRepository";
 import SpotRepository from "../repositories/SpotRepository";
-import {SearchBar} from "react-native-screens";
+import {useFocusEffect} from "@react-navigation/native";
+
+import ConfirmDialog from "../components/ConfirmDialog";
+
 const FavoritesScreen = ({navigation}) => {
+    const userId = 'user_003';  //
     // const {userId} = useAuth();
-    const userId = 'user_001';
     const [favorites, setFavorites] = useState([]);
     const [loading, setLoading] = useState(true);
     const [spots, setSpots] = useState([]);
     const [query, setQuery] = useState("");
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Fetch Favoris
-                const favorisQuery = await FavoriRepository.getFavoris(userId)
-                setFavorites(favorisQuery);
+    const [snackbarVisible, setSnackbarVisible] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [sortVisible, setSortVisible] = useState(false);
+    const [sortOption, setSortOption] = useState('dateDesc');
+    useFocusEffect(
+        useCallback(() => {
+            const fetchData = async () => {
+                try {
+                    // Fetch Favoris
+                    const favorisQuery = await FavoriRepository.getFavoris(userId)
+                    setFavorites(favorisQuery);
 
-                // Fetch Spots
-                const spots = await SpotRepository.getSpots();
-                console.log(favorisQuery);
-                setSpots(spots);
+                    // Fetch Spots
+                    const spots = await SpotRepository.getSpots();
+                    setSpots(spots);
 
-            } catch (error) {
-                console.error('Erreur de chargement:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, [userId]);
+                } catch (error) {
+                    console.error('Erreur de chargement:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchData();
+        }, [userId])
+    );
+    const showSnackbar = (message) => {
+        setSnackbarMessage(message);
+        setSnackbarVisible(true);
+    };
 
     if (loading) {
         return (<View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
             <ActivityIndicator size="large"/>
         </View>);
     }
+
+    const handleDeleteFavorite = async (spotId) => {
+        const result = await FavoriRepository.deleteFavoriteOfSpot(userId, spotId);
+        if (result.success) {
+            setFavorites(prev => prev.filter(f => f.idSpot !== spotId));
+        }
+        showSnackbar(result.message);
+    }
+
+    const handleFilter = (f) =>
+        f.nom.toLowerCase().includes(query.toLowerCase())
+        || f.description.toLowerCase().includes(query.toLowerCase())
+        || f.type.toLowerCase().includes(query.toLowerCase())
+
+
+    const handleSort = (a, b) => {
+        switch (sortOption) {
+            case 'dateAsc':
+                return a.dateAjout - b.dateAjout;
+            case 'dateDesc':
+                return b.dateAjout - a.dateAjout;
+            case 'nameAsc':
+                return a.nom.localeCompare(b.nom);
+            case 'nameDesc':
+                return b.nom.localeCompare(a.nom);
+            default:
+                return 0;
+        }
+    }
+
     const data = favorites.map((fav) => {
         const spot = spots.find((s) => s.idSpot === fav.idSpot);
         return {
             id: fav.idFavori,
-            title: spot?.nom || 'Inconnu',
+            nom: spot?.nom || 'Inconnu',
             type: spot?.type || '-',
             description: spot?.description || '',
+            dateAjout: fav.timestamp || new Date(),
             original: fav,
         };
-    }).filter(f => f.title.toLowerCase().includes(query.toLowerCase()))
-
-    const data2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => {
-        return {
-            id: item,
-            title: `La tour EiffelTour ${item + 1}`,
-            type: `Monument emblematique ${item}`,
-            description: item % 2 === 0 ? "Symbole emblématique de Paris. Symbole emblématique de Paris. Symbole emblématique de Paris. Symbole emblématique de Paris. Symbole emblématique de Paris. Symbole emblématique de Paris." : 'coucou',
-            original: item,
-        };
-    }).filter(f => f.title.toLowerCase().includes(query.toLowerCase()))
-
-    const renderItem = ({item}) => (
-        <FavoritesItem
-            title={item.title}
-            type={item.type}
-            description={item.description}
-            onPress={() => navigation.navigate('DetailScreen')}
-            onViewMap={() => console.log('Voir carte', item)}
-            onDelete={() => console.log('Supprimer le favori', item)}
-        />
-    );
+    }).filter(f => handleFilter(f)
+    ).sort((a, b) => handleSort(a, b));
 
     const handleNotConnected = () => {
         return (
@@ -92,33 +115,90 @@ const FavoritesScreen = ({navigation}) => {
                     à afficher. Ajouter des contenus à votre liste de favoris pour les voir apparaitre ici</Text>
             </View>)
     }
-    return (<SafeAreaView style={[styles.container]}>
-        <Toolbar title={'Mes favoris'} actions={[
-            {
-                icon: 'arrow-up-down', onPress: () => {
-                }
-            },
-        ]}/>
-        <Searchbar
-            placeholder="Rechercher un favori"
-            value={query}
-            onChangeText={setQuery}
-            style={{ margin: 10 }}
-        />
-        {userId ? (
-            data2.length > 0 ? (
-                <FlatList
-                    data={data}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={renderItem}
-                />
-            ) : handleNoFavorites()
-        ) : handleNotConnected()}
-        {/*{handleFavorites()}*/}
 
-    </SafeAreaView>)
+    return (
+
+        <>
+            <SafeAreaView style={[styles.container]}>
+                <Toolbar title={'Mes favoris'} actions={[
+                    {
+                        icon: 'arrow-up-down', onPress: () => {
+                            setSortVisible(true);
+                        }
+                    },
+                ]}/>
+                <Searchbar
+                    placeholder="Rechercher un favori"
+                    value={query}
+                    mode={"bar"}
+                    onChangeText={setQuery}
+                    style={{margin: 10}}
+                />
+                {userId ? (
+                    data.length > 0 ? (
+                        <FlatList
+                            data={data}
+                            keyExtractor={(item) => item.id.toString()}
+                            renderItem={({item}) => (
+                                <FavoritesItem
+                                    favorite={item}
+                                    onPress={() => navigation.navigate('DetailScreen', {
+                                        spotId: item.original.idSpot
+                                    })}
+                                    onViewMap={() => console.log('Voir carte', item)}
+                                    onDelete={() => handleDeleteFavorite(item.original.idSpot)}
+                                />
+                            )}
+                        />
+                    ) : handleNoFavorites()
+                ) : handleNotConnected()}
+                <Snackbar
+                    visible={snackbarVisible}
+                    onDismiss={() => setSnackbarVisible(false)}
+                    duration={3000}
+                    action={{
+                        label: 'OK', onPress: () => {
+
+                            setSnackbarVisible(false)
+                        }
+                    }}
+                >
+                    {snackbarMessage}
+                </Snackbar>
+
+            </SafeAreaView>
+            <SortDialog
+                visible={sortVisible}
+                onDismiss={() => setSortVisible(false)}
+                sortOption={sortOption}
+                onSelectOption={setSortOption}
+            />
+        </>
+
+    )
 
 }
+
+const SortDialog = ({visible, onDismiss, sortOption, onSelectOption}) => {
+    return (
+        <ConfirmDialog
+            visible={visible}
+            title="Trier les favoris"
+            confirmLabel="Valider"
+            cancelLabel="Annuler"
+            onCancel={onDismiss}
+            onConfirm={onDismiss}
+            confirmColor="#2e7d32"
+        >
+            <RadioButton.Group onValueChange={onSelectOption} value={sortOption}>
+                <RadioButton.Item label="Nom (A-Z)" value="nameAsc" position="leading" labelStyle={localStyles.sortItem}/>
+                <RadioButton.Item label="Nom (Z-A)" value="nameDesc" position="leading" labelStyle={localStyles.sortItem}/>
+                <RadioButton.Item label="Date croissante" value="dateAsc" position="leading" labelStyle={localStyles.sortItem}/>
+                <RadioButton.Item label="Date décroissante" value="dateDesc" position="leading" labelStyle={localStyles.sortItem}/>
+            </RadioButton.Group>
+        </ConfirmDialog>
+    );
+};
 
 const localStyles = StyleSheet.create({
     container: {
@@ -133,6 +213,7 @@ const localStyles = StyleSheet.create({
         ...typography.bodyLarge,
         textAlign: 'center',
         marginVertical: 16
-    }
+    },
+    sortItem:{textAlign: 'left', marginHorizontal:10}
 })
 export default FavoritesScreen;

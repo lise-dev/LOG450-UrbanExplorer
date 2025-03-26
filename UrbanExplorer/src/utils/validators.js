@@ -39,6 +39,12 @@ export const checkSpotExists = async (spotId) => {
   return spotDoc.exists();
 };
 
+export const checkUserExists = async (userId) => {
+  const userRef = doc(db, "utilisateurs", userId);
+  const userDoc = await getDoc(userRef);
+  return userDoc.exists();
+};
+
 // Vérifier le rôle d'un utilisateur
 export const getUserRole = async (userId) => {
   if (!userId) return null;

@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         marginTop: 15,
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.1,
         shadowRadius: 2,
         elevation: 3,
@@ -157,7 +157,7 @@ const toolbarStyle = StyleSheet.create({
     },
     title: {
         color: '#2E7D32',
-        fontSize: 22,
+        fontSize: 26,
         fontWeight: 'bold',
         textAlign: 'center',
     },
@@ -241,4 +241,4 @@ const typography = StyleSheet.create({
 });
 
 
-export { styles, toolbarStyle, typography };
+export {styles, toolbarStyle, typography};

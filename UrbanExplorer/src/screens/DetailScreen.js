@@ -1,21 +1,20 @@
 import {SafeAreaView, StyleSheet} from "react-native";
 import {styles} from "../styles/GlobalStyle";
 import {FAB, Snackbar} from "react-native-paper";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useState} from "react";
 import FavoriRepository from "../repositories/FavoriRepository";
 import {checkFavoriExists} from "../utils/validators";
 import {useAuth} from "../utils/AuthContext";
-import {useFocusEffect} from "@react-navigation/native";
-import UserRepository from "../repositories/UserRepository";
+import {useFocusEffect, useRoute} from "@react-navigation/native";
 
 const DetailScreen = ({navigation}) => {
     const [isInFavorite, setIsInFavorite] = useState(false);
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
+    const route = useRoute();
 
-    // const { userId } = useAuth();
-    const userId = 'user_003';
-    const spotId = 'spot_002';
+    const { spotId } = route.params;
+    const userId = 'user_003'; // const { userId } = useAuth();
 
     useFocusEffect(
         useCallback(() => {
@@ -54,7 +53,11 @@ const DetailScreen = ({navigation}) => {
                 duration={3000}
                 action={{
                     label: 'OK', onPress: () => {
-                        // navigation.navigate('FavoritesScreen');
+                        navigation.navigate('FavoritesScreen', {
+                            userId: userId,
+                            spotId: spotId,
+
+                        });
                         setSnackbarVisible(false)
                     }
                 }}
