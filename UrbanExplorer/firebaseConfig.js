@@ -1,18 +1,28 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+
+import {
+  FIREBASE_API_KEY,
+  FIREBASE_AUTH_DOMAIN,
+  FIREBASE_PROJECT_ID,
+  FIREBASE_STORAGE_BUCKET,
+  FIREBASE_MESSAGING_SENDER_ID,
+  FIREBASE_APP_ID,
+} from "@env";
+
 import { GoogleAuthProvider, initializeAuth, getReactNativePersistence } from "firebase/auth";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 // Configuration Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyDGS5TrS9JTdByClaDb7TG_aTs5TPP_EYk",
-  authDomain: "urbanexplorer-bb1f9.firebaseapp.com",
-  projectId: "urbanexplorer-bb1f9",
-  storageBucket: "urbanexplorer-bb1f9.firebasestorage.app",
-  messagingSenderId: "932567680672",
-  appId: "1:932567680672:android:c8bae1b297b2a31ed2ebc5",
+  apiKey: FIREBASE_API_KEY,
+  authDomain: FIREBASE_AUTH_DOMAIN,
+  projectId: FIREBASE_PROJECT_ID,
+  storageBucket: FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
+  appId: FIREBASE_APP_ID,
 };
 
-// Initialisation de Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
