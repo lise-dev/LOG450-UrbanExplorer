@@ -11,6 +11,9 @@ import ResetPasswordScreen from "./src/screens/ResetPasswordScreen";
 import ExploreScreen from "./src/(tabs)/ExploreScreen"
 import ProfileScreen from "./src/(tabs)/ProfileScreen";
 import FavorisScreen from "./src/(tabs)/FavorisScreen";
+import EditProfileScreen from "./src/screens/EditProfileScreen";
+import { AuthProvider } from "./AuthContext";
+import MainTabs from "./src/(tabs)/_layout";
 
 
 const Stack = createStackNavigator();
@@ -64,32 +67,53 @@ const App = () => {
     return () => unsubscribe();
   }, []);
 
-  if (user === null) {
-      console.warn("User est null");
-      return (
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="HomeScreen" component={HomeScreen} />
-            <Stack.Screen name="LoginScreen" component={LoginScreen} />
-            <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-            <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      );
-  } else {
-    return (
-      <NavigationContainer>
-        <Tab.Navigator>
-          <Tab.Screen name="Explore" component={ExploreScreen} options={{
-            headerShown:false,
-          }}/>
-          <Tab.Screen name="Favoris" component={FavorisScreen} />
-          <Tab.Screen name="Profil" component={ProfileScreen} /> 
-          {/* Ajouter les autres tab ici */}
-        </Tab.Navigator>
-      </NavigationContainer>
-    );
-  }
+
+  return (
+    <NavigationContainer>
+      {user ? (
+        <AuthProvider>
+          <MainTabs />
+        </AuthProvider>
+      ) : (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+        <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
+        </Stack.Navigator>
+      )}
+    </NavigationContainer>
+
+  );
+
+
+  // if (user === null) {
+  //     return (
+  //       <NavigationContainer>
+  //         <Stack.Navigator screenOptions={{ headerShown: false }}>
+  //           <Stack.Screen name="HomeScreen" component={HomeScreen} />
+  //           <Stack.Screen name="LoginScreen" component={LoginScreen} />
+  //           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+  //           <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
+  //         </Stack.Navigator>
+  //       </NavigationContainer>
+  //     );
+  // } else {
+  //   return (
+  //     <AuthProvider>
+  //       <NavigationContainer>
+  //         <Tab.Navigator>
+  //           <Tab.Screen name="Explore" component={ExploreScreen} options={{
+  //             headerShown:false,
+  //           }}/>
+  //           <Tab.Screen name="Favoris" component={FavorisScreen} />
+  //           <Tab.Screen name="Profil" component={ProfileScreen} /> 
+  //           {/* Ajouter les autres tab ici */}
+  //         </Tab.Navigator>
+  //       </NavigationContainer>
+  //     </AuthProvider>
+  //   );
+  // }
 };
 
 const styles = StyleSheet.create({
