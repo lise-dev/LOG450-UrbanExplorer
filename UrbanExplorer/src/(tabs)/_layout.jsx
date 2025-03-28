@@ -1,31 +1,61 @@
-import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
+import ProfileScreen from "../(tabs)/ProfileScreen";
+import ExploreScreen from './ExploreScreen';
+import FavorisScreen from './FavorisScreen';
+import EditProfileScreen from '../screens/EditProfileScreen'
 
-export default function TabLayout() {
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
+const ProfileStack = () => {
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="test"
+    <Stack.Navigator>
+      <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ title: 'Mon profil' }} />
+      <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ title: 'Modifier le profil' }} />
+    </Stack.Navigator>
+  );
+};
+
+// const TestStack = () => {
+//   return (
+//     <Stack.Navigator>
+//       <Stack.Screen name="TestMain" component={TestScreen} options={{ title: 'Test' }} />
+//       <Stack.Screen name="Details" component={DetailsScreen} options={{ title: 'Détails' }} />
+//     </Stack.Navigator>
+//   );
+// };
+
+const MainTabs = () => {
+  return (
+    <Tab.Navigator screenOptions={{ headerShown: false }}>
+        <Tab.Screen
+            name="Explore"
+            component={ExploreScreen}
+            options={{
+                tabBarIcon: ({ color, size }) => <Ionicons name="map" size={size} color={color} />,
+            }}
+        />
+      <Tab.Screen
+        name="Favorris"
+        component={FavorisScreen}
         options={{
-          title: 'TestScreen',
-          tabBarIcon: <IconSymbol size={28} name="house.fill" color={color} />,
+            tabBarIcon: ({ color, size }) => <Ionicons name="heart-circle" size={size} color={color} />,
         }}
       />
-    </Tabs>
+        <Tab.Screen
+          name="Profile"
+          component={ProfileStack}
+          options={{
+            tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} />,
+          }}
+        />
+    </Tab.Navigator>
   );
-}
+};
+
+export default MainTabs;
