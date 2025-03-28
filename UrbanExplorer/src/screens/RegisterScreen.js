@@ -13,6 +13,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import AuthRepository from "../repositories/AuthRepository";
 import { setDoc, doc } from "firebase/firestore";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Roles from  '../constants/roles';
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -118,9 +119,12 @@ const RegisterScreen = ({ navigation }) => {
                 onValueChange={(itemValue) => setRole(itemValue)}
                 style={styles.picker}
               >
-                <Picker.Item label="Explorateur" value="explorateur" />
+                {/* <Picker.Item label="Explorateur" value="explorateur" />
                 <Picker.Item label="Contributeur" value="contributeur" />
-                <Picker.Item label="Modérateur" value="moderateur" />
+                <Picker.Item label="Modérateur" value="moderateur" /> */}
+                {Roles.map((element) => (
+                  <Picker.Item label={element.charAt(0).toUpperCase() + element.slice(1)} value={element} key={element}/>
+                ))}
               </Picker>
             </View>
 
@@ -164,7 +168,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E0E0E0",
   },
   topSection: {
-    flex: 2,
+    flex: 3,
     justifyContent: "flex-end",
     alignItems: "center",
     backgroundColor: "#E0E0E0",
@@ -193,7 +197,7 @@ const styles = StyleSheet.create({
     color: "#a7a7a7",
   },
   bottomSection: {
-    flex: 3,
+    flex: 1,
     backgroundColor: "#FFFFFF",
     padding: 20,
     borderTopLeftRadius: 30,
@@ -281,7 +285,7 @@ const styles = StyleSheet.create({
   },
   
   picker: {
-    height: 50,
+    // height: 50,
     width: "100%",
     color: "#757575",
   },
