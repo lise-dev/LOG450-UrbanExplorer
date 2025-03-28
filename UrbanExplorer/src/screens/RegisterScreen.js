@@ -6,11 +6,13 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker"; 
+// import { Picker } from "@react-native-picker/picker"; 
 import * as ImagePicker from "expo-image-picker";
 import { auth, db } from "../../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import AuthRepository from "../repositories/AuthRepository";
 import { setDoc, doc } from "firebase/firestore";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -45,7 +47,9 @@ const RegisterScreen = ({ navigation }) => {
   
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("userCredential: ", userCredential);
       const userId = userCredential.user.uid;
+      console.log("userId: ", userId)
   
       await setDoc(doc(db, "utilisateurs", userId), {
         idUtilisateur: userId,
@@ -58,6 +62,7 @@ const RegisterScreen = ({ navigation }) => {
   
       navigation.replace("HomeScreen");
     } catch (error) {
+      console.error(error);
       setErrorMessage("Erreur lors de l'inscription. Réessayez.");
     }
   };  
@@ -72,82 +77,84 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Partie haute avec fond gris */}
-      <View style={styles.topSection}>
-        <Text style={styles.title}>Créer un compte</Text>
-        <View style={styles.inputContainer}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        {/* Partie haute avec fond gris */}
+        <View style={styles.topSection}>
+          <Text style={styles.title}>Créer un compte</Text>
+          <View style={styles.inputContainer}>
 
-          {/* email */}
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
+            {/* email */}
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
 
-          {/* mot de passe */}
-          <TextInput
-            style={styles.input}
-            placeholder="Mot de passe"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
+            {/* mot de passe */}
+            <TextInput
+              style={styles.input}
+              placeholder="Mot de passe"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
 
-          {/* pseudo */}
-          <TextInput
-            style={styles.input}
-            placeholder="Pseudo"
-            value={pseudo}
-            onChangeText={setPseudo}
-          />
+            {/* pseudo */}
+            <TextInput
+              style={styles.input}
+              placeholder="Pseudo"
+              value={pseudo}
+              onChangeText={setPseudo}
+            />
 
-          {/* role */}
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={role}
-              onValueChange={(itemValue) => setRole(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Explorateur" value="explorateur" />
-              <Picker.Item label="Contributeur" value="contributeur" />
-              <Picker.Item label="Modérateur" value="moderateur" />
-            </Picker>
+            {/* role */}
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={role}
+                onValueChange={(itemValue) => setRole(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Explorateur" value="explorateur" />
+                <Picker.Item label="Contributeur" value="contributeur" />
+                <Picker.Item label="Modérateur" value="moderateur" />
+              </Picker>
+            </View>
+
+            {/* photo de profil */}
+            <TouchableOpacity onPress={pickImage} style={styles.photoInput}>
+              <Text style={styles.photoInputText}>
+                {photoProfil ? "Modifier la photo" : "Choisir une photo"}
+              </Text>
+            </TouchableOpacity>
+            {photoProfil && <Image source={{ uri: photoProfil }} style={styles.profileImage} />}
           </View>
+        </View>
 
-          {/* photo de profil */}
-          <TouchableOpacity onPress={pickImage} style={styles.photoInput}>
-            <Text style={styles.photoInputText}>
-              {photoProfil ? "Modifier la photo" : "Choisir une photo"}
-            </Text>
+        <View style={styles.bottomSection}>
+          {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
+
+          <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+            <Text style={styles.registerText}>S'inscrire</Text>
           </TouchableOpacity>
-          {photoProfil && <Image source={{ uri: photoProfil }} style={styles.profileImage} />}
+
+          <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
+            <Image
+              source={require("../../assets/google.png")}
+              style={styles.googleIcon}
+            />
+            <Text style={styles.googleButtonText}>Continuer avec Google</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+            <Text style={styles.linkText}>Déjà un compte ? Se connecter</Text>
+          </TouchableOpacity>
         </View>
       </View>
-
-      <View style={styles.bottomSection}>
-        {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
-
-        <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-          <Text style={styles.registerText}>S'inscrire</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
-          <Image
-            source={require("../../assets/google.png")}
-            style={styles.googleIcon}
-          />
-          <Text style={styles.googleButtonText}>Continuer avec Google</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
-          <Text style={styles.linkText}>Déjà un compte ? Se connecter</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

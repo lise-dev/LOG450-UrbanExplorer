@@ -1,6 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, initializeAuth, getReactNativePersistence } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+
 
 import {
   FIREBASE_API_KEY,
@@ -11,6 +14,13 @@ import {
   FIREBASE_APP_ID,
 } from "@env";
 
+console.log("APIKEY : ", FIREBASE_API_KEY);
+console.log("Auht_domain : ", FIREBASE_AUTH_DOMAIN);
+console.log("project_id : ", FIREBASE_PROJECT_ID);
+console.log("storage_bucket : ", FIREBASE_STORAGE_BUCKET);
+console.log("sender_id : ", FIREBASE_MESSAGING_SENDER_ID);
+console.log("app_id : ", FIREBASE_APP_ID);
+
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
   authDomain: FIREBASE_AUTH_DOMAIN,
@@ -20,9 +30,19 @@ const firebaseConfig = {
   appId: FIREBASE_APP_ID,
 };
 
+
+// Initialisation de Firebase
 const app = initializeApp(firebaseConfig);
+
+// Initialisation de l'authentification avec persistance AsyncStorage
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
+// const auth = getAuth(app); 
+
 const db = getFirestore(app);
-const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
+
 export { db, auth, googleProvider };
+
