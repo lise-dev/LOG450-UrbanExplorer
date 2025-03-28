@@ -8,6 +8,8 @@ import ProfileScreen from "../(tabs)/ProfileScreen";
 import ExploreScreen from './ExploreScreen';
 import FavorisScreen from './FavorisScreen';
 import EditProfileScreen from '../screens/EditProfileScreen'
+import ModerationScreen from './ModerationScreen';
+import ContributionScreen from './ContributionScreen';
 import { AuthContext } from '../../AuthContext';
 import Roles from '../constants/roles';
 
@@ -49,10 +51,28 @@ const MainTabs = () => {
 
       {userData != null && userData["role"] === Roles.explorateur && (
         <Tab.Screen
-          name="Favorris"
+          name="Favoris"
           component={FavorisScreen}
           options={{
               tabBarIcon: ({ color, size }) => <Ionicons name="heart-circle" size={size} color={color} />,
+          }}
+        />
+      )}
+      {userData != null && userData["role"] === Roles.contributeur && (
+        <Tab.Screen
+          name="Contribution"
+          component={ContributionScreen}
+          options={{
+              tabBarIcon: ({ color, size }) => <Ionicons name="extension-puzzle" size={size} color={color} />,
+          }}
+        />
+      )}
+      {userData != null && userData["role"] === Roles.moderateur && (
+        <Tab.Screen
+          name="Moderation"
+          component={ModerationScreen}
+          options={{
+              tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={size} color={color} />,
           }}
         />
       )}

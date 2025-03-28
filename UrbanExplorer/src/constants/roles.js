@@ -3,10 +3,3 @@ export default Roles = {
     contributeur: "contributeur",
     moderateur: "moderateur"
 };
-
-
-// export default Roles = [
-//     "explorateur",
-//     "contributeur",
-//     "moderateur"
-// ];

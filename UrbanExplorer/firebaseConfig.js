@@ -14,12 +14,7 @@ import {
   FIREBASE_APP_ID,
 } from "@env";
 
-console.log("APIKEY : ", FIREBASE_API_KEY);
-console.log("Auht_domain : ", FIREBASE_AUTH_DOMAIN);
-console.log("project_id : ", FIREBASE_PROJECT_ID);
-console.log("storage_bucket : ", FIREBASE_STORAGE_BUCKET);
-console.log("sender_id : ", FIREBASE_MESSAGING_SENDER_ID);
-console.log("app_id : ", FIREBASE_APP_ID);
+
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
