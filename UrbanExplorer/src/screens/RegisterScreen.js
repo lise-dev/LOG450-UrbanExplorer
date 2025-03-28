@@ -123,8 +123,9 @@ const RegisterScreen = ({ navigation }) => {
                 {/* <Picker.Item label="Explorateur" value="explorateur" />
                 <Picker.Item label="Contributeur" value="contributeur" />
                 <Picker.Item label="Modérateur" value="moderateur" /> */}
-                {Roles.map((element) => (
-                  <Picker.Item label={element.charAt(0).toUpperCase() + element.slice(1)} value={element} key={element}/>
+                {Object.entries(Roles).map(([key, value]) => (
+                  <Picker.Item label={value} value={key} key={key}/>
+                  // console.log("value : ", value)
                 ))}
               </Picker>
             </View>

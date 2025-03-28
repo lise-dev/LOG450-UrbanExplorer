@@ -1,12 +1,12 @@
-// export default Roles = {
-//     EXPLORATEUR: 'explorateur',
-//     CONTRIBUTEUR: "contributeur",
-//     MODERATEUR: "moderateur"
-// };
+export default Roles = {
+    explorateur: "explorateur",
+    contributeur: "contributeur",
+    moderateur: "moderateur"
+};
 
 
-export default Roles = [
-    "explorateur",
-    "contributeur",
-    "moderateur"
-];
+// export default Roles = [
+//     "explorateur",
+//     "contributeur",
+//     "moderateur"
+// ];

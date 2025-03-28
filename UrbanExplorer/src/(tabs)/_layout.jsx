@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -8,6 +8,8 @@ import ProfileScreen from "../(tabs)/ProfileScreen";
 import ExploreScreen from './ExploreScreen';
 import FavorisScreen from './FavorisScreen';
 import EditProfileScreen from '../screens/EditProfileScreen'
+import { AuthContext } from '../../AuthContext';
+import Roles from '../constants/roles';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -31,6 +33,10 @@ const ProfileStack = () => {
 // };
 
 const MainTabs = () => {
+
+  const { user, userData } = useContext(AuthContext);
+
+
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen
@@ -40,13 +46,16 @@ const MainTabs = () => {
                 tabBarIcon: ({ color, size }) => <Ionicons name="map" size={size} color={color} />,
             }}
         />
-      <Tab.Screen
-        name="Favorris"
-        component={FavorisScreen}
-        options={{
-            tabBarIcon: ({ color, size }) => <Ionicons name="heart-circle" size={size} color={color} />,
-        }}
-      />
+
+      {userData != null && userData["role"] === Roles.explorateur && (
+        <Tab.Screen
+          name="Favorris"
+          component={FavorisScreen}
+          options={{
+              tabBarIcon: ({ color, size }) => <Ionicons name="heart-circle" size={size} color={color} />,
+          }}
+        />
+      )}
         <Tab.Screen
           name="Profile"
           component={ProfileStack}
