@@ -35,34 +35,6 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  // const [user, setUser] = useState(null);
-  // const [userData, setUserData] = useState(null);
-
-  // useEffect(() => {
-  //   const unsubscribeAuth = auth.onAuthStateChanged((userAuth) => {
-  //     setUser(userAuth);
-  //     if (userAuth) {
-  //       const userId = userAuth.uid;
-  //       const docRef = doc(db, 'utilisateurs', userId);
-
-  //       // Écoute en temps réel les modifications du document utilisateur
-  //       const unsubscribeSnapshot = onSnapshot(docRef, (docSnap) => {
-  //         if (docSnap.exists()) {
-  //           setUserData(docSnap.data());
-  //         } else {
-  //           setUserData(null);
-  //           console.log('Aucun utilisateur trouvé');
-  //         }
-  //       });
-
-  //       return () => unsubscribeSnapshot(); // Se désinscrire du snapshot lors du cleanup
-  //     } else {
-  //       setUserData(null);
-  //     }
-  //   });
-
-  //   return () => unsubscribeAuth();
-  // }, []);
 
   return (
     <AuthContext.Provider value={{ user, userData, setUser, setUserData }}>

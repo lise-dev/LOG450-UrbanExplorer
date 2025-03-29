@@ -52,9 +52,9 @@ const EditProfileScreen = ({ navigation }) => {
 
 
     return (
-        <SafeAreaView>
-            <View>
-                <Text>Pseudo</Text>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.containerFormItem}>
+                <Text style={styles.labelInput}>Pseudo</Text>
                 <TextInput 
                     placeholder="Pseudo..."
                     style={styles.input}
@@ -62,7 +62,7 @@ const EditProfileScreen = ({ navigation }) => {
                     onChangeText={setPseudo}
                 />
             </View>
-            <View>
+            <View style={styles.containerFormItem}>
                 <Image
                     source={{uri: photoProfil}}
                     style={styles.profileImage}
@@ -72,10 +72,10 @@ const EditProfileScreen = ({ navigation }) => {
                 </TouchableOpacity>
 
             </View>
-            <View>
+            <View style={styles.containerFormItem}>
                 {errorMessage && <Text>{errorMessage}</Text>}
-                <TouchableOpacity style={styles.button} onPress={handleSaveProfile}>
-                    <Text style={styles.buttonText}>Enregistrer le profil</Text>
+                <TouchableOpacity style={[styles.button, styles.saveProfileButton]} onPress={handleSaveProfile}>
+                    <Text style={[styles.buttonText, styles.saveButtonText]}>Enregistrer le profil</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
@@ -84,6 +84,12 @@ const EditProfileScreen = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%"
+      },
     input: {
         width: "100%",
         padding: 12,
@@ -92,12 +98,12 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         backgroundColor: "#F5F5F5", 
         marginBottom: 10,
-        fontStyle: "italic",
-        color: "#a7a7a7",
+        // fontStyle: "italic",
+        // color: "#a7a7a7",
     },
     profileImage: {
-        width: 75,
-        height: 75,
+        width: 150,
+        height: 150,
         borderRadius: 50,
         margin: 20
     },
@@ -116,6 +122,30 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: "bold",
     },
+    labelInput: {
+        textAlign: "left",
+        alignContent: "left",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
+        width: "100%",
+        fontWeight: 500,
+        paddingHorizontal: 20,
+        marginBottom: 5,
+    },
+    containerFormItem: {
+        width: "80%",
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    saveProfileButton: {
+        backgroundColor: "green",
+        borderWidth: 0,
+        
+    },
+    saveButtonText: {
+        color: "white",
+    }
 
 })
 
