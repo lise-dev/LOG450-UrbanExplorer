@@ -25,14 +25,6 @@ const ProfileStack = () => {
   );
 };
 
-// const TestStack = () => {
-//   return (
-//     <Stack.Navigator>
-//       <Stack.Screen name="TestMain" component={TestScreen} options={{ title: 'Test' }} />
-//       <Stack.Screen name="Details" component={DetailsScreen} options={{ title: 'Détails' }} />
-//     </Stack.Navigator>
-//   );
-// };
 
 const MainTabs = () => {
 

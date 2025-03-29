@@ -61,8 +61,10 @@ const ProfileScreen = ({ navigation }) => {
           style={styles.profileImage}
         />
         <Text style={styles.userTitle}>{userData.pseudo}</Text>
+        <Text>{userData.email}</Text>
       </View>
       <View style={[styles.container, styles.containerButtons]}>
+        <View style={styles.topButtons}>
           <TouchableOpacity 
             style={[styles.button, styles.editProfileButtons]}
             onPress={() => navigation.navigate('EditProfileScreen')}
@@ -75,17 +77,23 @@ const ProfileScreen = ({ navigation }) => {
           <TouchableOpacity style={[styles.button, styles.editProfileButtons]}>
             <Text style={styles.buttonText}>Définir mes centres d'intérêts</Text>
           </TouchableOpacity>
-      </View>
+        </View>
 
-      <View style={[styles.container, styles.containerLogout]}>
-        <TouchableOpacity 
-          onPress={logout}
-          style={[styles.button, styles.logoutButton]}
-        >
-          <Text style={[styles.buttonText, styles.buttonTextLogout]}>
-            Se déconnecter
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.bottomButtons}>
+
+          {/* Logout button */}
+          <TouchableOpacity 
+            onPress={logout}
+            style={[styles.button, styles.logoutButton]}
+          >
+            <Text style={[styles.buttonText, styles.buttonTextLogout]}>
+              Se déconnecter
+            </Text>
+          </TouchableOpacity>
+        </View>
+      {/* </View>
+
+      <View style={[styles.container, styles.containerLogout]}> */}
       </View>
     </SafeAreaView>
   );
@@ -140,8 +148,10 @@ const styles = StyleSheet.create({
     // borderColor: "black",
   },
   containerButtons: {
-    flex: 1,
-    justifyContent: "flex-start",
+    flex: 2,
+    justifyContent: "space-between",
+    flexDirection: "column",
+    alignItems: "center",
   },
   editProfileButtons: {
     margin: 10,
@@ -151,6 +161,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
+  bottomButtons: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "flex-end",
+    alignItems: "center"
+  },
+  topButtons: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center"
+  }
 
 });
 
