@@ -7,17 +7,40 @@ import React, { useContext, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../../firebaseConfig";
+import { auth, db } from "../../firebaseConfig";
 import { AuthContext } from "../../AuthContext";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-
+import { dbTables } from '../constants/dbInfo'
+import { doc, getDoc } from "firebase/firestore";
 
 const ProfileScreen = ({ navigation }) => {
 
-  const { user, userData } = useContext(AuthContext);
+  const { user, userData, setUserData } = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        try {
+          console.log(userData.idUtilisateur);
+          const docRef = doc(db, dbTables.USER, userData.idUtilisateur);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setUserData(docSnap.data());
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+
+    const unsubscribe = navigation.addListener("focus", fetchUserData);
+    return unsubscribe;
+  }, [navigation, user]);
+
+
 
   const logout = async () => {
     try {
