@@ -39,6 +39,12 @@ export const checkSpotExists = async (spotId) => {
   return spotDoc.exists();
 };
 
+export const checkUserExists = async (userId) => {
+  const userRef = doc(db, "utilisateurs", userId);
+  const userDoc = await getDoc(userRef);
+  return userDoc.exists();
+};
+
 // Vérifier le rôle d'un utilisateur
 export const getUserRole = async (userId) => {
   if (!userId) return null;
@@ -56,8 +62,14 @@ export const getUserRole = async (userId) => {
 };
 
 // Vérifier si un favori existe déjà pour cet utilisateur et ce spot
-const checkFavoriExists = async (userId, spotId) => {
-  const favorisQuery = query(collection(db, "favoris"), where("idUtilisateur", "==", userId), where("idSpot", "==", spotId));
+export const checkFavoriExists = async (userId, spotId) => {
+  if (!userId || !spotId) return false;
+
+  const favorisRef = collection(db, "users", userId, "favoris");
+  const favorisQuery = query(
+      favorisRef,
+      where("idSpot", "==", spotId)
+  );
   const favorisSnapshot = await getDocs(favorisQuery);
   return !favorisSnapshot.empty;
 };

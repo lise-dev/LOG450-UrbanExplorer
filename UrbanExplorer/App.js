@@ -7,6 +7,11 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import LoginScreen from "./src/screens/LoginScreen";
 import RegisterScreen from "./src/screens/RegisterScreen";
 import ResetPasswordScreen from "./src/screens/ResetPasswordScreen";
+import FavoritesScreen from "./src/screens/FavoritesScreen";
+import {PaperProvider} from "react-native-paper";
+import {AuthProvider} from "./src/utils/AuthContext";
+import DetailScreen from "./src/screens/DetailScreen";
+import Toast from "react-native-toast-message";
 
 
 const Stack = createStackNavigator();
@@ -42,14 +47,24 @@ const HomeScreen = ({ navigation }) => {
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-        <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <AuthProvider>
+        <PaperProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="FavoritesScreen" component={FavoritesScreen} />
+              <Stack.Screen name="DetailScreen" component={DetailScreen} />
+              <Stack.Screen name="HomeScreen" component={HomeScreen} />
+              <Stack.Screen name="LoginScreen" component={LoginScreen} />
+              <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+              <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
+          <Toast/>
+        </PaperProvider>
+      </AuthProvider>
+
+
+
   );
 };
 
