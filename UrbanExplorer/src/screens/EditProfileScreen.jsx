@@ -7,15 +7,18 @@ import { setDoc, doc } from "firebase/firestore";
 import { auth, db } from "../../firebaseConfig";
 import "../constants/dbInfo";
 import { dbTables } from "../constants/dbInfo";
+import UserRepository from "../repositories/UserRepository";
 
 
 
 const EditProfileScreen = ({ navigation }) => {
 
-    const { user, userData } = useContext(AuthContext);
+    const { user, userData, setUser, setUserData } = useContext(AuthContext);
     const [photoProfil, setPhotoProfil] = useState(userData.photoProfil);
     const [errorMessage, setErrorMessage] = useState(null);
     const [pseudo, setPseudo] = useState(userData.pseudo);
+    const [firstName, setFirstName] = useState(userData.prenom);
+    const [lastName, setLastName] = useState(userData.nom);
 
 
     // Sélection d'une image depuis la galerie
@@ -39,10 +42,18 @@ const EditProfileScreen = ({ navigation }) => {
         }
         
         try {
-            await setDoc(doc(db, dbTables.USER, userData.idUtilisateur), {
-                pseudo: pseudo,
-                photoProfil: photoProfil || null
-            }, { merge: true })
+            var newUserData = userData;
+            newUserData.pseudo = pseudo,
+            newUserData.prenom = firstName,
+            newUserData.nom = lastName,
+            newUserData.photoProfil = photoProfil
+
+            var response = await UserRepository.editUser(userData.idUtilisateur, userData.idUtilisateur, newUserData);
+            if (response.error) {
+                console.log(response.error)
+            }
+
+
             navigation.goBack();
         } catch (error) {
             console.error(error);
@@ -53,14 +64,34 @@ const EditProfileScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.containerFormItem}>
-                <Text style={styles.labelInput}>Pseudo</Text>
-                <TextInput 
-                    placeholder="Pseudo..."
-                    style={styles.input}
-                    value={pseudo}
-                    onChangeText={setPseudo}
-                />
+            <View style={styles.containerInput}>
+                <View style={styles.containerFormItem}>
+                    <Text style={styles.labelInput}>Prénom</Text>
+                    <TextInput 
+                        placeholder="Prénom..."
+                        style={styles.input}
+                        value={firstName}
+                        onChangeText={setFirstName}
+                    />
+                </View>
+                <View style={styles.containerFormItem}>
+                    <Text style={styles.labelInput}>Nom</Text>
+                    <TextInput 
+                        placeholder="Nom..."
+                        style={styles.input}
+                        value={lastName}
+                        onChangeText={setLastName}
+                    />
+                </View>
+                <View style={styles.containerFormItem}>
+                    <Text style={styles.labelInput}>Pseudo</Text>
+                    <TextInput 
+                        placeholder="Pseudo..."
+                        style={styles.input}
+                        value={pseudo}
+                        onChangeText={setPseudo}
+                    />
+                </View>
             </View>
             <View style={styles.containerFormItem}>
                 <Image
@@ -145,6 +176,13 @@ const styles = StyleSheet.create({
     },
     saveButtonText: {
         color: "white",
+    },
+    containerInput: {
+        flex: 1,
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        marginVertical: 10
     }
 
 })

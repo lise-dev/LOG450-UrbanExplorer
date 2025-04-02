@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { auth, db } from './firebaseConfig'; // Assurez-vous d'importer correctement votre configuration Firebase
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, onSnapshot } from 'firebase/firestore'
 
 
 // Créez le contexte pour l'authentification
@@ -17,13 +17,16 @@ export const AuthProvider = ({ children }) => {
         const userId = userAuth.uid;
         try {
           const docRef = doc(db, 'utilisateurs', userId);
-          const docSnap = await getDoc(docRef);
 
-          if (docSnap.exists()) {
-            setUserData(docSnap.data()); // Récupère et stocke les données utilisateur
-          } else {
-            console.log('Aucun utilisateur trouvé');
-          }
+          onSnapshot(docRef, (docSnap) => {
+            if (docSnap.exists()) {
+              console.log("Utilisateur mis à jour");
+              setUserData(docSnap.data())
+            } else {
+              console.log("Aucun user trouvé");
+            }
+          })
+
         } catch (error) {
           console.error('Erreur lors de la récupération des données utilisateur:', error);
         }

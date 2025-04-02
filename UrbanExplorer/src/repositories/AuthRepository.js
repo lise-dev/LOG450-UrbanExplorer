@@ -7,6 +7,7 @@ import { auth, db, googleProvider } from "../../firebaseConfig";
 import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, getDoc, getDocs, collection, query, where } from "firebase/firestore";
 import { checkPseudoExists, checkEmailExists, isValidRole } from "../utils/validators"; 
+import UserRepository from "./UserRepository";
 
 const saveUserToFirestore = async (user, role) => {
   try {
@@ -72,18 +73,25 @@ const AuthRepository = {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      await setDoc(doc(db, "utilisateurs", user.uid), {
+      var userData = {
         idUtilisateur: user.uid,
-        email: email.toLowerCase(),
-        pseudo: pseudo.toLowerCase(),
-        role: role.toLowerCase(),
+        nom: nom,
+        prenom: prenom,
+        pseudo: pseudo,
+        email: email,
         dateInscription: new Date(),
-        photoProfil: photoProfil ? `picture/userprofile/PP${pseudo.toLowerCase()}.png` : null
-      });
+        role: role,
+        photoProfil: photoProfil || null
+      }
+
+      var response = await UserRepository.addUser(userData)
+      if (response.error) {
+        console.error("error addUser: ", response.error);
+      }
 
       return { success: true, user };
     } catch (error) {
-      return { error: error.message };
+      return { error: error.message, success: false };
     }
   },
 
