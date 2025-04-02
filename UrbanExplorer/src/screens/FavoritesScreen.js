@@ -1,3 +1,5 @@
+// ## WARNING : ne plus utiliser ce fichier --> voir src/screens/(tabs)/FavorisScreen.jsx
+
 import React, {useCallback, useState} from "react";
 import {
     ActivityIndicator,
