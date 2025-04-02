@@ -3,7 +3,7 @@
  * Gestion des UTILISATEURS Firebase UrbanExplorer
  */
 
-import { collection, getDocs, doc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc, deleteDoc, getDoc, query, where, setDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
 import { checkPseudoExists, isValidEmail, isValidRole, isValidText}  from "../utils/validators"; 
 
@@ -57,20 +57,20 @@ const formatUserData = async (userData) => {
     return { error: "Le prénom est invalide ou manquant." };
   }
 
-  if (!userData.photoProfil) {
-    return { error: "La photo de profil est obligatoire." };
-  }
+  // if (!userData.photoProfil) {
+  //   return { error: "La photo de profil est obligatoire." };
+  // }
 
   // Vérifier si le pseudo est unique avant insertion/modification
-  const pseudoExists = await checkPseudoExists(userData.pseudo);
+  const pseudoExists = await checkPseudoExists(userData.pseudo, userData.idUtilisateur);
   if (pseudoExists) {
     return { error: "Ce pseudo est déjà utilisé. Veuillez en choisir un autre." };
   }
 
   return {
     idUtilisateur: userData.idUtilisateur || `user_${Date.now()}`,
-    nom: userData.nom.toLowerCase(),
-    prenom: userData.prenom.toLowerCase(),
+    nom: userData.nom,
+    prenom: userData.prenom,
     email: userData.email.toLowerCase(),
     pseudo: userData.pseudo.toLowerCase(),
     role: userData.role.toLowerCase(),
@@ -116,9 +116,9 @@ const UserRepository = {
         return { error: "Le rôle est invalide. Il doit être 'contributeur', 'explorateur' ou 'moderateur'." };
       }
 
-      if (!userData.photoProfil) {
-        return { error: "La photo de profil est obligatoire." };
-      }
+      // if (!userData.photoProfil) {
+      //   return { error: "La photo de profil est obligatoire." };
+      // }
 
       // Vérifier si le pseudo est unique avant l'ajout
       const pseudoExists = await checkPseudoExists(userData.pseudo);
@@ -132,8 +132,8 @@ const UserRepository = {
       // Création de l'objet utilisateur avec formatage
       const formattedUser = {
         idUtilisateur: userId,
-        nom: userData.nom.toLowerCase(),
-        prenom: userData.prenom.toLowerCase(),
+        nom: userData.nom,
+        prenom: userData.prenom,
         email: userData.email.toLowerCase(),
         pseudo: userData.pseudo.toLowerCase(),
         role: userData.role.toLowerCase(),

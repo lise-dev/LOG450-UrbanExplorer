@@ -4,10 +4,14 @@ import { collection, getDocs, doc, getDoc, query, where } from "firebase/firesto
 import { db } from "../../firebaseConfig";
 
 // Vérifier si un pseudo existe déjà
-export const checkPseudoExists = async (pseudo) => {
-  const pseudoQuery = query(collection(db, "utilisateurs"), where("pseudo", "==", pseudo.toLowerCase()));
-  const querySnapshot = await getDocs(pseudoQuery);
-  return !querySnapshot.empty;
+export const checkPseudoExists = async (pseudo, idUser = null) => {
+  try {
+    const pseudoQuery = query(collection(db, "utilisateurs"), where("pseudo", "==", pseudo.toLowerCase()), where("idUtilisateur", "!=", idUser));
+    const querySnapshot = await getDocs(pseudoQuery);
+    return !querySnapshot.empty;
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 // Vérifier si un email existe déjà
@@ -31,6 +35,15 @@ export const isValidNote = (note) => {
 export const isValidText = (text) => {
   return typeof text === "string" && text.trim().length > 0;
 };
+
+// Vérifier si l'eamil est valide
+export const isValidEmail = (email) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+}
 
 // Vérifier si un spot existe
 export const checkSpotExists = async (spotId) => {

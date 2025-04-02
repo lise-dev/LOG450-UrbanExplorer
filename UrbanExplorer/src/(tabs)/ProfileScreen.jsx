@@ -24,7 +24,6 @@ const ProfileScreen = ({ navigation }) => {
     const fetchUserData = async () => {
       if (user) {
         try {
-          console.log(userData.idUtilisateur);
           const docRef = doc(db, dbTables.USER, userData.idUtilisateur);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
@@ -57,10 +56,11 @@ const ProfileScreen = ({ navigation }) => {
       {/* User + icon */}
       <View style={[styles.container, styles.containerUserInfo]}>
         <Image
-          source={{uri: userData.photoProfil}}
+          source={{uri: userData?.photoProfil}}
           style={styles.profileImage}
         />
-        <Text style={styles.userTitle}>{userData.pseudo}</Text>
+        <Text style={[styles.titleFullName, styles.userTitle]}>{userData.prenom + " " + userData.nom}</Text>
+        <Text style={[styles.titlePseudo, styles.userTitle]}>{userData.pseudo}</Text>
         <Text>{userData.email}</Text>
       </View>
       <View style={[styles.container, styles.containerButtons]}>
@@ -91,9 +91,7 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
         </View>
-      {/* </View>
 
-      <View style={[styles.container, styles.containerLogout]}> */}
       </View>
     </SafeAreaView>
   );
@@ -172,6 +170,9 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center"
+  },
+  titlePseudo: {
+    fontStyle: "italic"
   }
 
 });

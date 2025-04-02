@@ -4,7 +4,7 @@
 */
 
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView } from "react-native";
 import { Picker } from "@react-native-picker/picker"; 
 // import { Picker } from "@react-native-picker/picker"; 
 import * as ImagePicker from "expo-image-picker";
@@ -14,6 +14,8 @@ import AuthRepository from "../repositories/AuthRepository";
 import { setDoc, doc } from "firebase/firestore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Roles from  '../constants/roles';
+import UserRepository from "../repositories/UserRepository";
+import { AuthProvider } from "../../AuthContext";
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -21,6 +23,8 @@ const RegisterScreen = ({ navigation }) => {
   const [pseudo, setPseudo] = useState("");
   const [role, setRole] = useState("explorateur");
   const [photoProfil, setPhotoProfil] = useState(null);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
 
   // Sélection d'une image depuis la galerie
@@ -47,26 +51,21 @@ const RegisterScreen = ({ navigation }) => {
     }
   
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("userCredential: ", userCredential);
-      const userId = userCredential.user.uid;
-      console.log("userId: ", userId)
-  
-      await setDoc(doc(db, "utilisateurs", userId), {
-        idUtilisateur: userId,
-        email,
-        pseudo,
-        role, // Enregistrement du rôle sélectionné
-        photoProfil: photoProfil || null,
-        dateInscription: new Date(),
-      });
+
+      var response = await AuthRepository.register(email, password, lastName, firstName, pseudo, role, photoProfil);
+      if (!response.success) {
+        console.error(response.error);
+      }
+      const userCredential = response.user;
+
+      const userId = userCredential.uid;
   
       navigation.replace("HomeScreen");
     } catch (error) {
       console.error(error);
       setErrorMessage("Erreur lors de l'inscription. Réessayez.");
     }
-  };  
+  }; 
 
   const handleGoogleLogin = async () => {
     const response = await AuthRepository.signInWithGoogle();
@@ -81,63 +80,77 @@ const RegisterScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
         {/* Partie haute avec fond gris */}
-        <View style={styles.topSection}>
-          <Text style={styles.title}>Créer un compte</Text>
-          <View style={styles.inputContainer}>
+        <ScrollView style={styles.topSectionScroll}>
+          <View style={styles.topSection}>
+            <Text style={styles.title}>Créer un compte</Text>
+            <View style={styles.inputContainer}>
 
-            {/* email */}
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
+              {/* Prénom */}
+              <TextInput
+                style={styles.input}
+                placeholder="Prénom"
+                value={firstName}
+                onChangeText={setFirstName}
+              />
 
-            {/* mot de passe */}
-            <TextInput
-              style={styles.input}
-              placeholder="Mot de passe"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
+              {/* Nom */}
+              <TextInput
+                style={styles.input}
+                placeholder="Nom"
+                value={lastName}
+                onChangeText={setLastName}
+              />
 
-            {/* pseudo */}
-            <TextInput
-              style={styles.input}
-              placeholder="Pseudo"
-              value={pseudo}
-              onChangeText={setPseudo}
-            />
+              {/* email */}
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
 
-            {/* role */}
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={role}
-                onValueChange={(itemValue) => setRole(itemValue)}
-                style={styles.picker}
-              >
-                {/* <Picker.Item label="Explorateur" value="explorateur" />
-                <Picker.Item label="Contributeur" value="contributeur" />
-                <Picker.Item label="Modérateur" value="moderateur" /> */}
-                {Object.entries(Roles).map(([key, value]) => (
-                  <Picker.Item label={value} value={key} key={key}/>
-                  // console.log("value : ", value)
-                ))}
-              </Picker>
+              {/* mot de passe */}
+              <TextInput
+                style={styles.input}
+                placeholder="Mot de passe"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
+
+              {/* pseudo */}
+              <TextInput
+                style={styles.input}
+                placeholder="Pseudo"
+                value={pseudo}
+                onChangeText={setPseudo}
+              />
+
+              {/* role */}
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={role}
+                  onValueChange={(itemValue) => setRole(itemValue)}
+                  style={styles.picker}
+                >
+                  {Object.entries(Roles).map(([key, value]) => (
+                    <Picker.Item label={value} value={key} key={key}/>
+                  ))}
+                </Picker>
+              </View>
+
+              {/* photo de profil */}
+              <TouchableOpacity onPress={pickImage} style={styles.photoInput}>
+                <Text style={styles.photoInputText}>
+                  {photoProfil ? "Modifier la photo" : "Choisir une photo"}
+                </Text>
+              </TouchableOpacity>
+              {photoProfil && <Image source={{ uri: photoProfil }} style={styles.profileImage} />}
             </View>
-
-            {/* photo de profil */}
-            <TouchableOpacity onPress={pickImage} style={styles.photoInput}>
-              <Text style={styles.photoInputText}>
-                {photoProfil ? "Modifier la photo" : "Choisir une photo"}
-              </Text>
-            </TouchableOpacity>
-            {photoProfil && <Image source={{ uri: photoProfil }} style={styles.profileImage} />}
           </View>
-        </View>
+        </ScrollView>
 
         <View style={styles.bottomSection}>
           {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
@@ -168,12 +181,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#E0E0E0",
   },
+  topSectionScroll: {
+    flex: 1,
+
+  },
   topSection: {
-    flex: 3,
+    // flex: 3,
     justifyContent: "flex-end",
     alignItems: "center",
     backgroundColor: "#E0E0E0",
-    paddingBottom: 20,
+    // paddingBottom: 20,
   },
   title: {
     fontSize: 28,
@@ -198,7 +215,7 @@ const styles = StyleSheet.create({
     color: "#a7a7a7",
   },
   bottomSection: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: "#FFFFFF",
     padding: 20,
     borderTopLeftRadius: 30,
