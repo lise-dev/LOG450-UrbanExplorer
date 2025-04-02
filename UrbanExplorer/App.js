@@ -10,7 +10,6 @@ import RegisterScreen from "./src/screens/RegisterScreen";
 import ResetPasswordScreen from "./src/screens/ResetPasswordScreen";
 import FavoritesScreen from "./src/screens/FavoritesScreen";
 import {PaperProvider} from "react-native-paper";
-import {AuthProvider} from "./src/utils/AuthContext";
 import DetailScreen from "./src/screens/DetailScreen";
 import Toast from "react-native-toast-message";
 import ExploreScreen from "./src/(tabs)/ExploreScreen"
