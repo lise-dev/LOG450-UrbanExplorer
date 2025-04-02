@@ -4,7 +4,7 @@ Crée le 28.03.25
 */
 
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, db } from "../../firebaseConfig";
@@ -15,6 +15,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { dbTables } from '../constants/dbInfo'
 import { doc, getDoc } from "firebase/firestore";
+
+const showAlert = () => {
+  Alert.alert("Info", "Fonctionnalité pas encore implémentée");
+}
 
 const ProfileScreen = ({ navigation }) => {
 
@@ -71,10 +75,16 @@ const ProfileScreen = ({ navigation }) => {
           >
             <Text style={styles.buttonText}>Modifier mon profil</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, styles.editProfileButtons]}>
+          <TouchableOpacity 
+            style={[styles.button, styles.editProfileButtons]}
+            onPress={showAlert}
+          >
             <Text style={styles.buttonText}>Changer la langue de traduction</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, styles.editProfileButtons]}>
+          <TouchableOpacity 
+            style={[styles.button, styles.editProfileButtons]}
+            onPress={showAlert}  
+          >
             <Text style={styles.buttonText}>Définir mes centres d'intérêts</Text>
           </TouchableOpacity>
         </View>
