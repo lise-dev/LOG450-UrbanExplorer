@@ -4,14 +4,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
-import ProfileScreen from "../(tabs)/ProfileScreen";
+import ProfileScreen from "./ProfileScreen";
 import ExploreScreen from './ExploreScreen';
 import FavorisScreen from './FavorisScreen';
-import EditProfileScreen from '../screens/EditProfileScreen'
+import EditProfileScreen from '../EditProfileScreen'
 import ModerationScreen from './ModerationScreen';
 import ContributionScreen from './ContributionScreen';
-import { AuthContext } from '../../AuthContext';
-import Roles from '../constants/roles';
+import { AuthContext } from '../../../AuthContext';
+import Roles from '../../constants/roles';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();

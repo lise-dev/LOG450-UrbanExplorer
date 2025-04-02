@@ -12,12 +12,12 @@ import FavoritesScreen from "./src/screens/FavoritesScreen";
 import {PaperProvider} from "react-native-paper";
 import DetailScreen from "./src/screens/DetailScreen";
 import Toast from "react-native-toast-message";
-import ExploreScreen from "./src/(tabs)/ExploreScreen"
-import ProfileScreen from "./src/(tabs)/ProfileScreen";
-import FavorisScreen from "./src/(tabs)/FavorisScreen";
+import ExploreScreen from "./src/screens/(tabs)/ExploreScreen"
+import ProfileScreen from "./src/screens/(tabs)/ProfileScreen";
+import FavorisScreen from "./src/screens/(tabs)/FavorisScreen";
 import EditProfileScreen from "./src/screens/EditProfileScreen";
 import { AuthProvider } from "./AuthContext";
-import MainTabs from "./src/(tabs)/_layout";
+import MainTabs from "./src/screens/(tabs)/_layout";
 
 
 const Stack = createStackNavigator();
@@ -76,7 +76,9 @@ const App = () => {
     <NavigationContainer>
       {user ? (
         <AuthProvider>
-          <MainTabs />
+          <PaperProvider>
+            <MainTabs />
+          </PaperProvider>
         </AuthProvider>
       ) : (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
