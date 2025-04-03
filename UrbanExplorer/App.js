@@ -4,17 +4,25 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { auth } from "./firebaseConfig";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from "./src/screens/LoginScreen";
 import RegisterScreen from "./src/screens/RegisterScreen";
 import ResetPasswordScreen from "./src/screens/ResetPasswordScreen";
 import FavoritesScreen from "./src/screens/FavoritesScreen";
 import {PaperProvider} from "react-native-paper";
-import {AuthProvider} from "./src/utils/AuthContext";
 import DetailScreen from "./src/screens/DetailScreen";
 import Toast from "react-native-toast-message";
+import ExploreScreen from "./src/screens/(tabs)/ExploreScreen"
+import ProfileScreen from "./src/screens/(tabs)/ProfileScreen";
+import FavorisScreen from "./src/screens/(tabs)/FavorisScreen";
+import EditProfileScreen from "./src/screens/EditProfileScreen";
+import { AuthProvider } from "./AuthContext";
+import MainTabs from "./src/screens/(tabs)/_layout";
 
 
 const Stack = createStackNavigator();
+
+const Tab = createBottomTabNavigator();
 
 const HomeScreen = ({ navigation }) => {
   const [user, setUser] = useState(null);
@@ -33,39 +41,57 @@ const HomeScreen = ({ navigation }) => {
       </Text>
 
       {user ? (
-        <TouchableOpacity style={styles.accountButton} onPress={() => signOut(auth)}>
-          <Text style={styles.buttonText}>Se déconnecter</Text>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity style={styles.accountButton} onPress={() => signOut(auth)}>
+            <Text style={styles.buttonText}>Se déconnecter</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.accountButton} onPress={() => navigation.navigate("(tabs)/TestScreen")}>
+            <Text style={styles.buttonText}>Accéder à l'écran test</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
-        <TouchableOpacity style={styles.accountButton} onPress={() => navigation.navigate("LoginScreen")}>
-          <Text style={styles.buttonText}>Se connecter</Text>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity style={styles.accountButton} onPress={() => navigation.navigate("LoginScreen")}>
+            <Text style={styles.buttonText}>Se connecter</Text>
+          </TouchableOpacity>
+        </View>
       )}
     </View>
   );
 };
 
 const App = () => {
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
+
+
   return (
-      <AuthProvider>
-        <PaperProvider>
-          <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="FavoritesScreen" component={FavoritesScreen} />
-              <Stack.Screen name="DetailScreen" component={DetailScreen} />
-              <Stack.Screen name="HomeScreen" component={HomeScreen} />
-              <Stack.Screen name="LoginScreen" component={LoginScreen} />
-              <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-              <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
-            </Stack.Navigator>
-          </NavigationContainer>
-          <Toast/>
-        </PaperProvider>
-      </AuthProvider>
-
-
+    <NavigationContainer>
+      {user ? (
+        <AuthProvider>
+          <PaperProvider>
+            <MainTabs />
+          </PaperProvider>
+        </AuthProvider>
+      ) : (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+        <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
+        </Stack.Navigator>
+      )}
+    </NavigationContainer>
 
   );
+
 };
 
 const styles = StyleSheet.create({

@@ -25,14 +25,14 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-dev-client"
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "cae7d8a3-5f46-40bf-afc1-916a42dca014"
-      }
-    },
-    "owner": "loceny6"
+    // "plugins": [
+    //   "expo-dev-client"
+    // ],
+    // "extra": {
+    //   "eas": {
+    //     "projectId": "cae7d8a3-5f46-40bf-afc1-916a42dca014"
+    //   }
+    // },
+    // "owner": "loceny6"
   }
 }

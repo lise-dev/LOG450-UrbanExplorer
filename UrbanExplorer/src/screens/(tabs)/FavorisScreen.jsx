@@ -1,5 +1,3 @@
-// ## WARNING : ne plus utiliser ce fichier --> voir src/screens/(tabs)/FavorisScreen.jsx
-
 import React, {useCallback, useState} from "react";
 import {
     ActivityIndicator,
@@ -12,15 +10,15 @@ import {
 import {useFocusEffect} from "@react-navigation/native";
 import {Searchbar, Snackbar, Icon, RadioButton} from "react-native-paper";
 
-import Toolbar from "../components/Toolbar";
-import FavoritesItem from "../components/FavoritesItem";
-import Button from "../components/Button";
-import ConfirmDialog from "../components/ConfirmDialog";
+import Toolbar from "../../components/Toolbar";
+import FavoritesItem from "../../components/FavoritesItem";
+import Button from "../../components/Button";
+import ConfirmDialog from "../../components/ConfirmDialog";
 
-import FavoriRepository from "../repositories/FavoriRepository";
-import SpotRepository from "../repositories/SpotRepository";
+import FavoriRepository from "../../repositories/FavoriRepository";
+import SpotRepository from "../../repositories/SpotRepository";
 
-import {styles, typography} from "../styles/GlobalStyle";
+import {styles, typography} from "../../styles/GlobalStyle";
 
 const FavoritesScreen = ({navigation}) => {
     const userId = "user_003"; // TODO: remplacer avec useAuth()
