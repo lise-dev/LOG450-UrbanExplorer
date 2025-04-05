@@ -6,20 +6,21 @@
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
 import { getUserRole, isValidNote, isValidText, getUserRole }  from "../utils/validators"; 
+import { dbTables } from "../constants/dbInfo";
 
 // Générer un ID avis formaté automatiquement 
 const generateAvisId = async () => {
-  const querySnapshot = await getDocs(collection(db, "avis"));
+  const querySnapshot = await getDocs(collection(db, dbTables.AVIS));
   const avisCount = querySnapshot.size + 1;
   return `avis_${String(avisCount).padStart(3, "0")}`;
 };
 
 // Supprimer les signalements liés à un avis
 const deleteSignalementsByAvis = async (avisId) => {
-  const signalementsQuery = query(collection(db, "signalements"), where("idContenu", "==", avisId));
+  const signalementsQuery = query(collection(db, dbTables.REPORTS), where("idContenu", "==", avisId));
   const signalementsSnapshot = await getDocs(signalementsQuery);
   signalementsSnapshot.forEach(async (signalement) => {
-    await deleteDoc(doc(db, "signalements", signalement.id));
+    await deleteDoc(doc(db, dbTables.REPORTS, signalement.id));
   });
 };
 
@@ -28,7 +29,7 @@ const AvisRepository = {
   // Récupérer tous les avis
   getAvis: async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "avis"));
+      const querySnapshot = await getDocs(collection(db, dbTables.AVIS));
       return querySnapshot.docs.map(doc => ({ idAvis: doc.id, ...doc.data() }));
     } catch (error) {
       console.error("Erreur lors de la récupération des avis :", error);
@@ -55,7 +56,7 @@ const AvisRepository = {
       };
 
       const avisId = await generateAvisId();
-      const avisRef = doc(db, "avis", avisId);
+      const avisRef = doc(db, dbTables.AVIS, avisId);
       await setDoc(avisRef, { idAvis: avisId, ...formattedAvis });
 
       console.log(`Avis ajouté avec l'ID : ${avisId}`);
@@ -69,7 +70,7 @@ const AvisRepository = {
   // Modifier un avis (seulement si je suis le propriétaire ou un modérateur)
   editAvis: async (avisId, userId, updatedData) => {
     try {
-      const avisRef = doc(db, "avis", avisId);
+      const avisRef = doc(db, dbTables.AVIS, avisId);
       const avisSnapshot = await getDoc(avisRef);
 
       if (!avisSnapshot.exists()) {
@@ -109,7 +110,7 @@ const AvisRepository = {
   // Supprimer un avis et les signalements associés
   deleteAvis: async (avisId, userId) => {
     try {
-      const avisRef = doc(db, "avis", avisId);
+      const avisRef = doc(db, dbTables.AVIS, avisId);
       const avisSnapshot = await getDoc(avisRef);
       
       if (!avisSnapshot.exists()) {

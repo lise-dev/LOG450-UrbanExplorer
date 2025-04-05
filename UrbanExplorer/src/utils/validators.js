@@ -2,11 +2,12 @@
 
 import { collection, getDocs, doc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
+import { dbTables } from "../constants/dbInfo";
 
 // Vérifier si un pseudo existe déjà
 export const checkPseudoExists = async (pseudo, idUser = null) => {
   try {
-    const pseudoQuery = query(collection(db, "utilisateurs"), where("pseudo", "==", pseudo.toLowerCase()), where("idUtilisateur", "!=", idUser));
+    const pseudoQuery = query(collection(db, dbTables.USERS), where("pseudo", "==", pseudo.toLowerCase()), where("idUtilisateur", "!=", idUser));
     const querySnapshot = await getDocs(pseudoQuery);
     return !querySnapshot.empty;
   } catch (error) {
@@ -16,7 +17,7 @@ export const checkPseudoExists = async (pseudo, idUser = null) => {
 
 // Vérifier si un email existe déjà
 export const checkEmailExists = async (email) => {
-  const emailQuery = query(collection(db, "utilisateurs"), where("email", "==", email.toLowerCase()));
+  const emailQuery = query(collection(db, dbTables.USERS), where("email", "==", email.toLowerCase()));
   const querySnapshot = await getDocs(emailQuery);
   return !querySnapshot.empty;
 };
@@ -47,13 +48,13 @@ export const isValidEmail = (email) => {
 
 // Vérifier si un spot existe
 export const checkSpotExists = async (spotId) => {
-  const spotRef = doc(db, "spots", spotId);
+  const spotRef = doc(db, dbTables.SPOTS, spotId);
   const spotDoc = await getDoc(spotRef);
   return spotDoc.exists();
 };
 
 export const checkUserExists = async (userId) => {
-  const userRef = doc(db, "utilisateurs", userId);
+  const userRef = doc(db, dbTables.USERS, userId);
   const userDoc = await getDoc(userRef);
   return userDoc.exists();
 };
@@ -62,7 +63,7 @@ export const checkUserExists = async (userId) => {
 export const getUserRole = async (userId) => {
   if (!userId) return null;
   try {
-    const userRef = doc(db, "utilisateurs", userId);
+    const userRef = doc(db, dbTables.USERS, userId);
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       return userDoc.data().role;
@@ -78,7 +79,7 @@ export const getUserRole = async (userId) => {
 export const checkFavoriExists = async (userId, spotId) => {
   if (!userId || !spotId) return false;
 
-  const favorisRef = collection(db, "users", userId, "favoris");
+  const favorisRef = collection(db, dbTables.USERS, userId, "favoris");
   const favorisQuery = query(
       favorisRef,
       where("idSpot", "==", spotId)
