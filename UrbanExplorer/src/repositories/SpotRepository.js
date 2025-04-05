@@ -37,6 +37,18 @@ const updateSpotsOnUserDeletion = async (userId) => {
 
 // Repository pour les spots
 const SpotRepository = {
+  // Récupérer un spot spécifique
+  getSpotById: async (idSpot) => {
+    console.log("idSpot:", idSpot)
+    try {
+      const querySnapshot = await getDocs(collection(db, dbTables.SPOTS), where("idSpot", "==", idSpot));
+      return querySnapshot.docs.map(doc => ({ idSpot: doc.id, ...doc.data() }))
+    } catch (error) {
+      console.error("Erreur lors de la récupération du spot :", error);
+      return [];
+    }
+  },
+
   // Récupérer tous les spots 
   getSpots: async () => {
     try {

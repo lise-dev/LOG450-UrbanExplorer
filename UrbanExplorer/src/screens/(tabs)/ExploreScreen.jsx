@@ -5,6 +5,7 @@ import MapView, { Marker } from 'react-native-maps';
 // import Geolocation from 'react-native-geolocation-service';
 import * as Location from 'expo-location';
 import SpotRepository from "../../repositories/SpotRepository";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ExploreScreen({ navigation }) {
 
@@ -113,8 +114,9 @@ export default function ExploreScreen({ navigation }) {
           description={spot.description}
           pinColor="red"
           onPress={() => {
-            console.log("Pressed on ", spot.nom)
-            navigation.navigate('DetailScreen')
+            navigation.navigate('DetailScreen', {
+              idSpot: spot.idSpot,
+            });
           }}
         />
       ))}

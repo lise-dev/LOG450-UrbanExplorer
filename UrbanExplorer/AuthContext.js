@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { auth, db } from './firebaseConfig'; // Assurez-vous d'importer correctement votre configuration Firebase
 import { doc, getDoc, onSnapshot } from 'firebase/firestore'
+import { dbTables } from './src/constants/dbInfo';
 
 
 // Créez le contexte pour l'authentification
@@ -16,7 +17,7 @@ export const AuthProvider = ({ children }) => {
       if (userAuth) {
         const userId = userAuth.uid;
         try {
-          const docRef = doc(db, 'utilisateurs', userId);
+          const docRef = doc(db, dbTables.USERS, userId);
 
           onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {

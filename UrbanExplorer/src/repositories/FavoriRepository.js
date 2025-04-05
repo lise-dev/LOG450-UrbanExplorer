@@ -53,13 +53,13 @@ const FavoriRepository = {
       };
 
     try {
-      const role = await getUserRole(userId);
-      if (!["contributeur", "moderateur"].includes(role)) {
-        return {
-          success: false,
-          message: "Seuls les contributeurs et modérateurs peuvent ajouter un favori.",
-        };
-      }
+      // const role = await getUserRole(userId);
+      // if (!["contributeur", "moderateur"].includes(role)) {
+      //   return {
+      //     success: false,
+      //     message: "Seuls les contributeurs et modérateurs peuvent ajouter un favori.",
+      //   };
+      // }
 
       if (!(await checkUserExists(userId)))
         return { success: false, message: "L'utilisateur spécifié n'existe pas." };
