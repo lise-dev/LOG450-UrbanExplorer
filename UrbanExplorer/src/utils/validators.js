@@ -117,7 +117,7 @@ const checkContentExistsAvisSpots = async (categorieContenu, idContenu) => {
 };
 
 // Vérifier si les coordonnées sont valides
-const isValidCoordinates = (coords) => {
+export const isValidCoordinates = (coords) => {
   return (
     coords &&
     typeof coords.latitude === "number" &&

@@ -80,6 +80,8 @@ export default function ExploreScreen({ navigation }) {
     // console.log("allSpots :", allSpots)
   }
 
+
+
   // console.log(spots)
 
   return (
@@ -127,6 +129,15 @@ export default function ExploreScreen({ navigation }) {
         onPress={fetchSpots}
       >
         <Text>Récupérer les spots</Text>
+      </TouchableOpacity>
+
+      {/* Modifier pour que ça soit accessible uniquement aux contributeurs */}
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("AddSpotScreen")
+        }}
+      >
+        <Text>Ajouter un spot</Text>
       </TouchableOpacity>
 
     </SafeAreaView>

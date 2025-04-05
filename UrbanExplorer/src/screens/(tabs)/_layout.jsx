@@ -13,6 +13,7 @@ import ContributionScreen from './ContributionScreen';
 import { AuthContext } from '../../../AuthContext';
 import Roles from '../../constants/roles';
 import DetailScreen from '../DetailScreen';
+import AddSpotScreen from '../AddSpotScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -31,6 +32,7 @@ const ExploreStack = () => {
     <Stack.Navigator>
       <Stack.Screen name="ExploreScreen" component={ExploreScreen} options={{headerShown: false}} />
       <Stack.Screen name="DetailScreen" component={DetailScreen} options={{headerShown: false}} />
+      <Stack.Screen name="AddSpotScreen" component={AddSpotScreen} options={{headerShown: false}} />
     </Stack.Navigator>
   )
 }
