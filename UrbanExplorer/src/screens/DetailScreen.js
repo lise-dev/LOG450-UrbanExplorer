@@ -15,7 +15,7 @@ const DetailScreen = ({navigation}) => {
 
 
     const userId = 'user_003'; // const { userId } = useAuth();
-    const spotId = 'spot_009'; //  const { spotId } = route.params;
+    const spotId = 'lieu_001'; //  const { spotId } = route.params;
 
     useFocusEffect(
         useCallback(() => {

@@ -12,6 +12,7 @@ import ModerationScreen from './ModerationScreen';
 import ContributionScreen from './ContributionScreen';
 import { AuthContext } from '../../../AuthContext';
 import Roles from '../../constants/roles';
+import DetailScreen from '../DetailScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -25,6 +26,14 @@ const ProfileStack = () => {
   );
 };
 
+const ExploreStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="ExploreScreen" component={ExploreScreen} options={{headerShown: false}} />
+      <Stack.Screen name="DetailScreen" component={DetailScreen} options={{headerShown: false}} />
+    </Stack.Navigator>
+  )
+}
 
 const MainTabs = () => {
 
@@ -35,21 +44,20 @@ const MainTabs = () => {
     <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen
             name="Explore"
-            component={ExploreScreen}
+            component={ExploreStack}
             options={{
                 tabBarIcon: ({ color, size }) => <Ionicons name="map" size={size} color={color} />,
             }}
         />
 
-      {userData != null && userData["role"] === Roles.explorateur && (
-        <Tab.Screen
-          name="Favoris"
-          component={FavorisScreen}
-          options={{
-              tabBarIcon: ({ color, size }) => <Ionicons name="heart-circle" size={size} color={color} />,
-          }}
-        />
-      )}
+      <Tab.Screen
+        name="Favoris"
+        component={FavorisScreen}
+        options={{
+            tabBarIcon: ({ color, size }) => <Ionicons name="heart-circle" size={size} color={color} />,
+        }}
+      />
+      
       {userData != null && userData["role"] === Roles.contributeur && (
         <Tab.Screen
           name="Contribution"
