@@ -30,8 +30,8 @@ const ProfileStack = () => {
 const ExploreStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="ExploreScreen" component={ExploreScreen} options={{headerShown: false}} />
-      <Stack.Screen name="DetailScreen" component={DetailScreen} options={{headerShown: false}} />
+      <Stack.Screen name="ExploreScreen" component={ExploreScreen} options={{headerShown: false, title: "Explorer"}} />
+      <Stack.Screen name="DetailScreen" component={DetailScreen} options={{headerShown: true, title: "Détail"}} />
       <Stack.Screen name="AddSpotScreen" component={AddSpotScreen} options={{headerShown: false}} />
     </Stack.Navigator>
   )
@@ -40,8 +40,8 @@ const ExploreStack = () => {
 const FavoritesStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="FavoritesScreen" component={FavorisScreen} options={{headerShown: false}} />
-      <Stack.Screen name="DetailScreen" component={DetailScreen} options={{headerShown: false}} />
+      <Stack.Screen name="FavoritesScreen" component={FavorisScreen} options={{headerShown: false, title: "Mes favoris"}} />
+      <Stack.Screen name="DetailScreen" component={DetailScreen} options={{headerShown: true, title: "Détail"}} />
     </Stack.Navigator>
   )
 }

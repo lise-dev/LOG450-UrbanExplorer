@@ -74,10 +74,10 @@ const FavoritesScreen = ({navigation}) => {
         setSnackbarVisible(true);
     };
 
-    const handleDeleteFavorite = async (spotId) => {
-        const result = await FavoriRepository.deleteFavoriteOfSpot(idUser, spotId);
+    const handleDeleteFavorite = async (idSpot) => {
+        const result = await FavoriRepository.deleteFavoriteOfSpot(idUser, idSpot);
         if (result.success) {
-            setFavorites((prev) => prev.filter((f) => f.idSpot !== spotId));
+            setFavorites((prev) => prev.filter((f) => f.idSpot !== idSpot));
         }
         showSnackbar(result.message);
     };
@@ -179,7 +179,7 @@ const FavoritesScreen = ({navigation}) => {
                                     favorite={item}
                                     onPress={() =>
                                         navigation.navigate("DetailScreen", {
-                                            spotId: item.original.idSpot,
+                                            idSpot: item.original.idSpot,
                                         })
                                     }
                                     onViewMap={() => console.log("Voir carte", item)}

@@ -1,4 +1,4 @@
-import {SafeAreaView, StyleSheet, Text, ActivityIndicator, TouchableOpacity} from "react-native";
+import {SafeAreaView, StyleSheet, Text, ActivityIndicator, TouchableOpacity, View} from "react-native";
 import {styles} from "../styles/GlobalStyle";
 import {FAB, Snackbar} from "react-native-paper";
 import {useCallback, useEffect, useState, useContext} from "react";
@@ -8,6 +8,11 @@ import {checkFavoriExists} from "../utils/validators";
 import {useAuth} from "../utils/AuthContext";
 import {useFocusEffect, useRoute} from "@react-navigation/native";
 import SpotRepository from "../repositories/SpotRepository";
+import MapView, { Marker } from 'react-native-maps';
+import { Dimensions } from "react-native";
+
+
+const screenHeight = Dimensions.get("window").height;
 
 const DetailScreen = ({route, navigation}) => {
     const [isInFavorite, setIsInFavorite] = useState(false);
@@ -78,7 +83,49 @@ const DetailScreen = ({route, navigation}) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text>Lieu sélecitonné : {spot.description}</Text>
+
+            <View style={localStyles.detailContainer}>
+
+                <View style={localStyles.metaDataSpot}>
+                    <Text style={localStyles.spotName}>{spot.nom}</Text>
+                    <Text style={localStyles.spotDescription}>{spot.description}</Text>
+                    <Text style={localStyles.spotType}>{spot.type}</Text>
+                </View>
+
+                <View style={localStyles.spotAvis}>
+                    <Text>Les avis iront ici</Text>
+                </View>
+
+                <View style={localStyles.containerMap}>
+
+                    <MapView
+                        style={localStyles.spotMap}
+                        region={{
+                        latitude: spot.coordonnees.latitude,
+                        longitude: spot.coordonnees.longitude,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                        }}
+                    >
+
+                        <Marker
+                            coordinate={{
+                                latitude: spot.coordonnees.latitude,
+                                longitude: spot.coordonnees.longitude,
+                            }}
+                            title={spot.nom}
+                            description={spot.description}
+                            pinColor="red"
+                        />
+
+                    </MapView>
+
+                </View>
+
+
+            </View>
+
+
             <FAB
                 icon={'heart'}
                 style={localStyles.fab}
@@ -115,6 +162,40 @@ const localStyles = StyleSheet.create({
         bottom: 16,
         backgroundColor: '#e8f5e9',
     },
+    detailContainer: {
+        flex: 1,
+        justifyContent: "flex-start",
+        alignItems: "center",
+
+    },  
+    metaDataSpot: {
+        paddingHorizontal: 16,
+        marginBottom: 8,
+    },
+    spotName: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    spotDescription: {
+        fontSize: 16,
+        marginTop: 4,
+    },
+    spotType: {
+        fontStyle: 'italic',
+        marginTop: 4,
+    },
+    spotAvis: {
+        flex: 1,
+        width: '100%',
+        paddingHorizontal: 16,
+    },
+    spotMap: {
+        flex: 1,
+    },
+    containerMap: {
+        width: '100%',
+        height: screenHeight / 4,
+    }
 });
 
 export default DetailScreen;
