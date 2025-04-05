@@ -22,23 +22,6 @@ const AddSpotScreen = ({route, navigation}) => {
     const { user, userData, setUserData } = useContext(AuthContext);
     const idUser = userData.idUtilisateur;
 
-    // {
-    //     "idSpot": "lieu_001",
-    //     "nom": "Musée du Louvre",
-    //     "coordonnees": { "latitude": 48.8606, "longitude": 2.3376 },
-    //     "type": "Monument",
-    //     "description": "Un des musées les plus célèbres du monde.",
-    //     "ajoutePar": "user_002",
-    //     "dateAjout": "2025-03-07T10:00:00Z"
-    //   }
-
-//     <TextInput
-//     style={styles.input}
-//     value={dictionaryUrl}
-//     onChangeText={setTmpAndroidDictionaryUrl}
-//     placeholder='URL du dictionnaire au format JSON'
-//   />
-
     async function fetchCoordinates() {
         try {
             const response = await axios.get('https://nominatim.openstreetmap.org/search', {
@@ -96,30 +79,6 @@ const AddSpotScreen = ({route, navigation}) => {
                     onChangeText={setSpotAddress}
                     placeholder="Adresse du spot"
                 />
-                {/* <TextInput 
-                    value={spotCoordonnees.latitude?.toString()}
-                    onChangeText={(text) => {
-                        const latitude = parseFloat(text);
-                        setSpotCoordonnees((prev) => ({
-                            ...prev,
-                            latitude: isNaN(latitude) ? undefined : latitude
-                        }));
-
-                    }}
-                    placeholder="Latitude du spot"
-                />
-                <TextInput 
-                    value={spotCoordonnees.longitude?.toString()}
-                    onChangeText={(text) => {
-                        const longitude = parseFloat(text);
-                        setSpotCoordonnees((prev) => ({
-                            ...prev,
-                            longitude: isNaN(longitude) ? undefined : longitude
-                        }));
-
-                    }}
-                    placeholder="Longitude du spot" 
-                /> */}
                 <TouchableOpacity
                     onPress={saveSpot}
                 >

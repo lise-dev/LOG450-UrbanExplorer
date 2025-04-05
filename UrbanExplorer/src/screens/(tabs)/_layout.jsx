@@ -37,6 +37,15 @@ const ExploreStack = () => {
   )
 }
 
+const FavoritesStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="FavoritesScreen" component={FavorisScreen} options={{headerShown: false}} />
+      <Stack.Screen name="DetailScreen" component={DetailScreen} options={{headerShown: false}} />
+    </Stack.Navigator>
+  )
+}
+
 const MainTabs = () => {
 
   const { user, userData } = useContext(AuthContext);
@@ -54,7 +63,7 @@ const MainTabs = () => {
 
       <Tab.Screen
         name="Favoris"
-        component={FavorisScreen}
+        component={FavoritesStack}
         options={{
             tabBarIcon: ({ color, size }) => <Ionicons name="heart-circle" size={size} color={color} />,
         }}

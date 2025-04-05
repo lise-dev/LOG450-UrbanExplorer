@@ -92,11 +92,12 @@ const DetailScreen = ({route, navigation}) => {
                 duration={3000}
                 action={{
                     label: 'OK', onPress: () => {
-                        navigation.navigate('FavoritesScreen', {
-                            userId: idUser,
-                            spotId: idSpot,
+                        // navigation.navigate('FavoritesScreen', {
+                        //     userId: idUser,
+                        //     spotId: idSpot,
 
-                        });
+                        // });
+                        // navigation.navigate("FavoritesScreen")
                         setSnackbarVisible(false)
                     }
                 }}
