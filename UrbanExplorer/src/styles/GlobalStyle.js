@@ -139,6 +139,12 @@ const styles = StyleSheet.create({
         width: "100%",
         color: "#757575",
     },
+
+    loader: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
 });
 
 const toolbarStyle = StyleSheet.create({
@@ -237,7 +243,8 @@ const typography = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
         textAlign: "center",
-    }
+    },
+
 });
 
 

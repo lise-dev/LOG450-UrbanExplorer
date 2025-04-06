@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useContext } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker } from 'react-native-maps';
 // import Geolocation from 'react-native-geolocation-service';
 import * as Location from 'expo-location';
 import SpotRepository from "../../repositories/SpotRepository";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import {FAB} from "react-native-paper";
+import { AuthContext } from "../../../AuthContext";
+import { styles } from "../../styles/GlobalStyle";
+
 
 
 export default function ExploreScreen({ navigation }) {
@@ -15,18 +18,13 @@ export default function ExploreScreen({ navigation }) {
   const [locationServicesEnabled, setLocationServicesEnabled] = useState(false)
   const [ currentLocation, setCurrentLocation ] = useState({latitude: 0, longitude: 0});
   const [spots, setSpots] = useState([]);
+  // const { user, userData, setUserData } = useContext(AuthContext);
+  // console.log(userData);
+  // const idUser = userData.idUtilisateur;
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
 
-    const initialize = async () => {
-      await checkIfLocationEnabled();
-      await getCurrentLocation();
-      await fetchSpots();
-    }
-
-    initialize();
-
-  }, [])
 
   //check if location is enable or not
   const checkIfLocationEnabled = async () => {
@@ -90,6 +88,67 @@ export default function ExploreScreen({ navigation }) {
 
 
 
+  const initialize = async () => {
+    // if (!idUser) {
+    //   setLoading(false);
+    //   return;
+    // }
+
+    try {
+      // if (!refreshing) setLoading(true);
+
+      await checkIfLocationEnabled();
+      await fetchSpots();
+    } catch (error) {
+      console.error("Erreur de chargement", error);
+    } finally {
+      // setLoading(false);
+      // setRefreshing(false);
+    }
+
+  }
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      await getCurrentLocation();
+    }
+    fetchLocation();
+  }, []);
+
+  useFocusEffect(useCallback(() => {
+    // const initialize = async () => {
+    //   await checkIfLocationEnabled();
+    //   await getCurrentLocation();
+    //   await fetchSpots();
+    // }
+
+    initialize();
+  }, []))
+
+  // useEffect(() => {
+
+  //   const initialize = async () => {
+  //     await checkIfLocationEnabled();
+  //     await getCurrentLocation();
+  //     await fetchSpots();
+  //   }
+
+  //   initialize();
+
+  // }, [])
+
+  // if (loading) {
+  //   return (
+  //     <View style={styles.loader}>
+  //       <ActivityIndicator size="large" />
+  //     </View>
+  //   )
+  // }
+
+ 
+
+
+
   // console.log(spots)
 
   return (
@@ -148,6 +207,7 @@ export default function ExploreScreen({ navigation }) {
         style={[localStyles.fab, {left: 16}]}
         onPress={async () => {
           await fetchSpots();
+          await getCurrentLocation();
         }}
       />
 

@@ -56,21 +56,21 @@ const MainTabs = () => {
 
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
-        <Tab.Screen
-            name="Explore"
-            component={ExploreStack}
-            options={{
-                tabBarIcon: ({ color, size }) => <Ionicons name="map" size={size} color={color} />,
-            }}
-        />
-
+      <Tab.Screen
+          name="Explore"
+          component={ExploreStack}
+          options={{
+              tabBarIcon: ({ color, size }) => <Ionicons name="map" size={size} color={color} />,
+          }}
+      />
       <Tab.Screen
         name="Favoris"
         component={FavoritesStack}
         options={{
             tabBarIcon: ({ color, size }) => <Ionicons name="heart-circle" size={size} color={color} />,
         }}
-      />
+      /> 
+
       
       {userData != null && userData["role"] === Roles.contributeur && (
         <Tab.Screen
@@ -78,6 +78,8 @@ const MainTabs = () => {
           component={ContributionScreen}
           options={{
               tabBarIcon: ({ color, size }) => <Ionicons name="extension-puzzle" size={size} color={color} />,
+              headerShown: true,
+              title: "Mes contributions"
           }}
         />
       )}

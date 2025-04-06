@@ -46,6 +46,22 @@ const AvisRepository = {
     }
   },
 
+  getAvisByUserId: async (idUser) => {
+    try {
+      const q = query(collection(db, dbTables.AVIS), where("idUtilisateur", "==", idUser));
+      const querySnapshot = await getDocs(q);
+      const result = querySnapshot.docs.map(doc => ({
+        idAvis: doc.id,
+        ...doc.data()
+      }));
+      return result;
+    } catch (error) {
+      console.error("Error lors de la récupération des avis :", error);
+      return [];
+    }
+  },
+
+
   // Récupérer tous les avis
   getAvis: async () => {
     try {

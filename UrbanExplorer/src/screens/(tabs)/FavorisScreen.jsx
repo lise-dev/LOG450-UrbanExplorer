@@ -26,6 +26,8 @@ const FavoritesScreen = ({navigation}) => {
     const { user, userData, setUserData } = useContext(AuthContext);
     const idUser = userData.idUtilisateur;
 
+    console.log(idUser);
+
     const [favorites, setFavorites] = useState([]);
     const [spots, setSpots] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -140,7 +142,7 @@ const FavoritesScreen = ({navigation}) => {
 
     if (loading) {
         return (
-            <View style={localStyles.loader}>
+            <View style={styles.loader}>
                 <ActivityIndicator size="large"/>
             </View>
         );
@@ -243,11 +245,6 @@ const localStyles = StyleSheet.create({
         alignItems: "center",
         marginTop: 200,
         padding: 15,
-    },
-    loader: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
     },
     searchbar: {
         margin: 10,

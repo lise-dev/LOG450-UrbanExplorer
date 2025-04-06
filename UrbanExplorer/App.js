@@ -70,13 +70,12 @@ const App = () => {
     return () => unsubscribe();
   }, []);
 
-
   return (
     <NavigationContainer>
       {user ? (
         <AuthProvider>
           <PaperProvider>
-            <MainTabs />
+            <MainTabs /> 
           </PaperProvider>
         </AuthProvider>
       ) : (

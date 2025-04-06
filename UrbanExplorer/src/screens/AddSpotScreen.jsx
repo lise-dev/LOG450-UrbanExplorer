@@ -20,7 +20,7 @@ import { defaultSpotTypes } from "../constants/spotTypes";
 const AddSpotScreen = ({route, navigation}) => {
 
     const [spotName, setSpotName] = useState("");
-    const [spotCoordonnees, setSpotCoordonnees] = useState({latitude: undefined, longitude: undefined});
+    // const [spotCoordonnees, setSpotCoordonnees] = useState({latitude: undefined, longitude: undefined});
     const [spotType, setSpotType] = useState("");
     const [spotDescription, setSpotDescription] = useState("");
     const [spotAddress, setSpotAddress] = useState("");
@@ -29,6 +29,7 @@ const AddSpotScreen = ({route, navigation}) => {
     const [spotTypes, setSpotTypes] = useState([]);
     const [open, setOpen] = useState(false);
     const [itemsTypes, setItemsTypes] = useState([]);
+    const [buttonEnabled, setButtonEnabled] = useState(true);
 
 
     const { user, userData, setUserData } = useContext(AuthContext);
@@ -62,32 +63,46 @@ const AddSpotScreen = ({route, navigation}) => {
                 format: 'json',
               },
             });
+            console.log("reponse :", response);
         
             const location = response.data[0];
-            setSpotCoordonnees({ latitude: parseFloat(location.lat), longitude: parseFloat(location.lon) });
+            return {latitude: parseFloat(location.lat), longitude: parseFloat(location.lon)};
+            // setSpotCoordonnees({ latitude: parseFloat(location.lat), longitude: parseFloat(location.lon) });
           } catch (error) {
             console.error('Erreur Nominatim :', error);
+            return undefined;
           }
     }
 
     const saveSpot = async () => {
+        try {
+            setButtonEnabled(false);
+    
+            const coordonnees = await fetchCoordinates();
+            console.log("retour coordonnees", coordonnees)
+    
+            const formattedSpot = {
+                nom: spotName,
+                coordonnees: coordonnees,
+                type: spotType,
+                description: spotDescription,
+            }
 
-        await fetchCoordinates();
-        console.log(spotCoordonnees)
-
-        const formattedSpot = {
-            nom: spotName,
-            coordonnees: spotCoordonnees,
-            type: spotType,
-            description: spotDescription,
-        }
-
-        const response = await SpotRepository.addSpot(formattedSpot, idUser)
-        if (response.error) {
+            console.log("formattedSpot:", formattedSpot)
+    
+            const response = await SpotRepository.addSpot(formattedSpot, idUser)
+            if (response.error) {
+                console.error(response.error)
+                setButtonEnabled(true);
+            } else {
+                setSnackbarMessage("Lieu ajouté avec succès")
+                setSnackbarVisible(true);
+                setButtonEnabled(false);
+            }
+            
+        } catch (error) {
             console.error(error)
-        } else {
-            setSnackbarMessage("Lieu ajouté avec succès")
-            setSnackbarVisible(true);
+            setButtonEnabled(true);
         }
     }
     
@@ -156,6 +171,7 @@ const AddSpotScreen = ({route, navigation}) => {
                 <TouchableOpacity
                     style={localStyles.button}
                     onPress={saveSpot}
+                    disabled={!buttonEnabled}
                 >
                     <Text style={localStyles.textButton}>Enregistrer le spot</Text>
                 </TouchableOpacity>
@@ -163,8 +179,11 @@ const AddSpotScreen = ({route, navigation}) => {
 
             <Snackbar
                 visible={snackbarVisible}
-                onDismiss={() => setSnackbarVisible(false)}
-                duration={3000}
+                onDismiss={() => {
+                    setSnackbarVisible(false);
+                    navigation.goBack();
+                }}
+                duration={2000}
                 action={{
                     label: 'OK', onPress: () => {
                         setSnackbarVisible(false)

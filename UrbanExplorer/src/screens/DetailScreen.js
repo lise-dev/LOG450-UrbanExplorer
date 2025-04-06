@@ -34,7 +34,6 @@ const DetailScreen = ({route, navigation}) => {
     useFocusEffect(
         useCallback(() => {
 
-            console.log("rappelé")
             const fetchData = async () => {
                 try {
                     const dataSpot = await SpotRepository.getSpotById(idSpot);
@@ -102,7 +101,7 @@ const DetailScreen = ({route, navigation}) => {
     // }, []);
 
     if (loading) {
-        return <ActivityIndicator />;
+        return <ActivityIndicator style={styles.loader} />;
     }
 
 
@@ -149,6 +148,7 @@ const DetailScreen = ({route, navigation}) => {
 
                     {listAvis.map((avis) => (
                         <AvisItem
+                            key={avis.idAvis}
                             idAvis={avis.idAvis}
                             description={avis.texte}
                             note={avis.note}
