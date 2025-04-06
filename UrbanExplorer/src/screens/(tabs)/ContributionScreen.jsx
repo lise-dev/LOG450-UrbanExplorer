@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useContext } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import AvisRepository from "../../repositories/AvisRepository";
 import { AuthContext } from "../../../AuthContext";
@@ -10,6 +10,10 @@ import { styles } from "../../styles/GlobalStyle";
 import SpotRepository from "../../repositories/SpotRepository";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
 import { Timestamp } from "firebase/firestore";
+
+const showAlert = () => {
+  Alert.alert("Info", "Fonctionnalité pas encore implémentée");
+}
 
 const ContributionScreen = ({ navigation }) => {
 
@@ -75,7 +79,7 @@ const ContributionScreen = ({ navigation }) => {
   })
 
   const onEdit = () => {
-
+    showAlert();
 
   }
   
