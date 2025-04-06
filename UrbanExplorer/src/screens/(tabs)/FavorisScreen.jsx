@@ -26,8 +26,6 @@ const FavoritesScreen = ({navigation}) => {
     const { user, userData, setUserData } = useContext(AuthContext);
     const idUser = userData.idUtilisateur;
 
-    console.log(idUser);
-
     const [favorites, setFavorites] = useState([]);
     const [spots, setSpots] = useState([]);
     const [loading, setLoading] = useState(true);

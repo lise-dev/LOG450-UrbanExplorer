@@ -18,18 +18,13 @@ export default function ExploreScreen({ navigation }) {
   const [locationServicesEnabled, setLocationServicesEnabled] = useState(false)
   const [ currentLocation, setCurrentLocation ] = useState({latitude: 0, longitude: 0});
   const [spots, setSpots] = useState([]);
-  // const { user, userData, setUserData } = useContext(AuthContext);
-  // console.log(userData);
-  // const idUser = userData.idUtilisateur;
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-
-
   //check if location is enable or not
   const checkIfLocationEnabled = async () => {
-    let enabled = await Location.hasServicesEnabledAsync();       //returns true or false
-    if (!enabled) {                     //if not enable 
+    let enabled = await Location.hasServicesEnabledAsync();
+    if (!enabled) {
       Alert.alert('Location not enabled', 'Please enable your Location', [
         {
           text: 'Cancel',
@@ -39,13 +34,12 @@ export default function ExploreScreen({ navigation }) {
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]);
     } else {
-      setLocationServicesEnabled(enabled)         //store true into state
+      setLocationServicesEnabled(enabled)
     }
   }
   //get current location
   const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();  //used for the pop up box where we give permission to use location 
-    // console.log(status);
     if (status !== 'granted') {
       Alert.alert('Permission denied', 'Allow the app to use the location services', [
         {
@@ -59,12 +53,10 @@ export default function ExploreScreen({ navigation }) {
 
     //get current position lat and long
     const { coords } = await Location.getCurrentPositionAsync();
-    // console.log(coords)
 
     if (coords) {
       const { latitude, longitude } = coords;
       setCurrentLocation({latitude: latitude, longitude: longitude})
-      // console.log(latitude, longitude);
 
       //provide lat and long to get the the actual address
       let responce = await Location.reverseGeocodeAsync({
@@ -83,27 +75,17 @@ export default function ExploreScreen({ navigation }) {
   const fetchSpots = async () => {
     const allSpots = await SpotRepository.getSpots()
     setSpots(allSpots);
-    // console.log("allSpots :", allSpots)
   }
 
 
 
   const initialize = async () => {
-    // if (!idUser) {
-    //   setLoading(false);
-    //   return;
-    // }
 
     try {
-      // if (!refreshing) setLoading(true);
-
       await checkIfLocationEnabled();
       await fetchSpots();
     } catch (error) {
       console.error("Erreur de chargement", error);
-    } finally {
-      // setLoading(false);
-      // setRefreshing(false);
     }
 
   }
@@ -116,40 +98,10 @@ export default function ExploreScreen({ navigation }) {
   }, []);
 
   useFocusEffect(useCallback(() => {
-    // const initialize = async () => {
-    //   await checkIfLocationEnabled();
-    //   await getCurrentLocation();
-    //   await fetchSpots();
-    // }
-
     initialize();
   }, []))
 
-  // useEffect(() => {
 
-  //   const initialize = async () => {
-  //     await checkIfLocationEnabled();
-  //     await getCurrentLocation();
-  //     await fetchSpots();
-  //   }
-
-  //   initialize();
-
-  // }, [])
-
-  // if (loading) {
-  //   return (
-  //     <View style={styles.loader}>
-  //       <ActivityIndicator size="large" />
-  //     </View>
-  //   )
-  // }
-
- 
-
-
-
-  // console.log(spots)
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -210,12 +162,6 @@ export default function ExploreScreen({ navigation }) {
           await getCurrentLocation();
         }}
       />
-
-      {/* <TouchableOpacity
-        onPress={fetchSpots}
-      >
-        <Text>Récupérer les spots</Text>
-      </TouchableOpacity> */}
 
     </SafeAreaView>
   )

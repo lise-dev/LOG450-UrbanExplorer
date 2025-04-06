@@ -21,7 +21,6 @@ const DetailScreen = ({route, navigation}) => {
     const [isInFavorite, setIsInFavorite] = useState(false);
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-    // const route = useRoute();
     const [spot, setSpot] = useState({});
     const { idSpot } = route.params;
     const [loading, setLoading] = useState(true);
@@ -56,67 +55,11 @@ const DetailScreen = ({route, navigation}) => {
         }, [idSpot, idUser])
     );
 
-    // useEffect(() => {
-    //     const fetchSpot = async () => {
-    //       try {
-    //         console.log(idSpot)
-    //         const data = await SpotRepository.getSpotById(idSpot);
-    //         // console.log("la data :", data) 
-    //         setSpot(data[0]);
-    //       } catch (error) {
-    //         console.error('Erreur lors du chargement du spot:', error);
-    //       } finally {
-    //         setLoading(false);
-    //       }
-    //     };
-        
-    //     const fetchFavoriStatus = async () => {
-    //         const exists = await checkFavoriExists(idUser, idSpot)
-    //         setIsInFavorite(exists);
-    //         // console.log("est en favori : ", exists)
-    //     }
-        
-
-    //     const fetchAvis = async () => {
-
-            
-    //         try {
-    //             const result = await AvisRepository.getAvisBySpotId(idSpot);
-    
-    //             console.log("les avis :", result);
-    //             setListAvis(result);
-                
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-
-
-    //     };
-
-
-
-    //     fetchSpot();
-    //     fetchFavoriStatus();
-    //     fetchAvis();
-    // }, []);
 
     if (loading) {
         return <ActivityIndicator style={styles.loader} />;
     }
 
-
-    // const userId = 'user_003'; // const { userId } = useAuth();
-    // const spotId = 'lieu_001'; //  const { spotId } = route.params;
-
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         const fetchFavoriStatus = async () => {
-    //             const exists = await checkFavoriExists(userId, spotId);
-    //             setIsInFavorite(exists);
-    //         };
-    //         fetchFavoriStatus();
-    //     }, [userId, spotId])
-    // );
 
     const handleToggleFavorite = async () => {
         const result = isInFavorite
@@ -127,7 +70,6 @@ const DetailScreen = ({route, navigation}) => {
 
         setSnackbarMessage(result.message);
         setSnackbarVisible(true);
-        // console.log(result);
     };
 
 
@@ -212,12 +154,6 @@ const DetailScreen = ({route, navigation}) => {
                 duration={3000}
                 action={{
                     label: 'OK', onPress: () => {
-                        // navigation.navigate('FavoritesScreen', {
-                        //     userId: idUser,
-                        //     spotId: idSpot,
-
-                        // });
-                        // navigation.navigate("FavoritesScreen")
                         setSnackbarVisible(false)
                     }
                 }}

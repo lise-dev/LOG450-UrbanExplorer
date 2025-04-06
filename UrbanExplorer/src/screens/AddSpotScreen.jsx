@@ -20,7 +20,6 @@ import { defaultSpotTypes } from "../constants/spotTypes";
 const AddSpotScreen = ({route, navigation}) => {
 
     const [spotName, setSpotName] = useState("");
-    // const [spotCoordonnees, setSpotCoordonnees] = useState({latitude: undefined, longitude: undefined});
     const [spotType, setSpotType] = useState("");
     const [spotDescription, setSpotDescription] = useState("");
     const [spotAddress, setSpotAddress] = useState("");
@@ -38,18 +37,11 @@ const AddSpotScreen = ({route, navigation}) => {
     useEffect(() => {
         const fetchSpotTypes = async () => {
             const types = await TypeRepository.getTypes();
-            // console.log("$$ les types:", types.map(type => type.description))
-            // console.log("$$ les types:", types.map(type => ({
-            //     label: type.description,
-            //     value: type.idType
-            // })))
             setItemsTypes(types.map(type => ({
                 label: type.description,
                 value: type.idType
             })));
             setItemsTypes([])
-            // console.log(types[0].description)
-            // setSpotType(types[0].description)
         }
 
         fetchSpotTypes();
@@ -67,7 +59,6 @@ const AddSpotScreen = ({route, navigation}) => {
         
             const location = response.data[0];
             return {latitude: parseFloat(location.lat), longitude: parseFloat(location.lon)};
-            // setSpotCoordonnees({ latitude: parseFloat(location.lat), longitude: parseFloat(location.lon) });
           } catch (error) {
             console.error('Erreur Nominatim :', error);
             return undefined;
@@ -105,9 +96,6 @@ const AddSpotScreen = ({route, navigation}) => {
             setButtonEnabled(true);
         }
     }
-    
-    // console.log(itemsTypes);
-    // console.log(defaultSpotTypes);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -126,25 +114,6 @@ const AddSpotScreen = ({route, navigation}) => {
                     onChangeText={setSpotDescription}
                     placeholder="Description du lieu"
                 />
-                {/* <TextInput 
-                    style={localStyles.input}
-                    value={spotType}
-                    onChangeText={setSpotType}
-                    placeholder="Type du spot"
-                /> */}
-                {/* type */}
-                {/* <View style={styles.pickerContainer}>
-                    <Picker
-                    // selectedValue={role}
-                    onValueChange={(itemValue) => setSpotType(itemValue)}
-                    style={styles.picker}
-                    >
-                    {Object.entries(spotType).map(([key, value]) => (
-                        <Picker.Item label={value} value={key} key={key}
-                    />
-                    ))}
-                    </Picker>
-                </View> */}
 
                 <View style={{ zIndex: 1000, width: '100%' }}>
                     <DropDownPicker

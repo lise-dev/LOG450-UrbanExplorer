@@ -54,24 +54,6 @@ const ContributionScreen = ({ navigation }) => {
   }
 
 
-  // useFocusEffect(
-  //   useCallback(() => {
-      
-  //     const fetchData = async () => {
-  //       try {
-  //         const dataAvis = await AvisRepository.getAvisByUserId(idUser);
-  //         setContributionsList(dataAvis);
-  //       } catch (error) {
-  //         console.error(error);
-  //       }
-
-  //     }
-
-  //     fetchData();
-
-  //   }, [idUser])
-  // );
-
   return (
     <SafeAreaView>
       <View>

@@ -20,11 +20,6 @@ import AvisRepository from "../repositories/AvisRepository";
 
 const AddAvisScreen = ({route, navigation}) => {
 
-    // const [spotName, setSpotName] = useState("");
-    // const [spotCoordonnees, setSpotCoordonnees] = useState({latitude: undefined, longitude: undefined});
-    // const [spotType, setSpotType] = useState("");
-    // const [spotDescription, setSpotDescription] = useState("");
-    // const [spotAddress, setSpotAddress] = useState("");
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [ descriptionAvis, setDescriptionAvis] = useState("");
@@ -34,44 +29,6 @@ const AddAvisScreen = ({route, navigation}) => {
     const { user, userData, setUserData } = useContext(AuthContext);
     const idUser = userData.idUtilisateur;
     const params = route.params;
-
-
-    // const fetchCoordinates = async () => {
-    //     try {
-    //         const response = await axios.get('https://nominatim.openstreetmap.org/search', {
-    //           params: {
-    //             q: spotAddress,
-    //             format: 'json',
-    //           },
-    //         });
-        
-    //         const location = response.data[0];
-    //         setSpotCoordonnees({ latitude: parseFloat(location.lat), longitude: parseFloat(location.lon) });
-    //       } catch (error) {
-    //         console.error('Erreur Nominatim :', error);
-    //       }
-    // }
-
-    // const saveSpot = async () => {
-
-    //     await fetchCoordinates();
-    //     console.log(spotCoordonnees)
-
-    //     const formattedSpot = {
-    //         nom: spotName,
-    //         coordonnees: spotCoordonnees,
-    //         type: spotType,
-    //         description: spotDescription,
-    //     }
-
-    //     const response = await SpotRepository.addSpot(formattedSpot, idUser)
-    //     if (response.error) {
-    //         console.error(error)
-    //     } else {
-    //         setSnackbarMessage("Lieu ajouté avec succès")
-    //         setSnackbarVisible(true);
-    //     }
-    // }
 
     const saveAvis = async () => {
 
@@ -85,7 +42,6 @@ const AddAvisScreen = ({route, navigation}) => {
 
         const response = await AvisRepository.addAvis(formattedAvis, idUser)
         if (response.error) {
-            // console.error(response.error)
             setSnackbarMessage(response.error)
             setSnackbarVisible(true)
         } else {
@@ -113,25 +69,6 @@ const AddAvisScreen = ({route, navigation}) => {
                     placeholder="Note"
                     keyboardType="numeric"
                 />
-                {/* <TextInput 
-                    style={localStyles.input}
-                    value={spotType}
-                    onChangeText={setSpotType}
-                    placeholder="Type du spot"
-                /> */}
-                {/* type */}
-                {/* <View style={styles.pickerContainer}>
-                    <Picker
-                    // selectedValue={role}
-                    onValueChange={(itemValue) => setSpotType(itemValue)}
-                    style={styles.picker}
-                    >
-                    {Object.entries(spotType).map(([key, value]) => (
-                        <Picker.Item label={value} value={key} key={key}
-                    />
-                    ))}
-                    </Picker>
-                </View> */}
 
                 <TouchableOpacity
                     style={localStyles.button}
