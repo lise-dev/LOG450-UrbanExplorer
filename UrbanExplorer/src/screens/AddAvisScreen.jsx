@@ -24,6 +24,8 @@ const AddAvisScreen = ({route, navigation}) => {
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [ descriptionAvis, setDescriptionAvis] = useState("");
     const [ noteAvis, setNoteAvis] = useState(-1);
+    const [buttonEnabled, setButtonEnabled] = useState(true);
+
 
 
     const { user, userData, setUserData } = useContext(AuthContext);
@@ -32,22 +34,33 @@ const AddAvisScreen = ({route, navigation}) => {
 
     const saveAvis = async () => {
 
-        Keyboard.dismiss();
+        try {
+            setButtonEnabled(false);
 
-        const formattedAvis = {
-            idSpot: params.idSpot,
-            texte: descriptionAvis,
-            note: noteAvis,
+            Keyboard.dismiss();
+    
+            const formattedAvis = {
+                idSpot: params.idSpot,
+                texte: descriptionAvis,
+                note: noteAvis,
+            }
+    
+            const response = await AvisRepository.addAvis(formattedAvis, idUser)
+            if (response.error) {
+                setSnackbarMessage(response.error)
+                setSnackbarVisible(true)
+                setButtonEnabled(true);
+            } else {
+                setSnackbarMessage("Avis bien ajouté")
+                setSnackbarVisible(true)
+                setButtonEnabled(false);
+            }
+            
+        } catch (error) {
+            console.error(error);
+            setButtonEnabled(true);
         }
 
-        const response = await AvisRepository.addAvis(formattedAvis, idUser)
-        if (response.error) {
-            setSnackbarMessage(response.error)
-            setSnackbarVisible(true)
-        } else {
-            setSnackbarMessage("Avis bien ajouté")
-            setSnackbarVisible(true)
-        }
     }
     
 
@@ -73,6 +86,7 @@ const AddAvisScreen = ({route, navigation}) => {
                 <TouchableOpacity
                     style={localStyles.button}
                     onPress={saveAvis}
+                    disabled={!buttonEnabled}
                 >
                     <Text style={localStyles.textButton}>Enregistrer l'avis</Text>
                 </TouchableOpacity>
@@ -80,7 +94,10 @@ const AddAvisScreen = ({route, navigation}) => {
 
             <Snackbar
                 visible={snackbarVisible}
-                onDismiss={() => setSnackbarVisible(false)}
+                onDismiss={() => {
+                    setSnackbarVisible(false);
+                    navigation.goBack();
+                }}
                 duration={3000}
                 action={{
                     label: 'OK', onPress: () => {

@@ -74,6 +74,25 @@ const ContributionScreen = ({ navigation }) => {
     }
   })
 
+  const onEdit = () => {
+
+
+  }
+  
+  const onDelete = async (idAvis) => {
+    console.log("idAvis:", idAvis)
+    try {
+      await AvisRepository.deleteAvis(idAvis, idUser);
+      onRefresh();
+      
+    } catch (error) {
+      console.error(error)
+    }
+
+  }
+  
+  
+
 
   return (
     
@@ -93,6 +112,8 @@ const ContributionScreen = ({ navigation }) => {
                   idAvis={item.idAvis}
                   description={item.texte}
                   note={item.note}
+                  onEdit={onEdit}
+                  onDelete={() => {onDelete(item.idAvis)}}
                 />
               }
             
