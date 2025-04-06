@@ -10,6 +10,7 @@ import {useFocusEffect, useRoute} from "@react-navigation/native";
 import SpotRepository from "../repositories/SpotRepository";
 import MapView, { Marker } from 'react-native-maps';
 import { Dimensions } from "react-native";
+import AvisRepository from "../repositories/AvisRepository";
 
 
 const screenHeight = Dimensions.get("window").height;
@@ -24,6 +25,7 @@ const DetailScreen = ({route, navigation}) => {
     const [loading, setLoading] = useState(true);
     const { user, userData, setUserData } = useContext(AuthContext);
     const idUser = userData.idUtilisateur;
+    const [listAvis, setListAvis] = useState([]);
 
     console.log(idSpot)
 
@@ -40,15 +42,35 @@ const DetailScreen = ({route, navigation}) => {
             setLoading(false);
           }
         };
-
+        
         const fetchFavoriStatus = async () => {
             const exists = await checkFavoriExists(idUser, idSpot)
             setIsInFavorite(exists);
             // console.log("est en favori : ", exists)
         }
         
+
+        const fetchAvis = async () => {
+
+            
+            try {
+                const result = await AvisRepository.getAvisBySpotId(idSpot);
+    
+                console.log("les avis :", result);
+                setListAvis(result);
+                
+            } catch (error) {
+                console.error(error);
+            }
+
+
+        };
+
+
+
         fetchSpot();
         fetchFavoriStatus();
+        fetchAvis();
     }, []);
 
     if (loading) {
@@ -95,7 +117,16 @@ const DetailScreen = ({route, navigation}) => {
                 </View>
 
                 <View style={localStyles.spotAvis}>
-                    <Text>Les avis iront ici</Text>
+                    {listAvis.length === 0 && <Text>Aucun avis pour le moment</Text>}
+
+                    {listAvis.map((avis) => (
+                        <View>
+                            <Text>{avis.texte}</Text>
+                            <Text>{avis.note}</Text>
+                        </View>
+                    ))}
+
+
                 </View>
 
                 <View style={localStyles.containerMap}>
