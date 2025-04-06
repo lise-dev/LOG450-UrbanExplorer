@@ -11,6 +11,8 @@ import SpotRepository from "../repositories/SpotRepository";
 import MapView, { Marker } from 'react-native-maps';
 import { Dimensions } from "react-native";
 import AvisRepository from "../repositories/AvisRepository";
+import AvisItem from "../components/AvisItem";
+import { ScrollView } from "react-native-gesture-handler";
 
 
 const screenHeight = Dimensions.get("window").height;
@@ -29,49 +31,75 @@ const DetailScreen = ({route, navigation}) => {
 
     console.log(idSpot)
 
-    useEffect(() => {
-        const fetchSpot = async () => {
-          try {
-            console.log(idSpot)
-            const data = await SpotRepository.getSpotById(idSpot);
-            // console.log("la data :", data) 
-            setSpot(data[0]);
-          } catch (error) {
-            console.error('Erreur lors du chargement du spot:', error);
-          } finally {
-            setLoading(false);
-          }
-        };
+    useFocusEffect(
+        useCallback(() => {
+
+            console.log("rappelé")
+            const fetchData = async () => {
+                try {
+                    const dataSpot = await SpotRepository.getSpotById(idSpot);
+                    setSpot(dataSpot[0]);
+
+                    const exists = await checkFavoriExists(idUser, idSpot);
+                    setIsInFavorite(exists);
+
+                    const result = await AvisRepository.getAvisBySpotId(idSpot);
+                    setListAvis(result);
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    setLoading(false);
+                }
+
+            };
+
+            fetchData();
+        }, [idSpot, idUser])
+    );
+
+    // useEffect(() => {
+    //     const fetchSpot = async () => {
+    //       try {
+    //         console.log(idSpot)
+    //         const data = await SpotRepository.getSpotById(idSpot);
+    //         // console.log("la data :", data) 
+    //         setSpot(data[0]);
+    //       } catch (error) {
+    //         console.error('Erreur lors du chargement du spot:', error);
+    //       } finally {
+    //         setLoading(false);
+    //       }
+    //     };
         
-        const fetchFavoriStatus = async () => {
-            const exists = await checkFavoriExists(idUser, idSpot)
-            setIsInFavorite(exists);
-            // console.log("est en favori : ", exists)
-        }
+    //     const fetchFavoriStatus = async () => {
+    //         const exists = await checkFavoriExists(idUser, idSpot)
+    //         setIsInFavorite(exists);
+    //         // console.log("est en favori : ", exists)
+    //     }
         
 
-        const fetchAvis = async () => {
+    //     const fetchAvis = async () => {
 
             
-            try {
-                const result = await AvisRepository.getAvisBySpotId(idSpot);
+    //         try {
+    //             const result = await AvisRepository.getAvisBySpotId(idSpot);
     
-                console.log("les avis :", result);
-                setListAvis(result);
+    //             console.log("les avis :", result);
+    //             setListAvis(result);
                 
-            } catch (error) {
-                console.error(error);
-            }
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
 
 
-        };
+    //     };
 
 
 
-        fetchSpot();
-        fetchFavoriStatus();
-        fetchAvis();
-    }, []);
+    //     fetchSpot();
+    //     fetchFavoriStatus();
+    //     fetchAvis();
+    // }, []);
 
     if (loading) {
         return <ActivityIndicator />;
@@ -116,18 +144,19 @@ const DetailScreen = ({route, navigation}) => {
                     <Text style={localStyles.spotType}>{spot.type}</Text>
                 </View>
 
-                <View style={localStyles.spotAvis}>
+                <ScrollView style={localStyles.spotAvis}>
                     {listAvis.length === 0 && <Text>Aucun avis pour le moment</Text>}
 
                     {listAvis.map((avis) => (
-                        <View>
-                            <Text>{avis.texte}</Text>
-                            <Text>{avis.note}</Text>
-                        </View>
+                        <AvisItem
+                            idAvis={avis.idAvis}
+                            description={avis.texte}
+                            note={avis.note}
+                        />
                     ))}
 
 
-                </View>
+                </ScrollView>
 
                 <View style={localStyles.containerMap}>
 
@@ -214,9 +243,12 @@ const localStyles = StyleSheet.create({
     metaDataSpot: {
         paddingHorizontal: 16,
         marginBottom: 8,
+        backgroundColor: "white",
+        width: "100%",
+        padding: 10
     },
     spotName: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
     },
     spotDescription: {

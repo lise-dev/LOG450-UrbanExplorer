@@ -91,7 +91,6 @@ const AddAvisScreen = ({route, navigation}) => {
         } else {
             setSnackbarMessage("Avis bien ajouté")
             setSnackbarVisible(true)
-            console.warn("après ici")
         }
     }
     

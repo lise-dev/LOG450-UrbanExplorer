@@ -87,7 +87,7 @@ const SpotRepository = {
         nom: newSpot.nom,
         coordonnees: newSpot.coordonnees,
         type: newSpot.type.toLowerCase(),
-        description: newSpot.description ? newSpot.description.toLowerCase() : null, 
+        description: newSpot.description ? newSpot.description : null, 
         ajoutePar: userId,
         dateAjout: new Date(),
       };
