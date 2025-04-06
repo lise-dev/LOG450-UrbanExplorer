@@ -130,9 +130,20 @@ const DetailScreen = ({route, navigation}) => {
 
             <FAB
                 icon={'heart'}
-                style={localStyles.fab}
+                style={[localStyles.fab, {left: 16}]}
                 color={isInFavorite ? 'red' : 'black'}
                 onPress={handleToggleFavorite}
+            />
+
+            {/* Modifier pour que ça soit visible que pour les contributeurs */}
+            <FAB
+                icon={'plus'}
+                style={[localStyles.fab, {right: 16}]}
+                onPress={() => {
+                    navigation.navigate("AddAvisScreen", {
+                        idSpot: idSpot
+                    })
+                }}
             />
 
             <Snackbar
@@ -160,7 +171,6 @@ const DetailScreen = ({route, navigation}) => {
 const localStyles = StyleSheet.create({
     fab: {
         position: 'absolute',
-        right: 16,
         bottom: 16,
         backgroundColor: '#e8f5e9',
     },

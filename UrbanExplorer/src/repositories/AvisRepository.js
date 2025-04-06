@@ -5,14 +5,18 @@
 
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
-import { getUserRole, isValidNote, isValidText, getUserRole }  from "../utils/validators"; 
+import { getUserRole, isValidNote, isValidText }  from "../utils/validators"; 
 import { dbTables } from "../constants/dbInfo";
+import roles from "../constants/roles";
+import { Guid } from 'js-guid';
+
 
 // Générer un ID avis formaté automatiquement 
 const generateAvisId = async () => {
-  const querySnapshot = await getDocs(collection(db, dbTables.AVIS));
-  const avisCount = querySnapshot.size + 1;
-  return `avis_${String(avisCount).padStart(3, "0")}`;
+  // const querySnapshot = await getDocs(collection(db, dbTables.AVIS));
+  // const avisCount = querySnapshot.size + 1;
+  // return `avis_${String(avisCount).padStart(3, "0")}`;
+  return `avis_${Guid.newGuid()}`;
 };
 
 // Supprimer les signalements liés à un avis
@@ -40,17 +44,18 @@ const AvisRepository = {
   // Ajouter un avis (uniquement pour contributeur ou modérateur)
   addAvis: async (newAvis, userId) => {
     if (!userId) return { error: "Vous devez être connecté pour ajouter un avis." };
+    if(!newAvis.idSpot || newAvis.texte === "" || newAvis.note < 0 ) return { error: "Les paramètres ne sont pas correctes" };
 
     try {
       const userRole = await getUserRole(userId);
-      if (userRole !== "contributeur" && userRole !== "moderateur") {
+      if (userRole !== roles.contributeur && userRole !== roles.moderateur) {
         return { error: "Vous n'avez pas la permission d'ajouter un avis." };
       }
 
       const formattedAvis = {
         idUtilisateur: userId,
         idSpot: newAvis.idSpot,
-        texte: newAvis.texte.toLowerCase(),
+        texte: newAvis.texte,
         note: newAvis.note,
         timestamp: new Date(),
       };

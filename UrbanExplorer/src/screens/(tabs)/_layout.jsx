@@ -14,6 +14,7 @@ import { AuthContext } from '../../../AuthContext';
 import Roles from '../../constants/roles';
 import DetailScreen from '../DetailScreen';
 import AddSpotScreen from '../AddSpotScreen';
+import AddAvisScreen from '../AddAvisScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -33,6 +34,7 @@ const ExploreStack = () => {
       <Stack.Screen name="ExploreScreen" component={ExploreScreen} options={{headerShown: false, title: "Explorer"}} />
       <Stack.Screen name="DetailScreen" component={DetailScreen} options={{headerShown: true, title: "Détail"}} />
       <Stack.Screen name="AddSpotScreen" component={AddSpotScreen} options={{headerShown: true, title: "Ajouter un nouveau lieu"}} />
+      <Stack.Screen name="AddAvisScreen" component={AddAvisScreen} options={{headerShown: true, title: "Ajouter un nouvel avis"}} />
     </Stack.Navigator>
   )
 }
@@ -42,6 +44,7 @@ const FavoritesStack = () => {
     <Stack.Navigator>
       <Stack.Screen name="FavoritesScreen" component={FavorisScreen} options={{headerShown: false, title: "Mes favoris"}} />
       <Stack.Screen name="DetailScreen" component={DetailScreen} options={{headerShown: true, title: "Détail"}} />
+      <Stack.Screen name="AddAvisScreen" component={AddAvisScreen} options={{headerShown: true, title: "Ajouter un nouvel avis"}} />
     </Stack.Navigator>
   )
 }
