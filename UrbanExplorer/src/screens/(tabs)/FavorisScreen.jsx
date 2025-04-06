@@ -22,7 +22,7 @@ import { AuthContext } from "../../../AuthContext";
 import {styles, typography} from "../../styles/GlobalStyle";
 
 const FavoritesScreen = ({navigation}) => {
-    // const userId = "user_003"; // TODO: remplacer avec useAuth()
+
     const { user, userData, setUserData } = useContext(AuthContext);
     const idUser = userData.idUtilisateur;
 
@@ -76,6 +76,7 @@ const FavoritesScreen = ({navigation}) => {
 
     const handleDeleteFavorite = async (idSpot) => {
         const result = await FavoriRepository.deleteFavoriteOfSpot(idUser, idSpot);
+        console.log("result delete fav :", result)
         if (result.success) {
             setFavorites((prev) => prev.filter((f) => f.idSpot !== idSpot));
         }

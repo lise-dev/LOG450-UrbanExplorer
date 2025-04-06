@@ -7,12 +7,14 @@ import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, query, 
 import { db } from "../../firebaseConfig"; 
 import { isValidCoordinates, isValidText, getUserRole}  from "../utils/validators"; 
 import { dbTables } from "../constants/dbInfo";
+import { Guid } from 'js-guid';
 
 // Générer un ID spot formaté automatiquement (spot_001, spot_002)
 const generateSpotId = async () => {
-  const querySnapshot = await getDocs(collection(db, dbTables.SPOTS));
-  const spotCount = querySnapshot.size + 1;
-  return `spot_${String(spotCount).padStart(3, "0")}`;
+  // const querySnapshot = await getDocs(collection(db, dbTables.SPOTS));
+  // const spotCount = querySnapshot.size + 2;
+  return `spot_${Guid.newGuid()}`;
+  // return `spot_${String(spotCount).padStart(3, "0")}`;
 };
 
 // Supprimer les avis, signalements, favoris et photos liés à un spot supprimé
@@ -39,10 +41,14 @@ const updateSpotsOnUserDeletion = async (userId) => {
 const SpotRepository = {
   // Récupérer un spot spécifique
   getSpotById: async (idSpot) => {
-    console.log("idSpot:", idSpot)
     try {
-      const querySnapshot = await getDocs(collection(db, dbTables.SPOTS), where("idSpot", "==", idSpot));
-      return querySnapshot.docs.map(doc => ({ idSpot: doc.id, ...doc.data() }))
+      const q = query(collection(db, dbTables.SPOTS), where("idSpot", "==", idSpot));
+      const querySnapshot = await getDocs(q);
+      const result = querySnapshot.docs.map(doc => ({
+        idSpot: doc.id,
+        ...doc.data()
+      }));
+      return result
     } catch (error) {
       console.error("Erreur lors de la récupération du spot :", error);
       return [];
@@ -78,7 +84,7 @@ const SpotRepository = {
       const spotId = await generateSpotId();
       const formattedSpot = {
         idSpot: spotId,
-        nom: newSpot.nom.toLowerCase(),
+        nom: newSpot.nom,
         coordonnees: newSpot.coordonnees,
         type: newSpot.type.toLowerCase(),
         description: newSpot.description ? newSpot.description.toLowerCase() : null, 

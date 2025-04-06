@@ -32,7 +32,7 @@ const ExploreStack = () => {
     <Stack.Navigator>
       <Stack.Screen name="ExploreScreen" component={ExploreScreen} options={{headerShown: false, title: "Explorer"}} />
       <Stack.Screen name="DetailScreen" component={DetailScreen} options={{headerShown: true, title: "Détail"}} />
-      <Stack.Screen name="AddSpotScreen" component={AddSpotScreen} options={{headerShown: false}} />
+      <Stack.Screen name="AddSpotScreen" component={AddSpotScreen} options={{headerShown: true, title: "Ajouter un nouveau lieu"}} />
     </Stack.Navigator>
   )
 }

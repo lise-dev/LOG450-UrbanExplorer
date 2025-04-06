@@ -7,7 +7,8 @@ const dbTables = {
     PHOTOS: "photos",
     NOTIF: "notifications",
     RECOMPENSES: "recompenses",
-    SANCTIONS: "sanctions"
+    SANCTIONS: "sanctions",
+    TYPES: "types",
 };
 
 

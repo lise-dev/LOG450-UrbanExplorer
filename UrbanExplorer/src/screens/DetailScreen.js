@@ -25,12 +25,14 @@ const DetailScreen = ({route, navigation}) => {
     const { user, userData, setUserData } = useContext(AuthContext);
     const idUser = userData.idUtilisateur;
 
+    console.log(idSpot)
 
     useEffect(() => {
         const fetchSpot = async () => {
           try {
+            console.log(idSpot)
             const data = await SpotRepository.getSpotById(idSpot);
-            console.log("la data :", data)
+            // console.log("la data :", data) 
             setSpot(data[0]);
           } catch (error) {
             console.error('Erreur lors du chargement du spot:', error);
@@ -42,12 +44,12 @@ const DetailScreen = ({route, navigation}) => {
         const fetchFavoriStatus = async () => {
             const exists = await checkFavoriExists(idUser, idSpot)
             setIsInFavorite(exists);
-            console.log("est en favori : ", exists)
+            // console.log("est en favori : ", exists)
         }
         
         fetchSpot();
         fetchFavoriStatus();
-    }, [idSpot]);
+    }, []);
 
     if (loading) {
         return <ActivityIndicator />;
@@ -76,7 +78,7 @@ const DetailScreen = ({route, navigation}) => {
 
         setSnackbarMessage(result.message);
         setSnackbarVisible(true);
-        console.log(result);
+        // console.log(result);
     };
 
 

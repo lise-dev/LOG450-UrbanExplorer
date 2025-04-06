@@ -65,8 +65,8 @@ const FavoritesItem = ({favorite, onPress, onViewMap, onDelete}) => {
                     </View>
 
                     <View style={{flexDirection: 'row'}}>
-                        <IconButton icon="map-marker" containerColor="#e8f5e9" style={styles.icons}
-                                    onPress={onViewMap}/>
+                        {/* <IconButton icon="map-marker" containerColor="#e8f5e9" style={styles.icons}
+                                    onPress={onViewMap}/> */}
                         <IconButton icon="delete-outline" iconColor="#d32f2f" containerColor="#fdecea"
                                     style={styles.icons} onPress={() => setDialogVisible(true)}/>
                     </View>

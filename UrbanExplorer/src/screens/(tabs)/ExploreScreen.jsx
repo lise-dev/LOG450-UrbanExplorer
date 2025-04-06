@@ -6,6 +6,8 @@ import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import SpotRepository from "../../repositories/SpotRepository";
 import { useNavigation } from "@react-navigation/native";
+import {FAB} from "react-native-paper";
+
 
 export default function ExploreScreen({ navigation }) {
 
@@ -15,9 +17,15 @@ export default function ExploreScreen({ navigation }) {
   const [spots, setSpots] = useState([]);
 
   useEffect(() => {
-    checkIfLocationEnabled();
-    getCurrentLocation();
-    fetchSpots();
+
+    const initialize = async () => {
+      await checkIfLocationEnabled();
+      await getCurrentLocation();
+      await fetchSpots();
+    }
+
+    initialize();
+
   }, [])
 
   //check if location is enable or not
@@ -125,20 +133,29 @@ export default function ExploreScreen({ navigation }) {
 
       </MapView>
 
-      <TouchableOpacity
-        onPress={fetchSpots}
-      >
-        <Text>Récupérer les spots</Text>
-      </TouchableOpacity>
 
       {/* Modifier pour que ça soit accessible uniquement aux contributeurs */}
-      <TouchableOpacity
+      <FAB
+        icon={'plus'}
+        style={[localStyles.fab, {right: 16}]}
         onPress={() => {
           navigation.navigate("AddSpotScreen")
         }}
+      />
+
+      <FAB
+        icon={'rotate-right'}
+        style={[localStyles.fab, {left: 16}]}
+        onPress={async () => {
+          await fetchSpots();
+        }}
+      />
+
+      {/* <TouchableOpacity
+        onPress={fetchSpots}
       >
-        <Text>Ajouter un spot</Text>
-      </TouchableOpacity>
+        <Text>Récupérer les spots</Text>
+      </TouchableOpacity> */}
 
     </SafeAreaView>
   )
@@ -146,6 +163,13 @@ export default function ExploreScreen({ navigation }) {
 }
 
 
+const localStyles = StyleSheet.create({
+  fab: {
+    position: 'absolute',
+    bottom: 16,
+    backgroundColor: '#e8f5e9',
+},
+});
 
 
 
