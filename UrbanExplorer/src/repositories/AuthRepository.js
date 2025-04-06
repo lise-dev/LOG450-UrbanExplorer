@@ -8,10 +8,11 @@ import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPass
 import { doc, setDoc, getDoc, getDocs, collection, query, where } from "firebase/firestore";
 import { checkPseudoExists, checkEmailExists, isValidRole } from "../utils/validators"; 
 import UserRepository from "./UserRepository";
+import { dbTables } from "../constants/dbInfo";
 
 const saveUserToFirestore = async (user, role) => {
   try {
-    const userRef = doc(db, "utilisateurs", user.uid);
+    const userRef = doc(db, dbTables.USERS, user.uid);
     const userDoc = await getDoc(userRef);
 
     if (!userDoc.exists()) {
@@ -113,7 +114,7 @@ const AuthRepository = {
   // Récupérer le profil utilisateur
   getUserProfile: async (userId) => {
     try {
-      const userDoc = await getDoc(doc(db, "utilisateurs", userId));
+      const userDoc = await getDoc(doc(db, dbTables.USERS, userId));
       if (userDoc.exists()) {
         return { success: true, data: userDoc.data() };
       } else {

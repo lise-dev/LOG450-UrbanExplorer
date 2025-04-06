@@ -6,11 +6,12 @@
 import { collection, getDocs, doc, updateDoc, deleteDoc, getDoc, query, where, setDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
 import { checkPseudoExists, isValidEmail, isValidRole, isValidText}  from "../utils/validators"; 
+import { dbTables } from "../constants/dbInfo";
 
 // Récupérer le rôle d'un utilisateur
 const getUserRole = async (userId) => {
   if (!userId) return null;
-  const userRef = doc(db, "utilisateurs", userId);
+  const userRef = doc(db, dbTables.USERS, userId);
   const userDoc = await getDoc(userRef);
   return userDoc.exists() ? userDoc.data().role : null;
 };
@@ -28,10 +29,10 @@ const updateUserReferences = async (userId) => {
 
 // Mettre à jour les références dans les spots créés par l'utilisateur
 const updateSpotsReferences = async (userId) => {
-  const spotsQuery = query(collection(db, "spots"), where("ajoutePar", "==", userId));
+  const spotsQuery = query(collection(db, dbTables.SPOTS), where("ajoutePar", "==", userId));
   const spotsSnapshot = await getDocs(spotsQuery);
   spotsSnapshot.forEach(async (spot) => {
-    await updateDoc(doc(db, "spots", spot.id), { ajoutePar: "Utilisateur supprimé" });
+    await updateDoc(doc(db, dbTables.SPOTS, spot.id), { ajoutePar: "Utilisateur supprimé" });
   });
 };
 
@@ -84,7 +85,7 @@ const UserRepository = {
   // Récupérer tous les utilisateurs
   getUsers: async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "utilisateurs"));
+      const querySnapshot = await getDocs(collection(db, dbTables.USERS));
       return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
       console.error("Erreur lors de la récupération des utilisateurs :", error);
@@ -142,7 +143,7 @@ const UserRepository = {
       };
 
       // Ajout dans Firestore
-      const userRef = doc(db, "utilisateurs", userId);
+      const userRef = doc(db, dbTables.USERS, userId);
       await setDoc(userRef, formattedUser);
 
       console.log(`Utilisateur ajouté avec l'ID : ${userId}`);
@@ -162,7 +163,7 @@ const UserRepository = {
       const formattedData = await formatUserData(updatedData);
       if (formattedData.error) return formattedData; 
 
-      const userRef = doc(db, "utilisateurs", userId);
+      const userRef = doc(db, dbTables.USERS, userId);
       await updateDoc(userRef, formattedData);
       console.log(`Utilisateur ${userId} mis à jour avec succès.`);
       return { success: true };
@@ -187,7 +188,7 @@ const UserRepository = {
       await updateUserReferences(userId); 
       await updateSpotsReferences(userId);
 
-      const userRef = doc(db, "utilisateurs", userId);
+      const userRef = doc(db, dbTables.USERS, userId);
       await deleteDoc(userRef);
       console.log(`Utilisateur ${userId} supprimé avec mise à jour des références.`);
       return { success: true };

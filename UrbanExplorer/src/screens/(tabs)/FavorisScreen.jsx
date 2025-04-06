@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useState, useContext} from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -8,7 +8,7 @@ import {
     View,
 } from "react-native";
 import {useFocusEffect} from "@react-navigation/native";
-import {Searchbar, Snackbar, Icon, RadioButton} from "react-native-paper";
+import {Searchbar, Snackbar, Icon, RadioButton, FAB} from "react-native-paper";
 
 import Toolbar from "../../components/Toolbar";
 import FavoritesItem from "../../components/FavoritesItem";
@@ -17,11 +17,14 @@ import ConfirmDialog from "../../components/ConfirmDialog";
 
 import FavoriRepository from "../../repositories/FavoriRepository";
 import SpotRepository from "../../repositories/SpotRepository";
+import { AuthContext } from "../../../AuthContext";
 
 import {styles, typography} from "../../styles/GlobalStyle";
 
 const FavoritesScreen = ({navigation}) => {
-    const userId = "user_003"; // TODO: remplacer avec useAuth()
+
+    const { user, userData, setUserData } = useContext(AuthContext);
+    const idUser = userData.idUtilisateur;
 
     const [favorites, setFavorites] = useState([]);
     const [spots, setSpots] = useState([]);
@@ -36,7 +39,7 @@ const FavoritesScreen = ({navigation}) => {
     const [snackbarMessage, setSnackbarMessage] = useState("");
 
     const fetchData = async () => {
-        if (!userId) {
+        if (!idUser) {
             setLoading(false)
             return;
         }
@@ -44,7 +47,7 @@ const FavoritesScreen = ({navigation}) => {
         try {
             if (!refreshing) setLoading(true);
             const [favorisData, spotsData] = await Promise.all([
-                FavoriRepository.getFavoris(userId),
+                FavoriRepository.getFavoris(idUser),
                 SpotRepository.getSpots(),
             ]);
             setFavorites(favorisData);
@@ -60,7 +63,7 @@ const FavoritesScreen = ({navigation}) => {
 
     useFocusEffect(useCallback(() => {
         fetchData();
-    }, [userId]));
+    }, [idUser]));
 
     const onRefresh = () => {
         setRefreshing(true);
@@ -71,10 +74,11 @@ const FavoritesScreen = ({navigation}) => {
         setSnackbarVisible(true);
     };
 
-    const handleDeleteFavorite = async (spotId) => {
-        const result = await FavoriRepository.deleteFavoriteOfSpot(userId, spotId);
+    const handleDeleteFavorite = async (idSpot) => {
+        const result = await FavoriRepository.deleteFavoriteOfSpot(idUser, idSpot);
+        console.log("result delete fav :", result)
         if (result.success) {
-            setFavorites((prev) => prev.filter((f) => f.idSpot !== spotId));
+            setFavorites((prev) => prev.filter((f) => f.idSpot !== idSpot));
         }
         showSnackbar(result.message);
     };
@@ -136,7 +140,7 @@ const FavoritesScreen = ({navigation}) => {
 
     if (loading) {
         return (
-            <View style={localStyles.loader}>
+            <View style={styles.loader}>
                 <ActivityIndicator size="large"/>
             </View>
         );
@@ -145,14 +149,17 @@ const FavoritesScreen = ({navigation}) => {
     return (
         <>
             <SafeAreaView style={styles.container}>
-                <Toolbar
+                {/* <Toolbar
                     title="Mes favoris"
-                    actions={userId && enrichedFavorites.length > 2
+                    actions={idUser && enrichedFavorites.length > 2
                         ? [{icon: "arrow-up-down", onPress: () => setSortVisible(true)}]
                         : []
                     }
-                />
-                {userId && (enrichedFavorites.length > 0 || query.length > 0) && (
+                    style={localStyles.toolbar}
+                /> */}
+
+                <View style={localStyles.containerToolbar}>
+                {idUser && (enrichedFavorites.length > 0 || query.length > 0) && (
                     <Searchbar
                         placeholder="Rechercher un favori"
                         value={query}
@@ -160,8 +167,19 @@ const FavoritesScreen = ({navigation}) => {
                         style={localStyles.searchbar}
                     />
                 )}
+                {idUser && enrichedFavorites.length > 2 && (
+                    <FAB 
+                        icon={'sort'}
+                        onPress={() => {
+                            setSortVisible(true);
+                        }}
+                        style={localStyles.fab}
+                    />
+                )}
 
-                {!userId ? (
+                </View>
+
+                {!idUser ? (
                     renderNotConnected()
                 ) : enrichedFavorites.length === 0 && query.length === 0 ? (
                     renderNoFavorites()
@@ -176,7 +194,7 @@ const FavoritesScreen = ({navigation}) => {
                                     favorite={item}
                                     onPress={() =>
                                         navigation.navigate("DetailScreen", {
-                                            spotId: item.original.idSpot,
+                                            idSpot: item.original.idSpot,
                                         })
                                     }
                                     onViewMap={() => console.log("Voir carte", item)}
@@ -215,9 +233,9 @@ const SortDialog = ({visible, onDismiss, sortOption, onSelectOption}) => (
     <ConfirmDialog
         visible={visible}
         title="Trier les favoris"
-        confirmLabel="Valider"
-        cancelLabel="Annuler"
-        onCancel={onDismiss}
+        confirmLabel="Ok"
+        // cancelLabel="Annuler"
+        // onCancel={onDismiss}
         onConfirm={onDismiss}
         confirmColor="#2e7d32"
     >
@@ -240,14 +258,10 @@ const localStyles = StyleSheet.create({
         marginTop: 200,
         padding: 15,
     },
-    loader: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
     searchbar: {
         margin: 10,
-        backgroundColor: '#f0f0f0'
+        backgroundColor: '#f0f0f0',
+        flex: 1
     },
     text: {
         ...typography.bodyLarge,
@@ -258,6 +272,18 @@ const localStyles = StyleSheet.create({
         textAlign: "left",
         marginHorizontal: 10,
     },
+    toolbar: {
+        flex: 1
+    },
+    fab: {
+        elevation: 0,
+    },
+    containerToolbar: {
+        flexDirection: 'row',
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginHorizontal: 10,
+    }
 });
 
 export default FavoritesScreen;

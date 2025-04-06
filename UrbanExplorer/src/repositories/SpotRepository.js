@@ -6,12 +6,15 @@
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
 import { isValidCoordinates, isValidText, getUserRole}  from "../utils/validators"; 
+import { dbTables } from "../constants/dbInfo";
+import { Guid } from 'js-guid';
 
 // Générer un ID spot formaté automatiquement (spot_001, spot_002)
 const generateSpotId = async () => {
-  const querySnapshot = await getDocs(collection(db, "spots"));
-  const spotCount = querySnapshot.size + 1;
-  return `spot_${String(spotCount).padStart(3, "0")}`;
+  // const querySnapshot = await getDocs(collection(db, dbTables.SPOTS));
+  // const spotCount = querySnapshot.size + 2;
+  return `spot_${Guid.newGuid()}`;
+  // return `spot_${String(spotCount).padStart(3, "0")}`;
 };
 
 // Supprimer les avis, signalements, favoris et photos liés à un spot supprimé
@@ -27,20 +30,36 @@ const deleteRelatedSpotData = async (spotId) => {
 
 // Mettre à jour le champ `ajoutePar` à `"Utilisateur supprimé"` si l'utilisateur est supprimé
 const updateSpotsOnUserDeletion = async (userId) => {
-  const spotsQuery = query(collection(db, "spots"), where("ajoutePar", "==", userId));
+  const spotsQuery = query(collection(db, dbTables.SPOTS), where("ajoutePar", "==", userId));
   const spotsSnapshot = await getDocs(spotsQuery);
   spotsSnapshot.forEach(async (spot) => {
-    await updateDoc(doc(db, "spots", spot.id), { ajoutePar: "Utilisateur supprimé" });
+    await updateDoc(doc(db, dbTables.SPOTS, spot.id), { ajoutePar: "Utilisateur supprimé" });
   });
 };
 
 // Repository pour les spots
 const SpotRepository = {
+  // Récupérer un spot spécifique
+  getSpotById: async (idSpot) => {
+    try {
+      const q = query(collection(db, dbTables.SPOTS), where("idSpot", "==", idSpot));
+      const querySnapshot = await getDocs(q);
+      const result = querySnapshot.docs.map(doc => ({
+        idSpot: doc.id,
+        ...doc.data()
+      }));
+      return result
+    } catch (error) {
+      console.error("Erreur lors de la récupération du spot :", error);
+      return [];
+    }
+  },
+
   // Récupérer tous les spots 
   getSpots: async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "spots"));
-      return querySnapshot.docs.map(doc => ({ idSpot: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(db, dbTables.SPOTS));
+      return querySnapshot.docs.map(doc => ({ idSpot: doc.id, ...doc.data() }));;
     } catch (error) {
       console.error("Erreur lors de la récupération des spots :", error);
       return [];
@@ -65,15 +84,15 @@ const SpotRepository = {
       const spotId = await generateSpotId();
       const formattedSpot = {
         idSpot: spotId,
-        nom: newSpot.nom.toLowerCase(),
+        nom: newSpot.nom,
         coordonnees: newSpot.coordonnees,
         type: newSpot.type.toLowerCase(),
-        description: newSpot.description ? newSpot.description.toLowerCase() : null, 
+        description: newSpot.description ? newSpot.description : null, 
         ajoutePar: userId,
         dateAjout: new Date(),
       };
 
-      const spotRef = doc(db, "spots", spotId);
+      const spotRef = doc(db, dbTables.SPOTS, spotId);
       await setDoc(spotRef, formattedSpot);
 
       console.log(`Spot ajouté avec l'ID : ${spotId}`);
@@ -89,7 +108,7 @@ const SpotRepository = {
     if (!userId) return { error: "Vous devez être connecté pour supprimer un spot." };
 
     try {
-      const spotRef = doc(db, "spots", spotId);
+      const spotRef = doc(db, dbTables.SPOTS, spotId);
       const spotSnapshot = await getDoc(spotRef);
 
       if (!spotSnapshot.exists()) {

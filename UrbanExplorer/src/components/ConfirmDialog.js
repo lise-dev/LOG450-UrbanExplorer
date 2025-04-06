@@ -19,7 +19,7 @@ const ConfirmDialog = ({
                     {children}
                 </Dialog.Content>
                 <Dialog.Actions>
-                    <Button onPress={onCancel}>{cancelLabel}</Button>
+                    {onCancel && (<Button onPress={onCancel}>{cancelLabel}</Button>)}
                     <Button onPress={onConfirm} textColor={confirmColor}>{confirmLabel}</Button>
                 </Dialog.Actions>
             </Dialog>

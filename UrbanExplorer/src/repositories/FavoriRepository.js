@@ -15,9 +15,10 @@ import {
   checkSpotExists,
   checkUserExists,
 } from "../utils/validators";
+import { dbTables } from "../constants/dbInfo";
 
 const generateFavoriId = async (userId) => {
-  const querySnapshot = await getDocs(collection(db, "users", userId, "favoris"));
+  const querySnapshot = await getDocs(collection(db, dbTables.USERS, userId, "favoris"));
   const ids = querySnapshot.docs.map((doc) => doc.id);
   let max = 0;
   ids.forEach((id) => {
@@ -35,7 +36,7 @@ const FavoriRepository = {
       return { error: "Vous devez être connecté pour voir vos favoris." };
 
     try {
-      const favorisRef = collection(db, "users", userId, "favoris");
+      const favorisRef = collection(db, dbTables.USERS, userId, "favoris");
       const snapshot = await getDocs(favorisRef);
       return snapshot.docs.map((doc) => ({ idFavori: doc.id, ...doc.data() }));
     } catch (error) {
@@ -52,13 +53,13 @@ const FavoriRepository = {
       };
 
     try {
-      const role = await getUserRole(userId);
-      if (!["contributeur", "moderateur"].includes(role)) {
-        return {
-          success: false,
-          message: "Seuls les contributeurs et modérateurs peuvent ajouter un favori.",
-        };
-      }
+      // const role = await getUserRole(userId);
+      // if (!["contributeur", "moderateur"].includes(role)) {
+      //   return {
+      //     success: false,
+      //     message: "Seuls les contributeurs et modérateurs peuvent ajouter un favori.",
+      //   };
+      // }
 
       if (!(await checkUserExists(userId)))
         return { success: false, message: "L'utilisateur spécifié n'existe pas." };
@@ -73,7 +74,7 @@ const FavoriRepository = {
         };
 
       const favoriId = await generateFavoriId(userId);
-      const favoriRef = doc(db, "users", userId, "favoris", favoriId);
+      const favoriRef = doc(db, dbTables.USERS, userId, "favoris", favoriId);
 
       await setDoc(favoriRef, {
         idFavori: favoriId,
@@ -101,7 +102,7 @@ const FavoriRepository = {
       return { success: false, message: "Vous devez être connecté pour supprimer un favori." };
 
     try {
-      const favoriRef = doc(db, "users", userId, "favoris", favoriId);
+      const favoriRef = doc(db, dbTables.USERS, userId, "favoris", favoriId);
       const snapshot = await getDoc(favoriRef);
 
       if (!snapshot.exists()) {
@@ -139,7 +140,7 @@ const FavoriRepository = {
     }
 
     try {
-      const favorisRef = collection(db, "users", userId, "favoris");
+      const favorisRef = collection(db, dbTables.USERS, userId, "favoris");
       const q = query(favorisRef, where("idSpot", "==", spotId));
       const snapshot = await getDocs(q);
 
@@ -151,7 +152,7 @@ const FavoriRepository = {
       }
 
       const favoriId = snapshot.docs[0].id;
-      await deleteDoc(doc(db, "users", userId, "favoris", favoriId));
+      await deleteDoc(doc(db, dbTables.USERS, userId, "favoris", favoriId));
 
       return {
         success: true,

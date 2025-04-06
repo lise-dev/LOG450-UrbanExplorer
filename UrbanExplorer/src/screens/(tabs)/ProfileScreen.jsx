@@ -28,7 +28,7 @@ const ProfileScreen = ({ navigation }) => {
     const fetchUserData = async () => {
       if (user) {
         try {
-          const docRef = doc(db, dbTables.USER, userData.idUtilisateur);
+          const docRef = doc(db, dbTables.USERS, userData.idUtilisateur);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             setUserData(docSnap.data());

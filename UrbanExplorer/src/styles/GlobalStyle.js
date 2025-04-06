@@ -4,6 +4,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#E0E0E0",
+        height: "100%"
     },
     topSection: {
         flex: 2,
@@ -139,6 +140,12 @@ const styles = StyleSheet.create({
         width: "100%",
         color: "#757575",
     },
+
+    loader: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
 });
 
 const toolbarStyle = StyleSheet.create({
@@ -237,7 +244,8 @@ const typography = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
         textAlign: "center",
-    }
+    },
+
 });
 
 

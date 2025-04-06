@@ -8,7 +8,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from "./src/screens/LoginScreen";
 import RegisterScreen from "./src/screens/RegisterScreen";
 import ResetPasswordScreen from "./src/screens/ResetPasswordScreen";
-import FavoritesScreen from "./src/screens/FavoritesScreen";
 import {PaperProvider} from "react-native-paper";
 import DetailScreen from "./src/screens/DetailScreen";
 import Toast from "react-native-toast-message";
@@ -71,13 +70,12 @@ const App = () => {
     return () => unsubscribe();
   }, []);
 
-
   return (
     <NavigationContainer>
       {user ? (
         <AuthProvider>
           <PaperProvider>
-            <MainTabs />
+            <MainTabs /> 
           </PaperProvider>
         </AuthProvider>
       ) : (
