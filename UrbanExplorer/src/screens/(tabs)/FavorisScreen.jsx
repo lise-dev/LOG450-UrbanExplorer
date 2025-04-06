@@ -8,7 +8,7 @@ import {
     View,
 } from "react-native";
 import {useFocusEffect} from "@react-navigation/native";
-import {Searchbar, Snackbar, Icon, RadioButton} from "react-native-paper";
+import {Searchbar, Snackbar, Icon, RadioButton, FAB} from "react-native-paper";
 
 import Toolbar from "../../components/Toolbar";
 import FavoritesItem from "../../components/FavoritesItem";
@@ -149,13 +149,16 @@ const FavoritesScreen = ({navigation}) => {
     return (
         <>
             <SafeAreaView style={styles.container}>
-                <Toolbar
+                {/* <Toolbar
                     title="Mes favoris"
                     actions={idUser && enrichedFavorites.length > 2
                         ? [{icon: "arrow-up-down", onPress: () => setSortVisible(true)}]
                         : []
                     }
-                />
+                    style={localStyles.toolbar}
+                /> */}
+
+                <View style={localStyles.containerToolbar}>
                 {idUser && (enrichedFavorites.length > 0 || query.length > 0) && (
                     <Searchbar
                         placeholder="Rechercher un favori"
@@ -164,6 +167,17 @@ const FavoritesScreen = ({navigation}) => {
                         style={localStyles.searchbar}
                     />
                 )}
+                {idUser && enrichedFavorites.length > 2 && (
+                    <FAB 
+                        icon={'sort'}
+                        onPress={() => {
+                            setSortVisible(true);
+                        }}
+                        style={localStyles.fab}
+                    />
+                )}
+
+                </View>
 
                 {!idUser ? (
                     renderNotConnected()
@@ -219,9 +233,9 @@ const SortDialog = ({visible, onDismiss, sortOption, onSelectOption}) => (
     <ConfirmDialog
         visible={visible}
         title="Trier les favoris"
-        confirmLabel="Valider"
-        cancelLabel="Annuler"
-        onCancel={onDismiss}
+        confirmLabel="Ok"
+        // cancelLabel="Annuler"
+        // onCancel={onDismiss}
         onConfirm={onDismiss}
         confirmColor="#2e7d32"
     >
@@ -246,7 +260,8 @@ const localStyles = StyleSheet.create({
     },
     searchbar: {
         margin: 10,
-        backgroundColor: '#f0f0f0'
+        backgroundColor: '#f0f0f0',
+        flex: 1
     },
     text: {
         ...typography.bodyLarge,
@@ -257,6 +272,18 @@ const localStyles = StyleSheet.create({
         textAlign: "left",
         marginHorizontal: 10,
     },
+    toolbar: {
+        flex: 1
+    },
+    fab: {
+        elevation: 0,
+    },
+    containerToolbar: {
+        flexDirection: 'row',
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginHorizontal: 10,
+    }
 });
 
 export default FavoritesScreen;

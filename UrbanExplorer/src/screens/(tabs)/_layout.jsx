@@ -42,7 +42,7 @@ const ExploreStack = () => {
 const FavoritesStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="FavoritesScreen" component={FavorisScreen} options={{headerShown: false, title: "Mes favoris"}} />
+      <Stack.Screen name="FavoritesScreen" component={FavorisScreen} options={{headerShown: true, title: "Mes favoris"}} />
       <Stack.Screen name="DetailScreen" component={DetailScreen} options={{headerShown: true, title: "Détail"}} />
       <Stack.Screen name="AddAvisScreen" component={AddAvisScreen} options={{headerShown: true, title: "Ajouter un nouvel avis"}} />
     </Stack.Navigator>

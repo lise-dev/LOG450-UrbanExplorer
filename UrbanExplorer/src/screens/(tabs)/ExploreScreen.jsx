@@ -104,7 +104,7 @@ export default function ExploreScreen({ navigation }) {
 
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       <MapView
         style={{ flex: 1 }}
         region={{
@@ -163,7 +163,7 @@ export default function ExploreScreen({ navigation }) {
         }}
       />
 
-    </SafeAreaView>
+    </View>
   )
 
 }
