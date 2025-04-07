@@ -48,7 +48,7 @@ const AvisRepository = {
 
   getAvisByUserId: async (idUser) => {
     try {
-      const q = query(collection(db, dbTables.AVIS), where("idUtilisateur", "==", idUser));
+      const q = query(collection(db, dbTables.AVIS), where("idUtilisateur", "==", idUser), where("estVisible", "==", true));
       const querySnapshot = await getDocs(q);
       const result = querySnapshot.docs.map(doc => ({
         idAvis: doc.id,

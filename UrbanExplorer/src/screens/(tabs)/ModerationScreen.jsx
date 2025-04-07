@@ -84,14 +84,6 @@ const ModerationScreen = ({ navigation }) => {
   const onValidate = async (avis) => {
     try {
       await AvisRepository.editAvis(avis.idAvis, idUser, {...avis, estReporte: true, estVisible: true})
-
-      // Pas de signalement quand l'avis est bon ?
-      // const signalement = {
-      //   categorieContenu: "avis",
-      //   idContenu: avis.idAvis,
-      //   raison: "TODO",
-      // }
-      // const response = await SignalementRepository.addSignalement(signalement, idUser)
       onRefresh();
     } catch (error) {
       console.error(error);

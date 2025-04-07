@@ -15,8 +15,6 @@ import { setDoc, doc } from "firebase/firestore";
 import {styles as GlobalStyle} from "../styles/GlobalStyle";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Roles from  '../constants/roles';
-import UserRepository from "../repositories/UserRepository";
-import { AuthProvider } from "../../AuthContext";
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");

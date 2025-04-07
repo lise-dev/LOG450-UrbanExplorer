@@ -72,7 +72,7 @@ const MainTabs = () => {
       /> 
 
       
-      {userData != null && userData["role"] === Roles.contributeur && (
+      {userData != null && (userData["role"] === Roles.contributeur || userData["role"] === Roles.moderateur ) && (
         <Tab.Screen
           name="Contribution"
           component={ContributionScreen}
