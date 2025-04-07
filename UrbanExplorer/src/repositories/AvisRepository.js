@@ -31,9 +31,9 @@ const deleteSignalementsByAvis = async (avisId) => {
 // Repository pour les avis
 const AvisRepository = {
 
-  getAvisBySpotId: async (idSpot) => {
+  getVisibleAvisBySpotId: async (idSpot) => {
     try {
-      const q = query(collection(db, dbTables.AVIS), where("idSpot", "==", idSpot));
+      const q = query(collection(db, dbTables.AVIS), where("idSpot", "==", idSpot), where("estVisible", "==", true));
       const querySnapshot = await getDocs(q);
       const result = querySnapshot.docs.map(doc => ({
         idAvis: doc.id,
@@ -77,7 +77,7 @@ const AvisRepository = {
   addAvis: async (newAvis, userId) => {
     if (!userId) return { error: "Vous devez être connecté pour ajouter un avis." };
     if(!newAvis.idSpot || newAvis.texte === "" || newAvis.note < 0 ) return { error: "Les paramètres ne sont pas correctes" };
-    if (updatedData.note && !isValidNote(updatedData.note)) {
+    if (newAvis.note && !isValidNote(parseInt(newAvis.note))) {
       return { error: "La note doit être entre 1 et 5." };
     }
 

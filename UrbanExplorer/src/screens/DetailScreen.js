@@ -41,7 +41,7 @@ const DetailScreen = ({route, navigation}) => {
                     const exists = await checkFavoriExists(idUser, idSpot);
                     setIsInFavorite(exists);
 
-                    const result = await AvisRepository.getAvisBySpotId(idSpot);
+                    const result = await AvisRepository.getVisibleAvisBySpotId(idSpot);
                     setListAvis(result);
                 } catch (error) {
                     console.error(error);
