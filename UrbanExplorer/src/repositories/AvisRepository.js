@@ -31,9 +31,9 @@ const deleteSignalementsByAvis = async (avisId) => {
 // Repository pour les avis
 const AvisRepository = {
 
-  getAvisBySpotId: async (idSpot) => {
+  getVisibleAvisBySpotId: async (idSpot) => {
     try {
-      const q = query(collection(db, dbTables.AVIS), where("idSpot", "==", idSpot));
+      const q = query(collection(db, dbTables.AVIS), where("idSpot", "==", idSpot), where("estVisible", "==", true));
       const querySnapshot = await getDocs(q);
       const result = querySnapshot.docs.map(doc => ({
         idAvis: doc.id,
@@ -48,7 +48,7 @@ const AvisRepository = {
 
   getAvisByUserId: async (idUser) => {
     try {
-      const q = query(collection(db, dbTables.AVIS), where("idUtilisateur", "==", idUser));
+      const q = query(collection(db, dbTables.AVIS), where("idUtilisateur", "==", idUser), where("estVisible", "==", true));
       const querySnapshot = await getDocs(q);
       const result = querySnapshot.docs.map(doc => ({
         idAvis: doc.id,
@@ -77,6 +77,9 @@ const AvisRepository = {
   addAvis: async (newAvis, userId) => {
     if (!userId) return { error: "Vous devez être connecté pour ajouter un avis." };
     if(!newAvis.idSpot || newAvis.texte === "" || newAvis.note < 0 ) return { error: "Les paramètres ne sont pas correctes" };
+    if (newAvis.note && !isValidNote(parseInt(newAvis.note))) {
+      return { error: "La note doit être entre 1 et 5." };
+    }
 
     try {
       const userRole = await getUserRole(userId);
@@ -90,6 +93,8 @@ const AvisRepository = {
         texte: newAvis.texte,
         note: newAvis.note,
         timestamp: new Date(),
+        estReporte: false,
+        estVisible: true,
       };
 
       const avisId = await generateAvisId();
@@ -125,14 +130,14 @@ const AvisRepository = {
       if (updatedData.texte && !isValidText(updatedData.texte)) {
         return { error: "Le texte de l'avis doit être valide." };
       }
-      if (updatedData.note && !isValidNote(updatedData.note)) {
+      if (updatedData.note && !isValidNote(parseInt(updatedData.note))) {
         return { error: "La note doit être entre 1 et 5." };
       }
 
       // Mise à jour
       await updateDoc(avisRef, {
         ...updatedData,
-        texte: updatedData.texte ? updatedData.texte.toLowerCase() : avisData.texte,
+        texte: updatedData.texte ? updatedData.texte : avisData.texte,
         timestamp: new Date(),
       });
 

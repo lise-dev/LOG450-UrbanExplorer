@@ -9,6 +9,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import {FAB} from "react-native-paper";
 import { AuthContext } from "../../../AuthContext";
 import { styles } from "../../styles/GlobalStyle";
+import roles from "../../constants/roles";
 
 
 
@@ -20,6 +21,10 @@ export default function ExploreScreen({ navigation }) {
   const [spots, setSpots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const { user, userData, setUserData } = useContext(AuthContext);
+  // const idUser = userData.idUtilisateur;
+  const [idUser, setIdUser] = useState(null);
+
 
   //check if location is enable or not
   const checkIfLocationEnabled = async () => {
@@ -99,7 +104,12 @@ export default function ExploreScreen({ navigation }) {
 
   useFocusEffect(useCallback(() => {
     initialize();
-  }, []))
+    if (userData !== null) {
+      setIdUser(userData.idUtilisateur);
+      console.log(userData.idUtilisateur)
+
+    }
+  }, [userData]))
 
 
 
@@ -145,14 +155,17 @@ export default function ExploreScreen({ navigation }) {
       </MapView>
 
 
-      {/* Modifier pour que ça soit accessible uniquement aux contributeurs */}
-      <FAB
-        icon={'plus'}
-        style={[localStyles.fab, {right: 16}]}
-        onPress={() => {
-          navigation.navigate("AddSpotScreen")
-        }}
-      />
+      {/* Modifier pour que ça soit accessible uniquement aux contributeurs et modérateurs */}
+      {idUser !== null && userData.role !== roles.explorateur && (
+        <FAB
+          icon={'plus'}
+          style={[localStyles.fab, {right: 16}]}
+          onPress={() => {
+            navigation.navigate("AddSpotScreen")
+          }}
+        />
+      )}
+      
 
       <FAB
         icon={'rotate-right'}

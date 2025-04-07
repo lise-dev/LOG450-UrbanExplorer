@@ -9,6 +9,7 @@ const dbTables = {
     RECOMPENSES: "recompenses",
     SANCTIONS: "sanctions",
     TYPES: "types",
+    
 };
 
 

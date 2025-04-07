@@ -72,7 +72,7 @@ const MainTabs = () => {
       /> 
 
       
-      {userData != null && userData["role"] === Roles.contributeur && (
+      {userData != null && (userData["role"] === Roles.contributeur || userData["role"] === Roles.moderateur ) && (
         <Tab.Screen
           name="Contribution"
           component={ContributionScreen}
@@ -89,6 +89,8 @@ const MainTabs = () => {
           component={ModerationScreen}
           options={{
               tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={size} color={color} />,
+              headerShown: true,
+              title: "Modération"
           }}
         />
       )}

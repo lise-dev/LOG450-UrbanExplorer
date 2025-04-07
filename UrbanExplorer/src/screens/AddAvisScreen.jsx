@@ -5,7 +5,6 @@ import {useCallback, useEffect, useState, useContext} from "react";
 import { AuthContext } from "../../AuthContext";
 import FavoriRepository from "../repositories/FavoriRepository";
 import {checkFavoriExists} from "../utils/validators";
-import {useAuth} from "../utils/AuthContext";
 import {useFocusEffect, useRoute} from "@react-navigation/native";
 import SpotRepository from "../repositories/SpotRepository";
 import { TextInput } from "react-native-gesture-handler";

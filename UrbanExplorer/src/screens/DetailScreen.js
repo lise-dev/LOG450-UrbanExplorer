@@ -5,7 +5,6 @@ import {useCallback, useEffect, useState, useContext} from "react";
 import { AuthContext } from "../../AuthContext";
 import FavoriRepository from "../repositories/FavoriRepository";
 import {checkFavoriExists} from "../utils/validators";
-import {useAuth} from "../utils/AuthContext";
 import {useFocusEffect, useRoute} from "@react-navigation/native";
 import SpotRepository from "../repositories/SpotRepository";
 import MapView, { Marker } from 'react-native-maps';
@@ -13,6 +12,7 @@ import { Dimensions } from "react-native";
 import AvisRepository from "../repositories/AvisRepository";
 import AvisItem from "../components/AvisItem";
 import { ScrollView } from "react-native-gesture-handler";
+import roles from "../constants/roles";
 
 
 const screenHeight = Dimensions.get("window").height;
@@ -41,7 +41,7 @@ const DetailScreen = ({route, navigation}) => {
                     const exists = await checkFavoriExists(idUser, idSpot);
                     setIsInFavorite(exists);
 
-                    const result = await AvisRepository.getAvisBySpotId(idSpot);
+                    const result = await AvisRepository.getVisibleAvisBySpotId(idSpot);
                     setListAvis(result);
                 } catch (error) {
                     console.error(error);
@@ -129,24 +129,25 @@ const DetailScreen = ({route, navigation}) => {
 
             </View>
 
-
             <FAB
                 icon={'heart'}
                 style={[localStyles.fab, {left: 16}]}
                 color={isInFavorite ? 'red' : 'black'}
                 onPress={handleToggleFavorite}
-            />
+                />
 
             {/* Modifier pour que ça soit visible que pour les contributeurs */}
+            {idUser !== null && userData.role !== roles.explorateur && (
             <FAB
-                icon={'plus'}
-                style={[localStyles.fab, {right: 16}]}
-                onPress={() => {
-                    navigation.navigate("AddAvisScreen", {
-                        idSpot: idSpot
-                    })
-                }}
+            icon={'plus'}
+            style={[localStyles.fab, {right: 16}]}
+            onPress={() => {
+                navigation.navigate("AddAvisScreen", {
+                    idSpot: idSpot
+                })
+            }}
             />
+            )}
 
             <Snackbar
                 visible={snackbarVisible}
