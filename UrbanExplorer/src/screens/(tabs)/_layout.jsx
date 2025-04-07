@@ -89,6 +89,8 @@ const MainTabs = () => {
           component={ModerationScreen}
           options={{
               tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={size} color={color} />,
+              headerShown: true,
+              title: "Modération"
           }}
         />
       )}

@@ -6,12 +6,15 @@
 import { collection, getDocs, doc, setDoc, updateDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
 import { checkUserExists, checkContentExistsAvisSpots, isValidText, isValidCategory,getUserRole}  from "../utils/validators"; 
+import { dbTables } from "../constants/dbInfo";
+import { Guid } from "js-guid";
 
 // Générer un ID signalement formaté automatiquement (signalement_001, signalement_002...)
 const generateSignalementId = async () => {
-  const querySnapshot = await getDocs(collection(db, "signalements"));
-  const signalementCount = querySnapshot.size + 1;
-  return `signalement_${String(signalementCount).padStart(3, "0")}`;
+  // const querySnapshot = await getDocs(collection(db, "signalements"));
+  // const signalementCount = querySnapshot.size + 1;
+  // return `signalement_${String(signalementCount).padStart(3, "0")}`;
+  return `signalement_${Guid.newGuid()}`;
 };
 
 // Repository pour les signalements
@@ -26,7 +29,7 @@ const SignalementRepository = {
         return { error: "Seuls les modérateurs peuvent voir les signalements." };
       }
 
-      const querySnapshot = await getDocs(collection(db, "signalements"));
+      const querySnapshot = await getDocs(collection(db, dbTables.REPORTS));
       return querySnapshot.docs.map(doc => ({ idSignalement: doc.id, ...doc.data() }));
     } catch (error) {
       console.error("Erreur lors de la récupération des signalements :", error);
@@ -44,9 +47,9 @@ const SignalementRepository = {
         return { error: "Vous n'avez pas la permission de signaler un contenu." };
       }
 
-      if (!isValidCategory(newSignalement.categorieContenu) || !(await checkContentExistsAvisSpots(newSignalement.categorieContenu, newSignalement.idContenu))) {
-        return { error: "Le contenu signalé n'existe pas ou la catégorie est invalide." };
-      }
+      // if (!isValidCategory(newSignalement.categorieContenu) || !(await checkContentExistsAvisSpots(newSignalement.categorieContenu, newSignalement.idContenu))) {
+      //   return { error: "Le contenu signalé n'existe pas ou la catégorie est invalide." };
+      // }
 
       if (!isValidText(newSignalement.raison)) {
         return { error: "La raison du signalement est invalide." };
@@ -63,7 +66,7 @@ const SignalementRepository = {
         timestamp: new Date(),
       };
 
-      const signalementRef = doc(db, "signalements", signalementId);
+      const signalementRef = doc(db, dbTables.REPORTS, signalementId);
       await setDoc(signalementRef, formattedSignalement);
 
       console.log(`Signalement ajouté avec l'ID : ${signalementId}`);
@@ -84,7 +87,7 @@ const SignalementRepository = {
         return { error: "Seuls les modérateurs peuvent modifier un signalement." };
       }
 
-      const signalementRef = doc(db, "signalements", signalementId);
+      const signalementRef = doc(db, dbTables.REPORTS, signalementId);
       const signalementSnapshot = await getDoc(signalementRef);
 
       if (!signalementSnapshot.exists()) {

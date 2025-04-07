@@ -7,15 +7,17 @@ import {Searchbar, Snackbar, Icon, RadioButton, FAB} from "react-native-paper";
 
 
 
-const ContributionsItem = ({
+const ReviewAvisItem = ({
     idSpot,
     spotName,
     spotType,
     idAvis,
     description, 
     note,
-    onEdit,
-    onDelete,
+    // onEdit,
+    // onDelete,
+    IconButtonTop,
+    IconButtonBottom,
 }) => {
 
     return (
@@ -37,10 +39,12 @@ const ContributionsItem = ({
                 </View>
             </View>
             <View style={localStyles.containerIcons}>
-                <IconButton icon="square-edit-outline" iconColor="#a39600" containerColor="#faf6cf"
+                {/* <IconButton icon="square-edit-outline" iconColor="#a39600" containerColor="#faf6cf"
                     style={localStyles.fab} onPress={onEdit}/>
                 <IconButton icon="delete-outline" iconColor="#d32f2f" containerColor="#fdecea"
-                    style={localStyles.fab} onPress={onDelete}/>
+                    style={localStyles.fab} onPress={onDelete}/> */}
+                { <IconButtonTop /> }
+                { <IconButtonBottom /> }
 
             </View>
         </View>
@@ -85,6 +89,6 @@ const localStyles = StyleSheet.create({
     },
 });
 
-export default ContributionsItem;
+export default ReviewAvisItem;
 
 

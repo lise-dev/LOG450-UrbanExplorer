@@ -4,8 +4,8 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import AvisRepository from "../../repositories/AvisRepository";
 import { AuthContext } from "../../../AuthContext";
 import { useFocusEffect } from "@react-navigation/native";
-import ContributionsItem from "../../components/ContributionsItem";
-import { ActivityIndicator } from "react-native-paper";
+import ReviewAvisItem from "../../components/ReviewAvis";
+import { ActivityIndicator,IconButton } from "react-native-paper";
 import { styles } from "../../styles/GlobalStyle";
 import SpotRepository from "../../repositories/SpotRepository";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
@@ -67,7 +67,7 @@ const ContributionScreen = ({ navigation }) => {
     const spot = spotList.find((s) => s.idSpot === avis.idSpot);
     return {
       idAvis: avis.idAvis,
-      idUser: avis.idUser,
+      idUser: avis.idUtilisateur,
       idSpot: avis.idSpot,
       texte: avis.texte,
       note: avis.note,
@@ -78,7 +78,7 @@ const ContributionScreen = ({ navigation }) => {
     }
   })
 
-  const onEdit = () => {
+  const onEdit = (idAvis) => {
     showAlert();
 
   }
@@ -95,6 +95,18 @@ const ContributionScreen = ({ navigation }) => {
 
   }
   
+  const IconButtonEdit = (idAvis) => {
+    return (
+      <IconButton icon="square-edit-outline" iconColor="#a39600" containerColor="#faf6cf"
+      style={localStyles.fab} onPress={() => onEdit(idAvis)}/>
+    );
+  }
+  const IconButtonDelete = (idAvis) => {
+    return (
+      <IconButton icon="delete-outline" iconColor="#d32f2f" containerColor="#fdecea"
+      style={localStyles.fab} onPress={() => onDelete(idAvis)}/>
+    );
+  }
   
 
 
@@ -108,7 +120,7 @@ const ContributionScreen = ({ navigation }) => {
               style={localStyles.listAvis}
               renderItem={({item}) => 
                 // <Text>{item.texte}</Text>
-                <ContributionsItem
+                <ReviewAvisItem
                   key={item.idAvis}
                   idSpot={item.idSpot}
                   spotName={item.spotName}
@@ -116,8 +128,10 @@ const ContributionScreen = ({ navigation }) => {
                   idAvis={item.idAvis}
                   description={item.texte}
                   note={item.note}
-                  onEdit={onEdit}
-                  onDelete={() => {onDelete(item.idAvis)}}
+                  // onEdit={onEdit}
+                  // onDelete={() => {onDelete(item.idAvis)}}
+                  IconButtonTop={() => IconButtonEdit(null)}
+                  IconButtonBottom={() => IconButtonDelete(item.idAvis)}
                 />
               }
             
@@ -136,7 +150,11 @@ const localStyles = StyleSheet.create({
   },
   containerFlatlist: {
     flex: 1
-  }
+  },
+  fab: {
+    borderWidth: 1,
+    borderColor: "grey"
+},
 })
 
 export default ContributionScreen;
