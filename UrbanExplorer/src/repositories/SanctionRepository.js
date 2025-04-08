@@ -7,12 +7,11 @@ import { collection, getDocs, doc, setDoc, deleteDoc, getDoc, query, where } fro
 import { db } from "../../firebaseConfig"; 
 import { checkUserExists, isValidSanctionLevel, isValidDate, getUserRole}  from "../utils/validators"; 
 import roles from "../constants/roles";
+import { Guid } from "js-guid";
 
 // Générer un ID sanction formaté automatiquement (sanction_001, sanction_002...)
 const generateSanctionId = async () => {
-  const querySnapshot = await getDocs(collection(db, "sanctions"));
-  const sanctionCount = querySnapshot.size + 1;
-  return `sanction_${String(sanctionCount).padStart(3, "0")}`;
+  return `sanction_${Guid.newGuid()}`;
 };
 
 // Supprimer toutes les sanctions d'un utilisateur supprimé

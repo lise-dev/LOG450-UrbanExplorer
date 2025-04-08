@@ -59,10 +59,6 @@ const formatUserData = async (userData) => {
     return { error: "Le prénom est invalide ou manquant." };
   }
 
-  // if (!userData.photoProfil) {
-  //   return { error: "La photo de profil est obligatoire." };
-  // }
-
   // Vérifier si le pseudo est unique avant insertion/modification
   const pseudoExists = await checkPseudoExists(userData.pseudo, userData.idUtilisateur);
   if (pseudoExists) {
@@ -117,10 +113,6 @@ const UserRepository = {
       if (!userData.role || !isValidRole(userData.role)) {
         return { error: "Le rôle est invalide. Il doit être 'contributeur', 'explorateur' ou 'moderateur'." };
       }
-
-      // if (!userData.photoProfil) {
-      //   return { error: "La photo de profil est obligatoire." };
-      // }
 
       // Vérifier si le pseudo est unique avant l'ajout
       const pseudoExists = await checkPseudoExists(userData.pseudo);

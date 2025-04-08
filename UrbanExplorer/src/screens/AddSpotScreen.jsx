@@ -15,7 +15,6 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { defaultSpotTypes } from "../constants/spotTypes";
 
 
-
 const AddSpotScreen = ({route, navigation}) => {
 
     const [spotName, setSpotName] = useState("");
@@ -28,7 +27,6 @@ const AddSpotScreen = ({route, navigation}) => {
     const [open, setOpen] = useState(false);
     const [itemsTypes, setItemsTypes] = useState([]);
     const [buttonEnabled, setButtonEnabled] = useState(true);
-
 
     const { user, userData, setUserData } = useContext(AuthContext);
     const idUser = userData.idUtilisateur;
@@ -128,8 +126,6 @@ const AddSpotScreen = ({route, navigation}) => {
                     />
                 </View>
 
-
-
                 <TextInput 
                     style={localStyles.input}
                     value={spotAddress}
@@ -162,8 +158,6 @@ const AddSpotScreen = ({route, navigation}) => {
             </Snackbar>
         </SafeAreaView>
     );
-
-
 };
 
 const localStyles = StyleSheet.create({
@@ -208,9 +202,7 @@ const localStyles = StyleSheet.create({
         marginBottom: 10,
         justifyContent: "center",
       },
-      
       picker: {
-        // height: 50,
         width: "100%",
         color: "#757575",
       },

@@ -9,8 +9,6 @@ const AvisItem = ({
     description,
     note
 }) => {
-
-
     return (
         <View 
             key={idAvis}
@@ -23,9 +21,7 @@ const AvisItem = ({
                 <Text style={localStyles.note}>{note}</Text>
             </View>
         </View>
-
     );
-
 };
 
 
@@ -56,7 +52,6 @@ const localStyles = StyleSheet.create({
         padding: 10,
         borderRadius: 25
     },
-
 
 })
 

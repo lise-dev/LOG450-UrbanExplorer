@@ -10,12 +10,9 @@ import { dbTables } from "../constants/dbInfo";
 import { Guid } from 'js-guid';
 import roles from "../constants/roles";
 
-// Générer un ID spot formaté automatiquement (spot_001, spot_002)
+// Générer un ID spot formaté automatiquement
 const generateSpotId = async () => {
-  // const querySnapshot = await getDocs(collection(db, dbTables.SPOTS));
-  // const spotCount = querySnapshot.size + 2;
   return `spot_${Guid.newGuid()}`;
-  // return `spot_${String(spotCount).padStart(3, "0")}`;
 };
 
 // Supprimer les avis, signalements, favoris et photos liés à un spot supprimé

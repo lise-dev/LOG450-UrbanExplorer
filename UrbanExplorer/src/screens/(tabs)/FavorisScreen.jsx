@@ -149,14 +149,6 @@ const FavoritesScreen = ({navigation}) => {
     return (
         <>
             <SafeAreaView style={styles.container}>
-                {/* <Toolbar
-                    title="Mes favoris"
-                    actions={idUser && enrichedFavorites.length > 2
-                        ? [{icon: "arrow-up-down", onPress: () => setSortVisible(true)}]
-                        : []
-                    }
-                    style={localStyles.toolbar}
-                /> */}
 
                 <View style={localStyles.containerToolbar}>
                 {idUser && (enrichedFavorites.length > 0 || query.length > 0) && (
@@ -234,8 +226,6 @@ const SortDialog = ({visible, onDismiss, sortOption, onSelectOption}) => (
         visible={visible}
         title="Trier les favoris"
         confirmLabel="Ok"
-        // cancelLabel="Annuler"
-        // onCancel={onDismiss}
         onConfirm={onDismiss}
         confirmColor="#2e7d32"
     >

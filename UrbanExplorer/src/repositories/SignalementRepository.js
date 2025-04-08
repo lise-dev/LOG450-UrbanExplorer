@@ -10,11 +10,8 @@ import { dbTables } from "../constants/dbInfo";
 import { Guid } from "js-guid";
 import roles from "../constants/roles";
 
-// Générer un ID signalement formaté automatiquement (signalement_001, signalement_002...)
+// Générer un ID signalement formaté automatiquement
 const generateSignalementId = async () => {
-  // const querySnapshot = await getDocs(collection(db, "signalements"));
-  // const signalementCount = querySnapshot.size + 1;
-  // return `signalement_${String(signalementCount).padStart(3, "0")}`;
   return `signalement_${Guid.newGuid()}`;
 };
 
@@ -47,10 +44,6 @@ const SignalementRepository = {
       if (userRole !== roles.contributeur && userRole !== roles.moderateur) {
         return { error: "Vous n'avez pas la permission de signaler un contenu." };
       }
-
-      // if (!isValidCategory(newSignalement.categorieContenu) || !(await checkContentExistsAvisSpots(newSignalement.categorieContenu, newSignalement.idContenu))) {
-      //   return { error: "Le contenu signalé n'existe pas ou la catégorie est invalide." };
-      // }
 
       if (!isValidText(newSignalement.raison)) {
         return { error: "La raison du signalement est invalide." };

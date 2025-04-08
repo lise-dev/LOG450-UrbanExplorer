@@ -8,10 +8,7 @@ const dbTables = {
     NOTIF: "notifications",
     RECOMPENSES: "recompenses",
     SANCTIONS: "sanctions",
-    TYPES: "types",
-    
+    TYPES: "types",    
 };
-
-
 
 export {dbTables};

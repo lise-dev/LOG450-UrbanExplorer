@@ -16,7 +16,6 @@ import { defaultSpotTypes } from "../constants/spotTypes";
 import AvisRepository from "../repositories/AvisRepository";
 
 
-
 const AddAvisScreen = ({route, navigation}) => {
 
     const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -24,8 +23,6 @@ const AddAvisScreen = ({route, navigation}) => {
     const [ descriptionAvis, setDescriptionAvis] = useState("");
     const [ noteAvis, setNoteAvis] = useState(-1);
     const [buttonEnabled, setButtonEnabled] = useState(true);
-
-
 
     const { user, userData, setUserData } = useContext(AuthContext);
     const idUser = userData.idUtilisateur;
@@ -154,12 +151,10 @@ const localStyles = StyleSheet.create({
         marginBottom: 10,
         justifyContent: "center",
       },
-      
-      picker: {
-        // height: 50,
+    picker: {
         width: "100%",
         color: "#757575",
-      },
+    },
 
 });
 

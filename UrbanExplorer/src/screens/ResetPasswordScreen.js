@@ -94,8 +94,6 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         backgroundColor: "#F5F5F5",
         marginBottom: 10,
-        // fontStyle: "italic",
-        // color: "#a7a7a7",
     },
     bottomSection: {
         flex: 3,
