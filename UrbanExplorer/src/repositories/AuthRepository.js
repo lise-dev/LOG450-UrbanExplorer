@@ -9,6 +9,7 @@ import { doc, setDoc, getDoc, getDocs, collection, query, where } from "firebase
 import { checkPseudoExists, checkEmailExists, isValidRole } from "../utils/validators"; 
 import UserRepository from "./UserRepository";
 import { dbTables } from "../constants/dbInfo";
+import roles from "../constants/roles";
 
 const saveUserToFirestore = async (user, role) => {
   try {
@@ -17,7 +18,7 @@ const saveUserToFirestore = async (user, role) => {
 
     if (!userDoc.exists()) {
       // Vérifier si le rôle fourni est valide, sinon mettre "explorateur" par défaut
-      const assignedRole = isValidRole(role) ? role.toLowerCase() : "explorateur";
+      const assignedRole = isValidRole(role) ? role : roles.explorateur;
 
       await setDoc(userRef, {
         idUtilisateur: user.uid,
@@ -59,7 +60,7 @@ const AuthRepository = {
   },
 
   // Inscription avec Email/Mot de passe
-  register: async (email, password, nom, prenom, pseudo, role = "contributeur", photoProfil = null) => {
+  register: async (email, password, nom, prenom, pseudo, role = roles.contributeur, photoProfil = null) => {
     try {
       if (!isValidRole(role)) {
         return { error: "Le rôle est invalide. Choisissez entre 'contributeur', 'explorateur' ou 'moderateur'." };

@@ -15,12 +15,13 @@ import { setDoc, doc } from "firebase/firestore";
 import {styles as GlobalStyle} from "../styles/GlobalStyle";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Roles from  '../constants/roles';
+import roles from "../constants/roles";
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pseudo, setPseudo] = useState("");
-  const [role, setRole] = useState("explorateur");
+  const [role, setRole] = useState(roles.explorateur);
   const [photoProfil, setPhotoProfil] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");

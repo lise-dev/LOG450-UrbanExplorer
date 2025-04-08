@@ -7,6 +7,7 @@ import { collection, getDocs, doc, updateDoc, deleteDoc, getDoc, query, where, s
 import { db } from "../../firebaseConfig"; 
 import { checkPseudoExists, isValidEmail, isValidRole, isValidText}  from "../utils/validators"; 
 import { dbTables } from "../constants/dbInfo";
+import roles from "../constants/roles";
 
 // Récupérer le rôle d'un utilisateur
 const getUserRole = async (userId) => {
@@ -74,7 +75,7 @@ const formatUserData = async (userData) => {
     prenom: userData.prenom,
     email: userData.email.toLowerCase(),
     pseudo: userData.pseudo.toLowerCase(),
-    role: userData.role.toLowerCase(),
+    role: userData.role,
     dateInscription: userData.dateInscription || new Date(),
     photoProfil: userData.photoProfil,
   };
@@ -137,7 +138,7 @@ const UserRepository = {
         prenom: userData.prenom,
         email: userData.email.toLowerCase(),
         pseudo: userData.pseudo.toLowerCase(),
-        role: userData.role.toLowerCase(),
+        role: userData.role,
         dateInscription: userData.dateInscription || new Date(),
         photoProfil: userData.photoProfil,
       };
@@ -180,7 +181,7 @@ const UserRepository = {
     try {
       if (userId !== requesterId) {
         const requesterRole = await getUserRole(requesterId);
-        if (requesterRole !== "moderateur") {
+        if (requesterRole !== roles.moderateur) {
           return { error: "Vous n'avez pas la permission de supprimer ce compte." };
         }
       }

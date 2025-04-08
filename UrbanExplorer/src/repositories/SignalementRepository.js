@@ -8,6 +8,7 @@ import { db } from "../../firebaseConfig";
 import { checkUserExists, checkContentExistsAvisSpots, isValidText, isValidCategory,getUserRole}  from "../utils/validators"; 
 import { dbTables } from "../constants/dbInfo";
 import { Guid } from "js-guid";
+import roles from "../constants/roles";
 
 // Générer un ID signalement formaté automatiquement (signalement_001, signalement_002...)
 const generateSignalementId = async () => {
@@ -25,7 +26,7 @@ const SignalementRepository = {
 
     try {
       const userRole = await getUserRole(userId);
-      if (userRole !== "moderateur") {
+      if (userRole !== roles.moderateur) {
         return { error: "Seuls les modérateurs peuvent voir les signalements." };
       }
 
@@ -43,7 +44,7 @@ const SignalementRepository = {
 
     try {
       const userRole = await getUserRole(userId);
-      if (userRole !== "contributeur" && userRole !== "moderateur") {
+      if (userRole !== roles.contributeur && userRole !== roles.moderateur) {
         return { error: "Vous n'avez pas la permission de signaler un contenu." };
       }
 
@@ -83,7 +84,7 @@ const SignalementRepository = {
 
     try {
       const userRole = await getUserRole(userId);
-      if (userRole !== "moderateur") {
+      if (userRole !== roles.moderateur) {
         return { error: "Seuls les modérateurs peuvent modifier un signalement." };
       }
 

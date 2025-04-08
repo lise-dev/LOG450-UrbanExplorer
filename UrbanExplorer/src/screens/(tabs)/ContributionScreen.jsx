@@ -113,6 +113,9 @@ const ContributionScreen = ({ navigation }) => {
   return (
     
     <View style={styles.container}>
+                {enrichedAvis.length === 0 && (
+                  <Text>Aucun avis</Text>
+                )}
         <GestureHandlerRootView style={localStyles.containerFlatlist}>
             <FlatList
               data={enrichedAvis}

@@ -8,6 +8,7 @@ import { db } from "../../firebaseConfig";
 import { isValidCoordinates, isValidText, getUserRole}  from "../utils/validators"; 
 import { dbTables } from "../constants/dbInfo";
 import { Guid } from 'js-guid';
+import roles from "../constants/roles";
 
 // Générer un ID spot formaté automatiquement (spot_001, spot_002)
 const generateSpotId = async () => {
@@ -73,7 +74,7 @@ const SpotRepository = {
     try {
       const userRole = await getUserRole(userId);
       if (!userRole) return { error: "Utilisateur introuvable. Veuillez vous reconnecter." };
-      if (userRole !== "contributeur" && userRole !== "moderateur") {
+      if (userRole !== roles.contributeur && userRole !== roles.moderateur) {
         return { error: "Vous n'avez pas la permission d'ajouter un spot." };
       }
 
@@ -86,7 +87,7 @@ const SpotRepository = {
         idSpot: spotId,
         nom: newSpot.nom,
         coordonnees: newSpot.coordonnees,
-        type: newSpot.type.toLowerCase(),
+        type: newSpot.type,
         description: newSpot.description ? newSpot.description : null, 
         ajoutePar: userId,
         dateAjout: new Date(),
@@ -118,7 +119,7 @@ const SpotRepository = {
       const spotData = spotSnapshot.data();
       const userRole = await getUserRole(userId);
 
-      if (spotData.ajoutePar !== userId && userRole !== "moderateur") {
+      if (spotData.ajoutePar !== userId && userRole !== roles.moderateur) {
         return { error: "Vous n'avez pas la permission de supprimer ce spot." };
       }
 

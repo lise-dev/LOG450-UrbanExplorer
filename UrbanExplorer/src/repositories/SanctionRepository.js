@@ -6,6 +6,7 @@
 import { collection, getDocs, doc, setDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
 import { checkUserExists, isValidSanctionLevel, isValidDate, getUserRole}  from "../utils/validators"; 
+import roles from "../constants/roles";
 
 // Générer un ID sanction formaté automatiquement (sanction_001, sanction_002...)
 const generateSanctionId = async () => {
@@ -31,7 +32,7 @@ const SanctionRepository = {
 
     try {
       const userRole = await getUserRole(userId);
-      const sanctionsQuery = userRole === "moderateur"
+      const sanctionsQuery = userRole === roles.moderateur
         ? collection(db, "sanctions") // Récupérer toutes les sanctions pour un modérateur
         : query(collection(db, "sanctions"), where("idUtilisateur", "==", userId));
 
@@ -49,7 +50,7 @@ const SanctionRepository = {
 
     try {
       const moderatorRole = await getUserRole(moderatorId);
-      if (moderatorRole !== "moderateur") {
+      if (moderatorRole !== roles.moderateur) {
         return { error: "Seuls les modérateurs peuvent attribuer une sanction." };
       }
 
