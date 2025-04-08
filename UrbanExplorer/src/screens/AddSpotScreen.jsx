@@ -15,7 +15,6 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { defaultSpotTypes } from "../constants/spotTypes";
 
 
-
 const AddSpotScreen = ({route, navigation}) => {
 
     const [spotName, setSpotName] = useState("");
@@ -29,22 +28,21 @@ const AddSpotScreen = ({route, navigation}) => {
     const [itemsTypes, setItemsTypes] = useState([]);
     const [buttonEnabled, setButtonEnabled] = useState(true);
 
-
     const { user, userData, setUserData } = useContext(AuthContext);
     const idUser = userData.idUtilisateur;
 
-    useEffect(() => {
-        const fetchSpotTypes = async () => {
-            const types = await TypeRepository.getTypes();
-            setItemsTypes(types.map(type => ({
-                label: type.description,
-                value: type.idType
-            })));
-            setItemsTypes([])
-        }
+    // useEffect(() => {
+    //     const fetchSpotTypes = async () => {
+    //         const types = await TypeRepository.getTypes();
+    //         setItemsTypes(types.map(type => ({
+    //             label: type.description,
+    //             value: type.idType
+    //         })));
+    //         setItemsTypes([])
+    //     }
 
-        fetchSpotTypes();
-    }, []);
+    //     fetchSpotTypes();
+    // }, []);
 
     const fetchCoordinates = async () => {
         try {
@@ -54,7 +52,6 @@ const AddSpotScreen = ({route, navigation}) => {
                 format: 'json',
               },
             });
-            console.log("reponse :", response);
         
             const location = response.data[0];
             return {latitude: parseFloat(location.lat), longitude: parseFloat(location.lon)};
@@ -69,7 +66,6 @@ const AddSpotScreen = ({route, navigation}) => {
             setButtonEnabled(false);
     
             const coordonnees = await fetchCoordinates();
-            console.log("retour coordonnees", coordonnees)
     
             const formattedSpot = {
                 nom: spotName,
@@ -77,8 +73,6 @@ const AddSpotScreen = ({route, navigation}) => {
                 type: spotType,
                 description: spotDescription,
             }
-
-            console.log("formattedSpot:", formattedSpot)
     
             const response = await SpotRepository.addSpot(formattedSpot, idUser)
             if (response.error) {
@@ -128,8 +122,6 @@ const AddSpotScreen = ({route, navigation}) => {
                     />
                 </View>
 
-
-
                 <TextInput 
                     style={localStyles.input}
                     value={spotAddress}
@@ -162,8 +154,6 @@ const AddSpotScreen = ({route, navigation}) => {
             </Snackbar>
         </SafeAreaView>
     );
-
-
 };
 
 const localStyles = StyleSheet.create({
@@ -208,9 +198,7 @@ const localStyles = StyleSheet.create({
         marginBottom: 10,
         justifyContent: "center",
       },
-      
       picker: {
-        // height: 50,
         width: "100%",
         color: "#757575",
       },

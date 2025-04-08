@@ -6,7 +6,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView } from "react-native";
 import { Picker } from "@react-native-picker/picker"; 
-// import { Picker } from "@react-native-picker/picker"; 
 import * as ImagePicker from "expo-image-picker";
 import { auth, db } from "../../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -15,12 +14,13 @@ import { setDoc, doc } from "firebase/firestore";
 import {styles as GlobalStyle} from "../styles/GlobalStyle";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Roles from  '../constants/roles';
+import roles from "../constants/roles";
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pseudo, setPseudo] = useState("");
-  const [role, setRole] = useState("explorateur");
+  const [role, setRole] = useState(roles.explorateur);
   const [photoProfil, setPhotoProfil] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -50,14 +50,11 @@ const RegisterScreen = ({ navigation }) => {
     }
   
     try {
-
       var response = await AuthRepository.register(email, password, lastName, firstName, pseudo, role, photoProfil);
       if (!response.success) {
         console.error(response.error);
       }
       const userCredential = response.user;
-
-      const userId = userCredential.uid;
   
       navigation.replace("HomeScreen");
     } catch (error) {
@@ -185,11 +182,9 @@ const styles = StyleSheet.create({
 
   },
   topSection: {
-    // flex: 3,
     justifyContent: "flex-end",
     alignItems: "center",
     backgroundColor: "#E0E0E0",
-    // paddingBottom: 20,
   },
   title: {
     fontSize: 28,
@@ -214,7 +209,6 @@ const styles = StyleSheet.create({
     color: "#a7a7a7",
   },
   bottomSection: {
-    // flex: 1,
     backgroundColor: "#FFFFFF",
     padding: 20,
     borderTopLeftRadius: 30,
@@ -300,9 +294,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     justifyContent: "center",
   },
-  
   picker: {
-    // height: 50,
     width: "100%",
     color: "#757575",
   },

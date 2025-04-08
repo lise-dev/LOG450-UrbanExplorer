@@ -9,8 +9,6 @@ import "../constants/dbInfo";
 import { dbTables } from "../constants/dbInfo";
 import UserRepository from "../repositories/UserRepository";
 
-
-
 const EditProfileScreen = ({ navigation }) => {
 
     const { user, userData, setUser, setUserData } = useContext(AuthContext);
@@ -19,7 +17,6 @@ const EditProfileScreen = ({ navigation }) => {
     const [pseudo, setPseudo] = useState(userData.pseudo);
     const [firstName, setFirstName] = useState(userData.prenom);
     const [lastName, setLastName] = useState(userData.nom);
-
 
     // Sélection d'une image depuis la galerie
     const pickImage = async () => {
@@ -53,14 +50,12 @@ const EditProfileScreen = ({ navigation }) => {
                 console.log(response.error)
             }
 
-
             navigation.goBack();
         } catch (error) {
             console.error(error);
             setErrorMessage("Erreur. Réessayez.");
         }
     }
-
 
     return (
         <SafeAreaView style={styles.container}>
@@ -129,8 +124,6 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         backgroundColor: "#F5F5F5", 
         marginBottom: 10,
-        // fontStyle: "italic",
-        // color: "#a7a7a7",
     },
     profileImage: {
         width: 150,

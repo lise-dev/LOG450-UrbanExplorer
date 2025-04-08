@@ -154,10 +154,8 @@ const toolbarStyle = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: 16,
-        // backgroundColor: 'transparent',
     },
     back: {
-        // color: '#fff',
         fontSize: 20,
         marginRight: 8,
         fontWeight: 'bold',
@@ -172,7 +170,6 @@ const toolbarStyle = StyleSheet.create({
         flexDirection: 'row',
     },
     actionIcon: {
-        // color: '#fff',
         fontSize: 20,
         marginLeft: 12,
     },
@@ -204,7 +201,6 @@ const typography = StyleSheet.create({
         fontSize: 16,
         lineHeight: 24,
         fontFamily: 'Roboto sans-serif',
-        // color: '#3c3c43',
         color: '#1c1c1e',
     },
     bodyMedium: {
@@ -237,8 +233,6 @@ const typography = StyleSheet.create({
         color: '#6e6e73',
         letterSpacing: 0.25,
     },
-
-
     buttonText: {
         fontSize: 16,
         fontWeight: 'bold',

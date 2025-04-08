@@ -5,8 +5,6 @@ import {View, StyleSheet, TouchableOpacity} from "react-native";
 import ConfirmDialog from "./ConfirmDialog";
 import {Searchbar, Snackbar, Icon, RadioButton, FAB} from "react-native-paper";
 
-
-
 const ReviewAvisItem = ({
     idSpot,
     spotName,
@@ -14,8 +12,6 @@ const ReviewAvisItem = ({
     idAvis,
     description, 
     note,
-    // onEdit,
-    // onDelete,
     IconButtonTop,
     IconButtonBottom,
 }) => {
@@ -27,7 +23,6 @@ const ReviewAvisItem = ({
         >
             <View style={localStyles.containerInfo}>
                 <View style={{marginBottom: 10}}>
-                    {/* titre + type */}
                     <Text style={localStyles.spotTitle}>{spotName}</Text>
                     <Text style={localStyles.spotType}>{spotType}</Text>
                 </View>
@@ -39,13 +34,8 @@ const ReviewAvisItem = ({
                 </View>
             </View>
             <View style={localStyles.containerIcons}>
-                {/* <IconButton icon="square-edit-outline" iconColor="#a39600" containerColor="#faf6cf"
-                    style={localStyles.fab} onPress={onEdit}/>
-                <IconButton icon="delete-outline" iconColor="#d32f2f" containerColor="#fdecea"
-                    style={localStyles.fab} onPress={onDelete}/> */}
                 { <IconButtonTop /> }
                 { <IconButtonBottom /> }
-
             </View>
         </View>
     );

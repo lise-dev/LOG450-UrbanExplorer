@@ -152,8 +152,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    // border: 10,
-    // borderColor: "black",
   },
   containerButtons: {
     flex: 2,

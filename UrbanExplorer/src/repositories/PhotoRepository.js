@@ -6,6 +6,7 @@
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
 import { checkContentExists, isValidImageUrl, getUserRole}  from "../utils/validators"; 
+import roles from "../constants/roles";
 
 // Supprimer les photos liées à un spot supprimé
 const deletePhotosBySpot = async (spotId) => {
@@ -45,7 +46,7 @@ const PhotoRepository = {
 
     try {
       const userRole = await getUserRole(userId);
-      if (userRole !== "contributeur" && userRole !== "moderateur") {
+      if (userRole !== roles.contributeur && userRole !== roles.moderateur) {
         return { error: "Seuls les contributeurs et modérateurs peuvent ajouter une photo." };
       }
 
@@ -60,7 +61,7 @@ const PhotoRepository = {
       const photoId = `photo_${Date.now()}`;
       const formattedPhoto = {
         idPhoto: photoId,
-        typeContenu: newPhoto.typeContenu.toLowerCase(),
+        typeContenu: newPhoto.typeContenu,
         idContenu: newPhoto.idContenu,
         url: `picture/photos/${newPhoto.url.toLowerCase()}`,
         timestamp: new Date(),

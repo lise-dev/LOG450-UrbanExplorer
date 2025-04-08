@@ -3,6 +3,7 @@
 import { collection, getDocs, doc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import { dbTables } from "../constants/dbInfo";
+import roles from "../constants/roles";
 
 // Vérifier si un pseudo existe déjà
 export const checkPseudoExists = async (pseudo, idUser = null) => {
@@ -24,7 +25,7 @@ export const checkEmailExists = async (email) => {
 
 // Vérifier si un rôle est valide
 export const isValidRole = (role) => {
-  return ["contributeur", "explorateur", "moderateur"].includes(role.toLowerCase());
+  return roles.includes(role);
 };
 
 // Vérifier si une note est valide (entre 1 et 5)

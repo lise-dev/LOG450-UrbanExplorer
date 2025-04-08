@@ -14,7 +14,6 @@ import AvisItem from "../components/AvisItem";
 import { ScrollView } from "react-native-gesture-handler";
 import roles from "../constants/roles";
 
-
 const screenHeight = Dimensions.get("window").height;
 
 const DetailScreen = ({route, navigation}) => {
@@ -27,8 +26,6 @@ const DetailScreen = ({route, navigation}) => {
     const { user, userData, setUserData } = useContext(AuthContext);
     const idUser = userData.idUtilisateur;
     const [listAvis, setListAvis] = useState([]);
-
-    console.log(idSpot)
 
     useFocusEffect(
         useCallback(() => {
@@ -71,7 +68,6 @@ const DetailScreen = ({route, navigation}) => {
         setSnackbarMessage(result.message);
         setSnackbarVisible(true);
     };
-
 
 
     return (
@@ -134,9 +130,8 @@ const DetailScreen = ({route, navigation}) => {
                 style={[localStyles.fab, {left: 16}]}
                 color={isInFavorite ? 'red' : 'black'}
                 onPress={handleToggleFavorite}
-                />
+            />
 
-            {/* Modifier pour que ça soit visible que pour les contributeurs */}
             {idUser !== null && userData.role !== roles.explorateur && (
             <FAB
             icon={'plus'}

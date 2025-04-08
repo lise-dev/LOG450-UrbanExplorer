@@ -84,7 +84,6 @@ const ContributionScreen = ({ navigation }) => {
   }
   
   const onDelete = async (idAvis) => {
-    console.log("idAvis:", idAvis)
     try {
       await AvisRepository.deleteAvis(idAvis, idUser);
       onRefresh();
@@ -107,19 +106,18 @@ const ContributionScreen = ({ navigation }) => {
       style={localStyles.fab} onPress={() => onDelete(idAvis)}/>
     );
   }
-  
-
 
   return (
-    
     <View style={styles.container}>
+                {enrichedAvis.length === 0 && (
+                  <Text>Aucun avis</Text>
+                )}
         <GestureHandlerRootView style={localStyles.containerFlatlist}>
             <FlatList
               data={enrichedAvis}
               keyExtractor={(item) => item.idAvis}
               style={localStyles.listAvis}
               renderItem={({item}) => 
-                // <Text>{item.texte}</Text>
                 <ReviewAvisItem
                   key={item.idAvis}
                   idSpot={item.idSpot}
@@ -128,19 +126,14 @@ const ContributionScreen = ({ navigation }) => {
                   idAvis={item.idAvis}
                   description={item.texte}
                   note={item.note}
-                  // onEdit={onEdit}
-                  // onDelete={() => {onDelete(item.idAvis)}}
                   IconButtonTop={() => IconButtonEdit(null)}
                   IconButtonBottom={() => IconButtonDelete(item.idAvis)}
                 />
               }
-            
             />
       </GestureHandlerRootView>
     </View>
-
   );
-
 }
 
 const localStyles = StyleSheet.create({

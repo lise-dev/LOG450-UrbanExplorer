@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState, useContext } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker } from 'react-native-maps';
-// import Geolocation from 'react-native-geolocation-service';
 import * as Location from 'expo-location';
 import SpotRepository from "../../repositories/SpotRepository";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -22,7 +21,6 @@ export default function ExploreScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { user, userData, setUserData } = useContext(AuthContext);
-  // const idUser = userData.idUtilisateur;
   const [idUser, setIdUser] = useState(null);
 
 
@@ -68,7 +66,6 @@ export default function ExploreScreen({ navigation }) {
         latitude,
         longitude
       });
-      // console.log(responce);
       //loop on the responce to get the actual result
       for (let item of responce) {
         let address = `${item.name} ${item.city} ${item.postalCode}`
@@ -82,17 +79,13 @@ export default function ExploreScreen({ navigation }) {
     setSpots(allSpots);
   }
 
-
-
   const initialize = async () => {
-
     try {
       await checkIfLocationEnabled();
       await fetchSpots();
     } catch (error) {
       console.error("Erreur de chargement", error);
     }
-
   }
 
   useEffect(() => {
@@ -106,11 +99,8 @@ export default function ExploreScreen({ navigation }) {
     initialize();
     if (userData !== null) {
       setIdUser(userData.idUtilisateur);
-      console.log(userData.idUtilisateur)
-
     }
   }, [userData]))
-
 
 
   return (
@@ -154,8 +144,6 @@ export default function ExploreScreen({ navigation }) {
 
       </MapView>
 
-
-      {/* Modifier pour que ça soit accessible uniquement aux contributeurs et modérateurs */}
       {idUser !== null && userData.role !== roles.explorateur && (
         <FAB
           icon={'plus'}
@@ -189,6 +177,4 @@ const localStyles = StyleSheet.create({
     backgroundColor: '#e8f5e9',
 },
 });
-
-
 

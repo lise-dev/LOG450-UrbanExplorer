@@ -13,9 +13,6 @@ import { Guid } from 'js-guid';
 
 // Générer un ID avis formaté automatiquement 
 const generateAvisId = async () => {
-  // const querySnapshot = await getDocs(collection(db, dbTables.AVIS));
-  // const avisCount = querySnapshot.size + 1;
-  // return `avis_${String(avisCount).padStart(3, "0")}`;
   return `avis_${Guid.newGuid()}`;
 };
 
@@ -122,7 +119,7 @@ const AvisRepository = {
       const avisData = avisSnapshot.data();
       const userRole = await getUserRole(userId);
 
-      if (avisData.idUtilisateur !== userId && userRole !== "moderateur") {
+      if (avisData.idUtilisateur !== userId && userRole !== roles.moderateur) {
         return { error: "Vous n'avez pas la permission de modifier cet avis." };
       }
 

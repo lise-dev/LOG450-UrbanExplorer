@@ -6,6 +6,7 @@
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig"; 
 import { checkUserExists, isValidRewardType, isValidPoints, getUserRole}  from "../utils/validators"; 
+import roles from "../constants/roles";
 
 // Générer un ID récompense formaté automatiquement (reward_001, reward_002...)
 const generateRewardId = async () => {
@@ -37,13 +38,13 @@ const RecompenseRepository = {
     try {
       // Vérifier que le modérateur est bien un modérateur
       const moderatorRole = await getUserRole(moderatorId);
-      if (moderatorRole !== "moderateur") {
+      if (moderatorRole !== roles.moderateur) {
         return { error: "Seuls les modérateurs peuvent attribuer une récompense." };
       }
 
       // Vérifier que l'utilisateur destinataire existe et est contributeur ou modérateur
       const userRole = await checkUserExists(userId);
-      if (!userRole || (userRole !== "contributeur" && userRole !== "moderateur")) {
+      if (!userRole || (userRole !== roles.contributeur && userRole !== roles.moderateur)) {
         return { error: "L'utilisateur doit être contributeur ou modérateur pour recevoir une récompense." };
       }
 
@@ -87,7 +88,7 @@ const RecompenseRepository = {
 
     try {
       const userRole = await getUserRole(userId);
-      if (userRole !== "moderateur") {
+      if (userRole !== roles.moderateur) {
         return { error: "Seuls les modérateurs peuvent supprimer une récompense." };
       }
 

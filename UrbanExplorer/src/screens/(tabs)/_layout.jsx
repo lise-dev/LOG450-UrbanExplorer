@@ -53,7 +53,6 @@ const MainTabs = () => {
 
   const { user, userData } = useContext(AuthContext);
 
-
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
       <Tab.Screen
