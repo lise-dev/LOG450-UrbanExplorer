@@ -1,49 +1,38 @@
-import React, { useEffect, useState, useContext } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { AuthContext } from "../../AuthContext";
+import React, {useEffect, useState, useContext, useRef} from "react";
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, Image} from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {AuthContext} from "../../AuthContext";
 import * as ImagePicker from "expo-image-picker";
-import { setDoc, doc } from "firebase/firestore";
-import { auth, db } from "../../firebaseConfig";
+import {setDoc, doc} from "firebase/firestore";
+import {auth, db} from "../../firebaseConfig";
 import "../constants/dbInfo";
-import { dbTables } from "../constants/dbInfo";
+import {dbTables} from "../constants/dbInfo";
 import UserRepository from "../repositories/UserRepository";
+import ConfirmDialog from "../components/ConfirmDialog";
+import ImagePickerComponent from "../components/ImagePickerComponent";
 
-const EditProfileScreen = ({ navigation }) => {
+const EditProfileScreen = ({navigation}) => {
 
-    const { user, userData, setUser, setUserData } = useContext(AuthContext);
+    const {user, userData, setUser, setUserData} = useContext(AuthContext);
     const [photoProfil, setPhotoProfil] = useState(userData.photoProfil);
     const [errorMessage, setErrorMessage] = useState(null);
     const [pseudo, setPseudo] = useState(userData.pseudo);
     const [firstName, setFirstName] = useState(userData.prenom);
     const [lastName, setLastName] = useState(userData.nom);
-
-    // Sélection d'une image depuis la galerie
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          aspect: [1, 1],
-          quality: 1,
-        });
-    
-        if (!result.canceled) {
-          setPhotoProfil(result.assets[0].uri);
-        }
-    };
+    const imagePickerRef = useRef(null);
 
     const handleSaveProfile = async () => {
         if (!pseudo) {
             setErrorMessage("Tous les champs sont obligatoires !");
             return;
         }
-        
+
         try {
             var newUserData = userData;
             newUserData.pseudo = pseudo,
-            newUserData.prenom = firstName,
-            newUserData.nom = lastName,
-            newUserData.photoProfil = photoProfil
+                newUserData.prenom = firstName,
+                newUserData.nom = lastName,
+                newUserData.photoProfil = photoProfil
 
             var response = await UserRepository.editUser(userData.idUtilisateur, userData.idUtilisateur, newUserData);
             if (response.error) {
@@ -62,7 +51,7 @@ const EditProfileScreen = ({ navigation }) => {
             <View style={styles.containerInput}>
                 <View style={styles.containerFormItem}>
                     <Text style={styles.labelInput}>Prénom</Text>
-                    <TextInput 
+                    <TextInput
                         placeholder="Prénom..."
                         style={styles.input}
                         value={firstName}
@@ -71,7 +60,7 @@ const EditProfileScreen = ({ navigation }) => {
                 </View>
                 <View style={styles.containerFormItem}>
                     <Text style={styles.labelInput}>Nom</Text>
-                    <TextInput 
+                    <TextInput
                         placeholder="Nom..."
                         style={styles.input}
                         value={lastName}
@@ -80,7 +69,7 @@ const EditProfileScreen = ({ navigation }) => {
                 </View>
                 <View style={styles.containerFormItem}>
                     <Text style={styles.labelInput}>Pseudo</Text>
-                    <TextInput 
+                    <TextInput
                         placeholder="Pseudo..."
                         style={styles.input}
                         value={pseudo}
@@ -93,8 +82,9 @@ const EditProfileScreen = ({ navigation }) => {
                     source={{uri: photoProfil}}
                     style={styles.profileImage}
                 />
-                <TouchableOpacity style={styles.button} onPress={pickImage}>
-                    <Text style={styles.buttonText}>{userData.photoProfil === undefined ? "Choisir une photo" : "Modifier la photo"}</Text>
+                <TouchableOpacity style={styles.button} onPress={() => imagePickerRef.current?.openPicker()}>
+                    <Text
+                        style={styles.buttonText}>{userData.photoProfil === undefined ? "Choisir une photo" : "Modifier la photo"}</Text>
                 </TouchableOpacity>
 
             </View>
@@ -104,6 +94,10 @@ const EditProfileScreen = ({ navigation }) => {
                     <Text style={[styles.buttonText, styles.saveButtonText]}>Enregistrer le profil</Text>
                 </TouchableOpacity>
             </View>
+            <ImagePickerComponent
+                ref={imagePickerRef}
+                onImagePicked={(uri) => setPhotoProfil(uri)}
+            />
         </SafeAreaView>
     );
 
@@ -115,14 +109,14 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         width: "100%"
-      },
+    },
     input: {
         width: "100%",
         padding: 12,
         borderWidth: 1,
         borderColor: "#A5D6A7",
         borderRadius: 25,
-        backgroundColor: "#F5F5F5", 
+        backgroundColor: "#F5F5F5",
         marginBottom: 10,
     },
     profileImage: {
@@ -132,7 +126,7 @@ const styles = StyleSheet.create({
         margin: 20
     },
     button: {
-        backgroundColor: "#2E7D32",
+        // backgroundColor: "#2E7D32",
         paddingVertical: 12,
         paddingHorizontal: 40,
         borderRadius: 10,
@@ -140,7 +134,7 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         backgroundColor: 'none',
         width: "75%"
-      },
+    },
     buttonText: {
         color: "black",
         fontSize: 14,
@@ -165,7 +159,7 @@ const styles = StyleSheet.create({
     saveProfileButton: {
         backgroundColor: "green",
         borderWidth: 0,
-        
+
     },
     saveButtonText: {
         color: "white",

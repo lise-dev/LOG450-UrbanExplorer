@@ -3,18 +3,14 @@
 * Ecran d'inscription
 */
 
-import React, { useState } from "react";
+import React, {useRef, useState} from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView } from "react-native";
-import { Picker } from "@react-native-picker/picker"; 
-import * as ImagePicker from "expo-image-picker";
-import { auth, db } from "../../firebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { Picker } from "@react-native-picker/picker";
 import AuthRepository from "../repositories/AuthRepository";
-import { setDoc, doc } from "firebase/firestore";
-import {styles as GlobalStyle} from "../styles/GlobalStyle";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Roles from  '../constants/roles';
 import roles from "../constants/roles";
+import ImagePickerComponent from "../components/ImagePickerComponent";
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -25,20 +21,8 @@ const RegisterScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
+  const imagePickerRef = useRef(null);
 
-  // Sélection d'une image depuis la galerie
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setPhotoProfil(result.assets[0].uri);
-    }
-  };
 
   // Inscription utilisateur
   const handleRegister = async () => {
@@ -138,7 +122,7 @@ const RegisterScreen = ({ navigation }) => {
               </View>
 
               {/* photo de profil */}
-              <TouchableOpacity onPress={pickImage} style={styles.photoInput}>
+              <TouchableOpacity onPress={() => imagePickerRef.current?.openPicker()} style={styles.photoInput}>
                 <Text style={styles.photoInputText}>
                   {photoProfil ? "Modifier la photo" : "Choisir une photo"}
                 </Text>
@@ -168,6 +152,11 @@ const RegisterScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+
+      <ImagePickerComponent
+          ref={imagePickerRef}
+          onImagePicked={(uri) => setPhotoProfil(uri)}
+      />
     </SafeAreaView>
   );
 };

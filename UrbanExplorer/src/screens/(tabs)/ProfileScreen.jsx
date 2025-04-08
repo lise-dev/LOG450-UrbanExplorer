@@ -6,13 +6,8 @@ Crée le 28.03.25
 import React, { useContext, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, db } from "../../../firebaseConfig";
 import { AuthContext } from "../../../AuthContext";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
 import { dbTables } from '../../constants/dbInfo'
 import { doc, getDoc } from "firebase/firestore";
 
@@ -117,7 +112,7 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   button: {
-    backgroundColor: "#2E7D32",
+    // backgroundColor: "#2E7D32",
     paddingVertical: 12,
     paddingHorizontal: 40,
     borderRadius: 10,

@@ -25,8 +25,9 @@ export const checkEmailExists = async (email) => {
 
 // Vérifier si un rôle est valide
 export const isValidRole = (role) => {
-  return roles.includes(role);
+  return Object.values(roles).includes(role);
 };
+
 
 // Vérifier si une note est valide (entre 1 et 5)
 export const isValidNote = (note) => {
