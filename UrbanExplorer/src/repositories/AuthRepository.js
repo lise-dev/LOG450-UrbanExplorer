@@ -1,3 +1,8 @@
+/*
+* Crée le 19 mars 2025
+* Écran de connexion
+*/
+
 import { auth, db } from "../../firebaseConfig";
 import {
   signInWithEmailAndPassword,
