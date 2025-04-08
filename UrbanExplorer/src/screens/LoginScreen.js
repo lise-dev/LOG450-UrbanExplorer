@@ -1,18 +1,39 @@
 /*
 * Crée le 19 mars 2025
-* Ecran de connection
+* Écran de connexion
 */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
+import { makeRedirectUri } from "expo-auth-session";
+import { signInWithCredential, GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import AuthRepository from "../repositories/AuthRepository";
+
+WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId: "902366533112-e45edtiul28q0u72copcbv7co1queuli.apps.googleusercontent.com",
+    androidClientId: "902366533112-v5dq57sffg0cr9u7gtsbhdp2oodgujra.apps.googleusercontent.com",
+    iosClientId: "902366533112-6n8ea8i3vj7lmodiq49pk5ftgg6rfm3q.apps.googleusercontent.com",
+    redirectUri: makeRedirectUri({ useProxy: true }),
+  });
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      const { id_token } = response.params;
+      const credential = GoogleAuthProvider.credential(id_token);
+      signInWithCredential(auth, credential)
+        .then(() => navigation.replace("HomeScreen"))
+        .catch(() => setErrorMessage("Erreur Firebase lors de la connexion Google."));
+    }
+  }, [response]);
 
   const handleLogin = async () => {
     try {
@@ -23,20 +44,11 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    const response = await AuthRepository.signInWithGoogle();
-    if (response.success) {
-      navigation.replace("HomeScreen");
-    } else {
-      setErrorMessage(response.error || "Erreur lors de la connexion avec Google.");
-    }
-  };
-
   return (
     <View style={styles.container}>
       {/* Partie haute avec fond gris clair */}
       <View style={styles.topSection}>
-        <Text style={styles.title}>Connection</Text>
+        <Text style={styles.title}>Connexion</Text>
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -64,9 +76,9 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.loginText}>Connexion</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
+        <TouchableOpacity style={styles.googleButton} onPress={() => promptAsync()}>
           <Image
-            source={require("../../assets/google.png")} 
+            source={require("../../assets/google.png")}
             style={styles.googleIcon}
           />
           <Text style={styles.googleButtonText}>Continuer avec Google</Text>
@@ -87,13 +99,13 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#E0E0E0", 
+    backgroundColor: "#E0E0E0",
   },
   topSection: {
     flex: 2,
-    justifyContent: "flex-end", 
-    backgroundColor: "#E0E0E0", 
-    paddingBottom: 20, 
+    justifyContent: "flex-end",
+    backgroundColor: "#E0E0E0",
+    paddingBottom: 20,
     alignItems: "center",
   },
   title: {
@@ -105,7 +117,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: "90%",
     alignItems: "center",
-    marginTop: 20, 
+    marginTop: 20,
   },
   input: {
     width: "100%",
@@ -113,7 +125,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#A5D6A7",
     borderRadius: 25,
-    backgroundColor: "#F5F5F5", 
+    backgroundColor: "#F5F5F5",
     marginBottom: 10,
     fontStyle: "italic",
     color: "#a7a7a7",
@@ -130,7 +142,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#2E7D32",
     padding: 12,
     borderRadius: 25,
-    marginTop: 0, 
+    marginTop: 0,
     width: "90%",
   },
   loginText: {
@@ -163,7 +175,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    elevation: 3, 
+    elevation: 3,
   },
   googleButtonText: {
     color: "#757575",
@@ -174,7 +186,7 @@ const styles = StyleSheet.create({
   googleIcon: {
     width: 24,
     height: 24,
-  },  
+  },
 });
 
 export default LoginScreen;
