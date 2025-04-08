@@ -27,8 +27,8 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (response?.type === "success") {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
+      const { idToken } = response.authentication;
+      const credential = GoogleAuthProvider.credential(idToken);
       signInWithCredential(auth, credential)
         .then(() => navigation.replace("HomeScreen"))
         .catch(() => setErrorMessage("Erreur Firebase lors de la connexion Google."));
