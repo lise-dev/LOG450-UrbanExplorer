@@ -99,10 +99,8 @@ export default function ExploreScreen({ navigation }) {
     initialize();
     if (userData !== null) {
       setIdUser(userData.idUtilisateur);
-      console.log(userData.idUtilisateur)
     }
   }, [userData]))
-
 
 
   return (

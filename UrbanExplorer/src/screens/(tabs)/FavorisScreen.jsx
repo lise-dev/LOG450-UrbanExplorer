@@ -51,7 +51,6 @@ const FavoritesScreen = ({navigation}) => {
                 SpotRepository.getSpots(),
             ]);
             setFavorites(favorisData);
-            console.log(favorisData);
             setSpots(spotsData);
         } catch (error) {
             console.error("Erreur de chargement:", error);
@@ -76,7 +75,6 @@ const FavoritesScreen = ({navigation}) => {
 
     const handleDeleteFavorite = async (idSpot) => {
         const result = await FavoriRepository.deleteFavoriteOfSpot(idUser, idSpot);
-        console.log("result delete fav :", result)
         if (result.success) {
             setFavorites((prev) => prev.filter((f) => f.idSpot !== idSpot));
         }

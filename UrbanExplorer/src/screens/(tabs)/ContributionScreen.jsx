@@ -84,7 +84,6 @@ const ContributionScreen = ({ navigation }) => {
   }
   
   const onDelete = async (idAvis) => {
-    console.log("idAvis:", idAvis)
     try {
       await AvisRepository.deleteAvis(idAvis, idUser);
       onRefresh();

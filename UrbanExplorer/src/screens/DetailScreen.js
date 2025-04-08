@@ -27,8 +27,6 @@ const DetailScreen = ({route, navigation}) => {
     const idUser = userData.idUtilisateur;
     const [listAvis, setListAvis] = useState([]);
 
-    console.log(idSpot)
-
     useFocusEffect(
         useCallback(() => {
 

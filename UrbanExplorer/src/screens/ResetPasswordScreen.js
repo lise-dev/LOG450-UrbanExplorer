@@ -18,8 +18,6 @@ const ResetPasswordScreen = ({ navigation }) => {
             return;
         }
 
-        console.log(auth);
-
         try {
             await sendPasswordResetEmail(auth, email);
             setMessage("Si l'email existe un email de réinitialisation a été envoyé !");

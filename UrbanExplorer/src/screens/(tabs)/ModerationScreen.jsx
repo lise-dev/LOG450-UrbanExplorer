@@ -92,7 +92,6 @@ const ModerationScreen = ({ navigation }) => {
   }
   
   const onRefuse = async (avis) => {
-    console.log("idAvis:", avis)
     try {
       await AvisRepository.editAvis(avis.idAvis, idUser, {...avis, estReporte: true, estVisible: false})
       const signalement = {

@@ -31,18 +31,18 @@ const AddSpotScreen = ({route, navigation}) => {
     const { user, userData, setUserData } = useContext(AuthContext);
     const idUser = userData.idUtilisateur;
 
-    useEffect(() => {
-        const fetchSpotTypes = async () => {
-            const types = await TypeRepository.getTypes();
-            setItemsTypes(types.map(type => ({
-                label: type.description,
-                value: type.idType
-            })));
-            setItemsTypes([])
-        }
+    // useEffect(() => {
+    //     const fetchSpotTypes = async () => {
+    //         const types = await TypeRepository.getTypes();
+    //         setItemsTypes(types.map(type => ({
+    //             label: type.description,
+    //             value: type.idType
+    //         })));
+    //         setItemsTypes([])
+    //     }
 
-        fetchSpotTypes();
-    }, []);
+    //     fetchSpotTypes();
+    // }, []);
 
     const fetchCoordinates = async () => {
         try {
@@ -52,7 +52,6 @@ const AddSpotScreen = ({route, navigation}) => {
                 format: 'json',
               },
             });
-            console.log("reponse :", response);
         
             const location = response.data[0];
             return {latitude: parseFloat(location.lat), longitude: parseFloat(location.lon)};
@@ -67,7 +66,6 @@ const AddSpotScreen = ({route, navigation}) => {
             setButtonEnabled(false);
     
             const coordonnees = await fetchCoordinates();
-            console.log("retour coordonnees", coordonnees)
     
             const formattedSpot = {
                 nom: spotName,
@@ -75,8 +73,6 @@ const AddSpotScreen = ({route, navigation}) => {
                 type: spotType,
                 description: spotDescription,
             }
-
-            console.log("formattedSpot:", formattedSpot)
     
             const response = await SpotRepository.addSpot(formattedSpot, idUser)
             if (response.error) {
