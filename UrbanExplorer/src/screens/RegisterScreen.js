@@ -139,13 +139,13 @@ const RegisterScreen = ({ navigation }) => {
             <Text style={styles.registerText}>S'inscrire</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
+          {/* <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
             <Image
               source={require("../../assets/google.png")}
               style={styles.googleIcon}
             />
             <Text style={styles.googleButtonText}>Continuer avec Google</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */} 
 
           <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
             <Text style={styles.linkText}>Déjà un compte ? Se connecter</Text>
