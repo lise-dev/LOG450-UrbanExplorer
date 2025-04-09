@@ -2,7 +2,7 @@
   "expo": {
     "name": "UrbanExplorer",
     "slug": "UrbanExplorer",
-    "owner": "simonvillard", 
+    "owner": "svillard", 
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
