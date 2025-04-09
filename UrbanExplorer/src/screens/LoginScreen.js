@@ -76,13 +76,14 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.loginText}>Connexion</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.googleButton} onPress={() => promptAsync()}>
+       {/* <TouchableOpacity style={styles.googleButton} onPress={() => promptAsync()}>
           <Image
             source={require("../../assets/google.png")}
             style={styles.googleIcon}
           />
           <Text style={styles.googleButtonText}>Continuer avec Google</Text>
         </TouchableOpacity>
+        */}
 
         <TouchableOpacity onPress={() => navigation.navigate("ResetPasswordScreen")}>
           <Text style={styles.linkText}>Mot de passe oublié ?</Text>
